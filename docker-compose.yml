@@ -1,0 +1,112 @@
+networks:
+  default:
+    name: "${NETWORK_ID}"
+    external: false
+
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_rabbitmq"
+    labels:
+      - "traefik.http.services.${PROJECT_NAME}_rabbitmq.loadbalancer.server.port=15672"
+      - "traefik.http.routers.${PROJECT_NAME}_rabbitmq.rule=Host(`rabbitmq.${PROJECT_BASE_URL}`)"
+
+  angular:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_angular"
+    command: ng serve --host 0.0.0.0 --port 4200 --disable-host-check
+    volumes:
+      - ./angular:/app
+    expose:
+      - '4200'
+    labels:
+      - "traefik.http.routers.${PROJECT_NAME}_angular.rule=Host(`${PROJECT_BASE_URL}`)"
+
+  mailhog:
+    image: mailhog/mailhog
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_mailhog"
+    labels:
+      - "traefik.http.services.${PROJECT_NAME}_mailhog.loadbalancer.server.port=8025"
+      - "traefik.http.routers.${PROJECT_NAME}_mailhog.rule=Host(`mailhog.${PROJECT_BASE_URL}`)"
+
+  dotnet:
+    build:
+      context: .
+      dockerfile: Dockerfile.dotnet
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_dotnet"
+    command: dotnet watch --project . run --urls "http://0.0.0.0:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8081
+      #- ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      #- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ./dotnet:/app
+    expose:
+      - '8081'
+    labels:
+      - "traefik.http.routers.${PROJECT_NAME}_dotnet.rule=Host(`api.${PROJECT_BASE_URL}`)"
+
+  #Ref: https://container-registry.oracle.com/ords/ocr/ba/database/express
+  oracle:
+    image: container-registry.oracle.com/database/express:18.4.0-xe
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_oracle"
+    environment:
+      ORACLE_PWD: $DB_PASSWORD
+    ports:
+      - '5500:5500'
+      - '1521:1521'
+    volumes:
+      - ./oracle-home/startup:/docker-entrypoint-initdb.d/startup # Place init file(s) here.
+      - ./oracle-home/setup:/docker-entrypoint-initdb.d/setup # Place init file(s) here.
+      - ./oracle-home/data:/opt/oracle/oradata:Z # Use bind mount
+
+  postgres:
+    image: postgres 
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_postgres"
+    stop_grace_period: 30s
+    shm_size: 1g
+    command: -c 'max_connections=1000'
+    environment:
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USER
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./postgres-init:/docker-entrypoint-initdb.d # Place init file(s) here.
+      - ./postgres-data:/var/lib/postgresql/data # Use bind mount
+  
+  # adminer:
+  #   container_name: "${PROJECT_NAME}_adminer"
+  #   image: wodby/adminer:$ADMINER_TAG
+  #   restart: unless-stopped
+  #   init: true
+  #   environment:
+  #     # For PostgreSQL:
+  #     ADMINER_DEFAULT_DB_DRIVER: pgsql
+  #     ADMINER_DEFAULT_DB_HOST: $DB_HOST
+  #     ADMINER_DEFAULT_DB_NAME: $DB_NAME
+  #   labels:
+  #     - "traefik.http.routers.${PROJECT_NAME}_adminer.rule=Host(`adminer.${PROJECT_BASE_URL}`)"
+
+  traefik:
+    image: traefik:v2.0
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_traefik"
+    command: --api.insecure=true --providers.docker
+    ports:
+      - '80:80'
+      - '8080:8080' # Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
