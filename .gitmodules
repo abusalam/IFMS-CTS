@@ -2,5 +2,5 @@
 	path = angular
 	url = https://www.wbgitlab.nic.in/ifms/cts.git
 [submodule "dotnet"]
-	path = dotnet
+	path = dotnet/CTS-BE
 	url = https://www.wbgitlab.nic.in/ifms/ctsapi.git
