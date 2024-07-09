@@ -52,6 +52,33 @@ services:
       - '8081'
     labels:
       - "traefik.http.routers.${PROJECT_NAME}_dotnet.rule=Host(`api.${PROJECT_BASE_URL}`)"
+  
+  dotnet-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dotnet
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_dotnet_test"
+    depends_on:
+      - dotnet
+    # command: sh -c "dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura \
+    #     && reportgenerator \
+    #      -reports:"./CTS-BE.Tests/coverage.cobertura.xml" \
+    #      -targetdir:"coveragereport" \
+    #      -reporttypes:Html"
+    volumes:
+      - ./dotnet:/app
+
+  nginx:
+    image: nginx
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_nginx"
+    volumes:
+    - ./dotnet/coveragereport:/usr/share/nginx/html:cached
+    ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/laravel/local#docker-for-mac
+    #    - backend:/var/www/html
+    labels:
+    - "traefik.http.routers.${PROJECT_NAME}_nginx.rule=Host(`apitests.${PROJECT_BASE_URL}`)"
 
   #Ref: https://container-registry.oracle.com/ords/ocr/ba/database/express
   oracle:

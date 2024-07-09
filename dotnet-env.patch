@@ -1,8 +1,8 @@
 diff --git a/CTS-BE.csproj b/CTS-BE.csproj
-index 922a647..5a07aa3 100644
+index 922a647..f6e47c4 100644
 --- a/CTS-BE.csproj
 +++ b/CTS-BE.csproj
-@@ -26,34 +26,31 @@
+@@ -26,34 +26,30 @@
        <!-- <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> -->
        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
      </None>
@@ -30,7 +30,7 @@ index 922a647..5a07aa3 100644
      <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
      <PackageReference Include="NPOI" Version="2.6.0" />
      <PackageReference Include="Scriban" Version="5.7.0" />
-     <PackageReference Include="xunit.extensibility.execution" Version="2.7.0" />
+-    <PackageReference Include="xunit.extensibility.execution" Version="2.7.0" />
 -    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
      <PackageReference Include="BouncyCastle" Version="1.8.9" />
      <PackageReference Include="Dapper" Version="2.1.28" />

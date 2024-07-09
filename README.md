@@ -77,8 +77,8 @@ Apply patch for environment settings to your codebase
 ```sh
 cd angular
 git apply ../ng-env.patch
-cd ../dotnet
-git apply ../dotnet-env.patch
+cd ../dotnet/CTS-BE
+git apply ../../dotnet-env.patch
 ```
 
 Make host entry: add the following line to your `%WINDIR%\System32\drivers\etc\hosts` file
