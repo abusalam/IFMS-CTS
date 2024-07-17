@@ -1,6 +1,6 @@
 -- SCHEMA: cts_pension
 
-DROP SCHEMA IF EXISTS cts_pension ;
+DROP SCHEMA IF EXISTS cts_pension CASCADE;
 
 CREATE SCHEMA IF NOT EXISTS cts_pension AUTHORIZATION postgres;
 
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.uploaded_files (
   active_flag boolean DEFAULT true
 );
 
-CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipt_squences (
+CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipt_sequences (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer NOT NULL,
   treasury_code character varying(3) NOT NULL,
@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipts (
   financial_year integer NOT NULL,
   treasury_code character varying(3) NOT NULL,
   treasury_receipt_no character varying(100) NOT NULL UNIQUE,
-  ppo_no character varying(100) NOT NULL ,
-  pensioner_name character varying(100),
+  ppo_no character varying(100) NOT NULL,
+  pensioner_name character varying(100) NOT NULL,
   date_of_commencement date NOT NULL,
   mobile_number character varying(10),
   receipt_date date NOT NULL,
@@ -42,10 +42,10 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipts (
   ppo_type CHAR(1) NOT NULL,
   ppo_status character varying(100) NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  created_by integer,
+  created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true
+  active_flag boolean  NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.dml_history (
   updated_by integer
 );
 
-CREATE TABLE IF NOT EXISTS cts_pension.ppo_id_squences (
+CREATE TABLE IF NOT EXISTS cts_pension.ppo_id_sequences (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer NOT NULL,
   treasury_code character varying(3) NOT NULL,
