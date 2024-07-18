@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipts (
   financial_year integer NOT NULL,
   treasury_code character varying(3) NOT NULL,
   treasury_receipt_no character varying(100) NOT NULL UNIQUE,
-  ppo_no character varying(100) NOT NULL,
+  ppo_no character varying(100) NOT NULL UNIQUE,
   pensioner_name character varying(100) NOT NULL,
   date_of_commencement date NOT NULL,
   mobile_number character varying(10),
