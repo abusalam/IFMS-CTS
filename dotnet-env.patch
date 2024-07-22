@@ -1,8 +1,8 @@
 diff --git a/CTS-BE.csproj b/CTS-BE.csproj
-index 922a647..f6e47c4 100644
+index 922a647..bf896d1 100644
 --- a/CTS-BE.csproj
 +++ b/CTS-BE.csproj
-@@ -26,34 +26,30 @@
+@@ -26,34 +26,31 @@
        <!-- <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> -->
        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
      </None>
@@ -23,6 +23,7 @@ index 922a647..f6e47c4 100644
          <PrivateAssets>all</PrivateAssets>
          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
      </PackageReference>
++    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
      <PackageReference Include="MSTest.TestFramework" Version="3.2.2" />
 -    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4" />
      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />

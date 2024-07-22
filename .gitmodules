@@ -1,6 +1,6 @@
 [submodule "angular"]
 	path = angular
-	url = https://www.wbgitlab.nic.in/ifms/cts.git
+	url = https://github.com/santosh84das/cts.git
 [submodule "dotnet"]
 	path = dotnet/CTS-BE
-	url = https://www.wbgitlab.nic.in/ifms/ctsapi.git
+	url = https://github.com/abusalam/ctsapi.git
