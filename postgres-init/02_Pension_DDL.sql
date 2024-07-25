@@ -75,7 +75,6 @@ CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
   enhance_pension_amount integer NOT NULL,
   reduced_pension_amount integer NOT NULL,
   religion CHAR(1) NOT NULL,
-  subdivision CHAR(1) NOT NULL,
   photo_file_id bigint references cts_pension.uploaded_files(id),
   signature_file_id bigint references cts_pension.uploaded_files(id),
 	created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
