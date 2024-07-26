@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.bank_accounts (
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true,
+  active_flag boolean NOT NULL,
   UNIQUE(ppo_id, treasury_code)
 );
 
