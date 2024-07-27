@@ -1,0 +1,1301 @@
+diff --git a/DAL/CTSDBContext.cs b/DAL/CTSDBContext.cs
+index 28b3f7b..9a7096f 100644
+--- a/DAL/CTSDBContext.cs
++++ b/DAL/CTSDBContext.cs
+@@ -28,8 +28,6 @@ public partial class CTSDBContext : DbContext
+ 
+     public virtual DbSet<Bank> Banks { get; set; }
+ 
+-    public virtual DbSet<BankAccount> BankAccounts { get; set; }
+-
+     public virtual DbSet<BankMaster> BankMasters { get; set; }
+ 
+     public virtual DbSet<BeneficiariesMaster> BeneficiariesMasters { get; set; }
+@@ -100,8 +98,6 @@ public partial class CTSDBContext : DbContext
+ 
+     public virtual DbSet<DiscountDetail> DiscountDetails { get; set; }
+ 
+-    public virtual DbSet<DmlHistory> DmlHistories { get; set; }
+-
+     public virtual DbSet<EcsNeftDetail> EcsNeftDetails { get; set; }
+ 
+     public virtual DbSet<EcsNeftPaymentStatusDetail> EcsNeftPaymentStatusDetails { get; set; }
+@@ -120,8 +116,6 @@ public partial class CTSDBContext : DbContext
+ 
+     public virtual DbSet<LfplSchemesWallet> LfplSchemesWallets { get; set; }
+ 
+-    public virtual DbSet<LifeCertificate> LifeCertificates { get; set; }
+-
+     public virtual DbSet<LocalObjection> LocalObjections { get; set; }
+ 
+     public virtual DbSet<MajorHead> MajorHeads { get; set; }
+@@ -142,34 +136,12 @@ public partial class CTSDBContext : DbContext
+ 
+     public virtual DbSet<MmStampVendorType> MmStampVendorTypes { get; set; }
+ 
+-    public virtual DbSet<Nominee> Nominees { get; set; }
+-
+     public virtual DbSet<OperatorMaster> OperatorMasters { get; set; }
+ 
+     public virtual DbSet<PaymentAdvice> PaymentAdvices { get; set; }
+ 
+     public virtual DbSet<PaymentAdviceHasBeneficiary> PaymentAdviceHasBeneficiarys { get; set; }
+ 
+-    public virtual DbSet<Pensioner> Pensioners { get; set; }
+-
+-    public virtual DbSet<PpoBill> PpoBills { get; set; }
+-
+-    public virtual DbSet<PpoBillBytransfer> PpoBillBytransfers { get; set; }
+-
+-    public virtual DbSet<PpoBillComponent> PpoBillComponents { get; set; }
+-
+-    public virtual DbSet<PpoComponent> PpoComponents { get; set; }
+-
+-    public virtual DbSet<PpoIdSequence> PpoIdSequences { get; set; }
+-
+-    public virtual DbSet<PpoPayment> PpoPayments { get; set; }
+-
+-    public virtual DbSet<PpoReceipt> PpoReceipts { get; set; }
+-
+-    public virtual DbSet<PpoReceiptSequence> PpoReceiptSequences { get; set; }
+-
+-    public virtual DbSet<PpoStatusFlag> PpoStatusFlags { get; set; }
+-
+     public virtual DbSet<RbiIfscStock> RbiIfscStocks { get; set; }
+ 
+     public virtual DbSet<Reference> References { get; set; }
+@@ -238,8 +210,6 @@ public partial class CTSDBContext : DbContext
+ 
+     public virtual DbSet<TreasuryHasBranch> TreasuryHasBranches { get; set; }
+ 
+-    public virtual DbSet<UploadedFile> UploadedFiles { get; set; }
+-
+     public virtual DbSet<UserList> UserLists { get; set; }
+ 
+     public virtual DbSet<VAvailable> VAvailables { get; set; }
+@@ -319,14 +289,6 @@ public partial class CTSDBContext : DbContext
+             entity.Property(e => e.Id).ValueGeneratedOnAdd();
+         });
+ 
+-        modelBuilder.Entity<BankAccount>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("bank_accounts_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+         modelBuilder.Entity<BankMaster>(entity =>
+         {
+             entity.HasKey(e => e.BankId).HasName("bank_master_pkey");
+@@ -891,13 +853,6 @@ public partial class CTSDBContext : DbContext
+                 .HasConstraintName("discount_details_vendor_type_fkey");
+         });
+ 
+-        modelBuilder.Entity<DmlHistory>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("dml_history_pkey");
+-
+-            entity.Property(e => e.UpdatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+         modelBuilder.Entity<EcsNeftDetail>(entity =>
+         {
+             entity.Property(e => e.BankAccountNumber).IsFixedLength();
+@@ -977,15 +932,6 @@ public partial class CTSDBContext : DbContext
+             entity.Property(e => e.TreasuryCode).IsFixedLength();
+         });
+ 
+-        modelBuilder.Entity<LifeCertificate>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("life_certificates_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CertificateFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+         modelBuilder.Entity<LocalObjection>(entity =>
+         {
+             entity.HasKey(e => e.Id).HasName("local_objection_pkey");
+@@ -1001,18 +947,6 @@ public partial class CTSDBContext : DbContext
+             entity.Property(e => e.Code).IsFixedLength();
+         });
+ 
+-        modelBuilder.Entity<Nominee>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("nominees_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-
+-            entity.HasOne(d => d.PhotoFile).WithMany(p => p.NomineePhotoFiles).HasConstraintName("nominees_photo_file_id_fkey");
+-
+-            entity.HasOne(d => d.SignatureFile).WithMany(p => p.NomineeSignatureFiles).HasConstraintName("nominees_signature_file_id_fkey");
+-        });
+-
+         modelBuilder.Entity<OperatorMaster>(entity =>
+         {
+             entity.HasKey(e => new { e.OperatorCode, e.OperatorName, e.PaymentHoa, e.ReceiptHoa, e.TreasuryCode }).HasName("operator_master_pkey1");
+@@ -1042,111 +976,6 @@ public partial class CTSDBContext : DbContext
+             entity.Property(e => e.PanNo).IsFixedLength();
+         });
+ 
+-        modelBuilder.Entity<Pensioner>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("pensioners_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-
+-            entity.HasOne(d => d.PhotoFile).WithMany(p => p.PensionerPhotoFiles).HasConstraintName("pensioners_photo_file_id_fkey");
+-
+-            entity.HasOne(d => d.SignatureFile).WithMany(p => p.PensionerSignatureFiles).HasConstraintName("pensioners_signature_file_id_fkey");
+-        });
+-
+-        modelBuilder.Entity<PpoBill>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_bills_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+-        modelBuilder.Entity<PpoBillBytransfer>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_bill_bytransfers_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-
+-            entity.HasOne(d => d.Bill).WithMany(p => p.PpoBillBytransfers)
+-                .OnDelete(DeleteBehavior.ClientSetNull)
+-                .HasConstraintName("ppo_bill_bytransfers_bill_id_fkey");
+-        });
+-
+-        modelBuilder.Entity<PpoBillComponent>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_bill_components_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-
+-            entity.HasOne(d => d.Bill).WithMany(p => p.PpoBillComponents)
+-                .OnDelete(DeleteBehavior.ClientSetNull)
+-                .HasConstraintName("ppo_bill_components_bill_id_fkey");
+-
+-            entity.HasOne(d => d.Component).WithMany(p => p.PpoBillComponents)
+-                .OnDelete(DeleteBehavior.ClientSetNull)
+-                .HasConstraintName("ppo_bill_components_component_id_fkey");
+-        });
+-
+-        modelBuilder.Entity<PpoComponent>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_components_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+-        modelBuilder.Entity<PpoIdSequence>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_id_sequences_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+-        modelBuilder.Entity<PpoPayment>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_payments_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+-        modelBuilder.Entity<PpoReceipt>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_receipts_pkey");
+-
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+-        modelBuilder.Entity<PpoReceiptSequence>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_receipt_sequences_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+-        modelBuilder.Entity<PpoStatusFlag>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("ppo_status_flags_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.AdhocPensionFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-            entity.Property(e => e.DoublePensionFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.EmployeedFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.FirstPensionFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.HealthSchemeFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.InterimPensionFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.PpoApprovedFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.ReemployedFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.SharedPensionFlag).HasDefaultValueSql("false");
+-            entity.Property(e => e.StatusActiveFlag).HasDefaultValueSql("false");
+-        });
+-
+         modelBuilder.Entity<Reference>(entity =>
+         {
+             entity.HasKey(e => e.RefId).HasName("reference_pkey");
+@@ -1438,14 +1267,6 @@ public partial class CTSDBContext : DbContext
+             entity.HasOne(d => d.Treasury).WithMany(p => p.TreasuryHasBranches).HasConstraintName("treasury_id_fkey");
+         });
+ 
+-        modelBuilder.Entity<UploadedFile>(entity =>
+-        {
+-            entity.HasKey(e => e.Id).HasName("uploaded_files_pkey");
+-
+-            entity.Property(e => e.ActiveFlag).HasDefaultValueSql("true");
+-            entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+-        });
+-
+         modelBuilder.Entity<UserList>(entity =>
+         {
+             entity.Property(e => e.Id).ValueGeneratedOnAdd();
+diff --git a/DAL/Entities/BankAccount.cs b/DAL/Entities/BankAccount.cs
+deleted file mode 100644
+index 9bf48ab..0000000
+--- a/DAL/Entities/BankAccount.cs
++++ /dev/null
+@@ -1,61 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("bank_accounts", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "bank_accounts_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class BankAccount
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("account_holder_name")]
+-    [StringLength(100)]
+-    public string AccountHolderName { get; set; } = null!;
+-
+-    [Column("bank_ac_no")]
+-    [StringLength(30)]
+-    public string? BankAcNo { get; set; }
+-
+-    [Column("ifsc_code")]
+-    [StringLength(11)]
+-    public string? IfscCode { get; set; }
+-
+-    [Column("bank_name")]
+-    [StringLength(100)]
+-    public string? BankName { get; set; }
+-
+-    [Column("branch_name")]
+-    [StringLength(100)]
+-    public string? BranchName { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-}
+diff --git a/DAL/Entities/LifeCertificate.cs b/DAL/Entities/LifeCertificate.cs
+deleted file mode 100644
+index dfcb8e8..0000000
+--- a/DAL/Entities/LifeCertificate.cs
++++ /dev/null
+@@ -1,64 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("life_certificates", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "life_certificates_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class LifeCertificate
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("ppo_no")]
+-    [StringLength(100)]
+-    public string PpoNo { get; set; } = null!;
+-
+-    [Column("bank_ac_no")]
+-    [StringLength(16)]
+-    public string BankAcNo { get; set; } = null!;
+-
+-    [Column("ifsc_code")]
+-    [StringLength(11)]
+-    public string IfscCode { get; set; } = null!;
+-
+-    [Column("account_holder_name")]
+-    [StringLength(100)]
+-    public string AccountHolderName { get; set; } = null!;
+-
+-    [Column("mobile_number")]
+-    [StringLength(10)]
+-    public string MobileNumber { get; set; } = null!;
+-
+-    [Column("certificate_flag")]
+-    public bool? CertificateFlag { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-}
+diff --git a/DAL/Entities/Nominee.cs b/DAL/Entities/Nominee.cs
+deleted file mode 100644
+index 87e35e4..0000000
+--- a/DAL/Entities/Nominee.cs
++++ /dev/null
+@@ -1,90 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("nominees", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "nominees_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class Nominee
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("nominee_name")]
+-    [StringLength(100)]
+-    public string NomineeName { get; set; } = null!;
+-
+-    [Column("date_of_birth")]
+-    public DateOnly DateOfBirth { get; set; }
+-
+-    [Column("gender")]
+-    [MaxLength(1)]
+-    public char? Gender { get; set; }
+-
+-    [Column("mobile_number")]
+-    [StringLength(10)]
+-    public string? MobileNumber { get; set; }
+-
+-    [Column("email_id")]
+-    [StringLength(100)]
+-    public string? EmailId { get; set; }
+-
+-    [Column("nominee_address")]
+-    [StringLength(500)]
+-    public string? NomineeAddress { get; set; }
+-
+-    [Column("identification_mark")]
+-    [StringLength(100)]
+-    public string? IdentificationMark { get; set; }
+-
+-    [Column("pan_no")]
+-    [StringLength(10)]
+-    public string? PanNo { get; set; }
+-
+-    [Column("aadhaar_no")]
+-    [StringLength(12)]
+-    public string? AadhaarNo { get; set; }
+-
+-    [Column("photo_file_id")]
+-    public long? PhotoFileId { get; set; }
+-
+-    [Column("signature_file_id")]
+-    public long? SignatureFileId { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-
+-    [ForeignKey("PhotoFileId")]
+-    [InverseProperty("NomineePhotoFiles")]
+-    public virtual UploadedFile? PhotoFile { get; set; }
+-
+-    [ForeignKey("SignatureFileId")]
+-    [InverseProperty("NomineeSignatureFiles")]
+-    public virtual UploadedFile? SignatureFile { get; set; }
+-}
+diff --git a/DAL/Entities/Pensioner.cs b/DAL/Entities/Pensioner.cs
+deleted file mode 100644
+index 5ef56cf..0000000
+--- a/DAL/Entities/Pensioner.cs
++++ /dev/null
+@@ -1,141 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("pensioners", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "pensioners_ppo_id_treasury_code_key", IsUnique = true)]
+-[Index("PpoNo", Name = "pensioners_ppo_no_key", IsUnique = true)]
+-public partial class Pensioner
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("ppo_no")]
+-    [StringLength(100)]
+-    public string PpoNo { get; set; } = null!;
+-
+-    [Column("ppo_type")]
+-    [MaxLength(1)]
+-    public char PpoType { get; set; }
+-
+-    [Column("ppo_sub_type")]
+-    [MaxLength(1)]
+-    public char PpoSubType { get; set; }
+-
+-    [Column("psa_type")]
+-    [MaxLength(1)]
+-    public char PsaType { get; set; }
+-
+-    [Column("ppo_category")]
+-    [MaxLength(1)]
+-    public char PpoCategory { get; set; }
+-
+-    [Column("ppo_sub_category")]
+-    [MaxLength(1)]
+-    public char PpoSubCategory { get; set; }
+-
+-    [Column("pensioner_name")]
+-    [StringLength(100)]
+-    public string PensionerName { get; set; } = null!;
+-
+-    [Column("date_of_birth")]
+-    public DateOnly DateOfBirth { get; set; }
+-
+-    [Column("gender")]
+-    [MaxLength(1)]
+-    public char? Gender { get; set; }
+-
+-    [Column("mobile_number")]
+-    [StringLength(10)]
+-    public string? MobileNumber { get; set; }
+-
+-    [Column("email_id")]
+-    [StringLength(100)]
+-    public string? EmailId { get; set; }
+-
+-    [Column("pensioner_address")]
+-    [StringLength(500)]
+-    public string? PensionerAddress { get; set; }
+-
+-    [Column("identification_mark")]
+-    [StringLength(100)]
+-    public string? IdentificationMark { get; set; }
+-
+-    [Column("pan_no")]
+-    [StringLength(10)]
+-    public string? PanNo { get; set; }
+-
+-    [Column("aadhaar_no")]
+-    [StringLength(12)]
+-    public string? AadhaarNo { get; set; }
+-
+-    [Column("date_of_retirement")]
+-    public DateOnly DateOfRetirement { get; set; }
+-
+-    [Column("date_of_commencement")]
+-    public DateOnly DateOfCommencement { get; set; }
+-
+-    [Column("basic_pension_amount")]
+-    public int BasicPensionAmount { get; set; }
+-
+-    [Column("commuted_pension_amount")]
+-    public int CommutedPensionAmount { get; set; }
+-
+-    [Column("enhance_pension_amount")]
+-    public int EnhancePensionAmount { get; set; }
+-
+-    [Column("reduced_pension_amount")]
+-    public int ReducedPensionAmount { get; set; }
+-
+-    [Column("religion")]
+-    [MaxLength(1)]
+-    public char Religion { get; set; }
+-
+-    [Column("subdivision")]
+-    [MaxLength(1)]
+-    public char Subdivision { get; set; }
+-
+-    [Column("photo_file_id")]
+-    public long? PhotoFileId { get; set; }
+-
+-    [Column("signature_file_id")]
+-    public long? SignatureFileId { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-
+-    [ForeignKey("PhotoFileId")]
+-    [InverseProperty("PensionerPhotoFiles")]
+-    public virtual UploadedFile? PhotoFile { get; set; }
+-
+-    [ForeignKey("SignatureFileId")]
+-    [InverseProperty("PensionerSignatureFiles")]
+-    public virtual UploadedFile? SignatureFile { get; set; }
+-}
+diff --git a/DAL/Entities/PpoBill.cs b/DAL/Entities/PpoBill.cs
+deleted file mode 100644
+index 4e39e5a..0000000
+--- a/DAL/Entities/PpoBill.cs
++++ /dev/null
+@@ -1,67 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_bills", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "ppo_bills_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class PpoBill
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("paid_from")]
+-    public DateOnly PaidFrom { get; set; }
+-
+-    [Column("paid_upto")]
+-    public DateOnly PaidUpto { get; set; }
+-
+-    [Column("bill_type")]
+-    [MaxLength(1)]
+-    public char BillType { get; set; }
+-
+-    [Column("bill_no")]
+-    [StringLength(100)]
+-    public string BillNo { get; set; } = null!;
+-
+-    [Column("bill_date")]
+-    public DateOnly BillDate { get; set; }
+-
+-    [Column("bill_amount")]
+-    public int BillAmount { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-
+-    [InverseProperty("Bill")]
+-    public virtual ICollection<PpoBillBytransfer> PpoBillBytransfers { get; set; } = new List<PpoBillBytransfer>();
+-
+-    [InverseProperty("Bill")]
+-    public virtual ICollection<PpoBillComponent> PpoBillComponents { get; set; } = new List<PpoBillComponent>();
+-}
+diff --git a/DAL/Entities/PpoBillBytransfer.cs b/DAL/Entities/PpoBillBytransfer.cs
+deleted file mode 100644
+index f2539f6..0000000
+--- a/DAL/Entities/PpoBillBytransfer.cs
++++ /dev/null
+@@ -1,57 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_bill_bytransfers", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "ppo_bill_bytransfers_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class PpoBillBytransfer
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("bill_id")]
+-    public long BillId { get; set; }
+-
+-    [Column("bytransfers_hoa_id")]
+-    public int BytransfersHoaId { get; set; }
+-
+-    [Column("bytransfers_wef")]
+-    public DateOnly BytransfersWef { get; set; }
+-
+-    [Column("bytransfers_amount")]
+-    public int BytransfersAmount { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-
+-    [ForeignKey("BillId")]
+-    [InverseProperty("PpoBillBytransfers")]
+-    public virtual PpoBill Bill { get; set; } = null!;
+-}
+diff --git a/DAL/Entities/PpoBillComponent.cs b/DAL/Entities/PpoBillComponent.cs
+deleted file mode 100644
+index e8823f4..0000000
+--- a/DAL/Entities/PpoBillComponent.cs
++++ /dev/null
+@@ -1,61 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_bill_components", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "ppo_bill_components_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class PpoBillComponent
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("bill_id")]
+-    public long BillId { get; set; }
+-
+-    [Column("component_id")]
+-    public long ComponentId { get; set; }
+-
+-    [Column("component_wef")]
+-    public DateOnly ComponentWef { get; set; }
+-
+-    [Column("component_amount")]
+-    public int ComponentAmount { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-
+-    [ForeignKey("BillId")]
+-    [InverseProperty("PpoBillComponents")]
+-    public virtual PpoBill Bill { get; set; } = null!;
+-
+-    [ForeignKey("ComponentId")]
+-    [InverseProperty("PpoBillComponents")]
+-    public virtual PpoComponent Component { get; set; } = null!;
+-}
+diff --git a/DAL/Entities/PpoComponent.cs b/DAL/Entities/PpoComponent.cs
+deleted file mode 100644
+index 0678dc0..0000000
+--- a/DAL/Entities/PpoComponent.cs
++++ /dev/null
+@@ -1,55 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_components", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "ppo_components_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class PpoComponent
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("component_type")]
+-    [MaxLength(1)]
+-    public char ComponentType { get; set; }
+-
+-    [Column("component_name")]
+-    [StringLength(100)]
+-    public string ComponentName { get; set; } = null!;
+-
+-    [Column("component_rate")]
+-    public int ComponentRate { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-
+-    [InverseProperty("Component")]
+-    public virtual ICollection<PpoBillComponent> PpoBillComponents { get; set; } = new List<PpoBillComponent>();
+-}
+diff --git a/DAL/Entities/PpoIdSequence.cs b/DAL/Entities/PpoIdSequence.cs
+deleted file mode 100644
+index dc2033a..0000000
+--- a/DAL/Entities/PpoIdSequence.cs
++++ /dev/null
+@@ -1,40 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_id_sequences", Schema = "cts_pension")]
+-public partial class PpoIdSequence
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("next_sequence_value")]
+-    public int NextSequenceValue { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-}
+diff --git a/DAL/Entities/PpoPayment.cs b/DAL/Entities/PpoPayment.cs
+deleted file mode 100644
+index ecf4fbf..0000000
+--- a/DAL/Entities/PpoPayment.cs
++++ /dev/null
+@@ -1,48 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_payments", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "ppo_payments_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class PpoPayment
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("payment_type")]
+-    [MaxLength(1)]
+-    public char PaymentType { get; set; }
+-
+-    [Column("payment_amount")]
+-    public int PaymentAmount { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-}
+diff --git a/DAL/Entities/PpoReceipt.cs b/DAL/Entities/PpoReceipt.cs
+deleted file mode 100644
+index e276b14..0000000
+--- a/DAL/Entities/PpoReceipt.cs
++++ /dev/null
+@@ -1,72 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_receipts", Schema = "cts_pension")]
+-[Index("TreasuryReceiptNo", Name = "ppo_receipts_treasury_receipt_no_key", IsUnique = true)]
+-public partial class PpoReceipt
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("treasury_receipt_no")]
+-    [StringLength(100)]
+-    public string TreasuryReceiptNo { get; set; } = null!;
+-
+-    [Column("ppo_no")]
+-    [StringLength(100)]
+-    public string PpoNo { get; set; } = null!;
+-
+-    [Column("pensioner_name")]
+-    [StringLength(100)]
+-    public string PensionerName { get; set; } = null!;
+-
+-    [Column("date_of_commencement")]
+-    public DateOnly DateOfCommencement { get; set; }
+-
+-    [Column("mobile_number")]
+-    [StringLength(10)]
+-    public string? MobileNumber { get; set; }
+-
+-    [Column("receipt_date")]
+-    public DateOnly ReceiptDate { get; set; }
+-
+-    [Column("psa_code")]
+-    [MaxLength(1)]
+-    public char PsaCode { get; set; }
+-
+-    [Column("ppo_type")]
+-    [MaxLength(1)]
+-    public char PpoType { get; set; }
+-
+-    [Column("ppo_status")]
+-    [StringLength(100)]
+-    public string PpoStatus { get; set; } = null!;
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool ActiveFlag { get; set; }
+-}
+diff --git a/DAL/Entities/PpoReceiptSequence.cs b/DAL/Entities/PpoReceiptSequence.cs
+deleted file mode 100644
+index 22ebb87..0000000
+--- a/DAL/Entities/PpoReceiptSequence.cs
++++ /dev/null
+@@ -1,40 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_receipt_sequences", Schema = "cts_pension")]
+-public partial class PpoReceiptSequence
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("next_sequence_value")]
+-    public int NextSequenceValue { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-}
+diff --git a/DAL/Entities/PpoStatusFlag.cs b/DAL/Entities/PpoStatusFlag.cs
+deleted file mode 100644
+index 4a2874f..0000000
+--- a/DAL/Entities/PpoStatusFlag.cs
++++ /dev/null
+@@ -1,101 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("ppo_status_flags", Schema = "cts_pension")]
+-[Index("PpoId", "TreasuryCode", Name = "ppo_status_flags_ppo_id_treasury_code_key", IsUnique = true)]
+-public partial class PpoStatusFlag
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("financial_year")]
+-    public int FinancialYear { get; set; }
+-
+-    [Column("treasury_code")]
+-    [StringLength(3)]
+-    public string TreasuryCode { get; set; } = null!;
+-
+-    [Column("ppo_id")]
+-    public int PpoId { get; set; }
+-
+-    [Column("ppo_approved_flag")]
+-    public bool? PpoApprovedFlag { get; set; }
+-
+-    [Column("ppo_approved_wef")]
+-    public DateOnly? PpoApprovedWef { get; set; }
+-
+-    [Column("health_scheme_flag")]
+-    public bool? HealthSchemeFlag { get; set; }
+-
+-    [Column("health_scheme_wef")]
+-    public DateOnly? HealthSchemeWef { get; set; }
+-
+-    [Column("first_pension_flag")]
+-    public bool? FirstPensionFlag { get; set; }
+-
+-    [Column("first_pension_wef")]
+-    public DateOnly? FirstPensionWef { get; set; }
+-
+-    [Column("double_pension_flag")]
+-    public bool? DoublePensionFlag { get; set; }
+-
+-    [Column("double_pension_wef")]
+-    public DateOnly? DoublePensionWef { get; set; }
+-
+-    [Column("employeed_flag")]
+-    public bool? EmployeedFlag { get; set; }
+-
+-    [Column("employeed_wef")]
+-    public DateOnly? EmployeedWef { get; set; }
+-
+-    [Column("reemployed_flag")]
+-    public bool? ReemployedFlag { get; set; }
+-
+-    [Column("reemployed_wef")]
+-    public DateOnly? ReemployedWef { get; set; }
+-
+-    [Column("adhoc_pension_flag")]
+-    public bool? AdhocPensionFlag { get; set; }
+-
+-    [Column("adhoc_pension_wef")]
+-    public DateOnly? AdhocPensionWef { get; set; }
+-
+-    [Column("interim_pension_flag")]
+-    public bool? InterimPensionFlag { get; set; }
+-
+-    [Column("interim_pension_wef")]
+-    public DateOnly? InterimPensionWef { get; set; }
+-
+-    [Column("shared_pension_flag")]
+-    public bool? SharedPensionFlag { get; set; }
+-
+-    [Column("shared_pension_wef")]
+-    public DateOnly? SharedPensionWef { get; set; }
+-
+-    [Column("status_active_flag")]
+-    public bool? StatusActiveFlag { get; set; }
+-
+-    [Column("status_active_wef")]
+-    public DateOnly? StatusActiveWef { get; set; }
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-}
+diff --git a/DAL/Entities/UploadedFile.cs b/DAL/Entities/UploadedFile.cs
+deleted file mode 100644
+index 19b042b..0000000
+--- a/DAL/Entities/UploadedFile.cs
++++ /dev/null
+@@ -1,54 +0,0 @@
+-﻿using System;
+-using System.Collections.Generic;
+-using System.ComponentModel.DataAnnotations;
+-using System.ComponentModel.DataAnnotations.Schema;
+-using Microsoft.EntityFrameworkCore;
+-
+-namespace CTS_BE.DAL.Entities;
+-
+-[Table("uploaded_files", Schema = "cts_pension")]
+-public partial class UploadedFile
+-{
+-    [Key]
+-    [Column("id")]
+-    public long Id { get; set; }
+-
+-    [Column("file_path")]
+-    [StringLength(500)]
+-    public string FilePath { get; set; } = null!;
+-
+-    [Column("file_name")]
+-    [StringLength(500)]
+-    public string FileName { get; set; } = null!;
+-
+-    [Column("file_mime_type")]
+-    [StringLength(500)]
+-    public string FileMimeType { get; set; } = null!;
+-
+-    [Column("created_at", TypeName = "timestamp without time zone")]
+-    public DateTime? CreatedAt { get; set; }
+-
+-    [Column("created_by")]
+-    public int? CreatedBy { get; set; }
+-
+-    [Column("updated_at", TypeName = "timestamp without time zone")]
+-    public DateTime? UpdatedAt { get; set; }
+-
+-    [Column("updated_by")]
+-    public int? UpdatedBy { get; set; }
+-
+-    [Column("active_flag")]
+-    public bool? ActiveFlag { get; set; }
+-
+-    [InverseProperty("PhotoFile")]
+-    public virtual ICollection<Nominee> NomineePhotoFiles { get; set; } = new List<Nominee>();
+-
+-    [InverseProperty("SignatureFile")]
+-    public virtual ICollection<Nominee> NomineeSignatureFiles { get; set; } = new List<Nominee>();
+-
+-    [InverseProperty("PhotoFile")]
+-    public virtual ICollection<Pensioner> PensionerPhotoFiles { get; set; } = new List<Pensioner>();
+-
+-    [InverseProperty("SignatureFile")]
+-    public virtual ICollection<Pensioner> PensionerSignatureFiles { get; set; } = new List<Pensioner>();
+-}
