@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.uploaded_files (
   updated_by integer,
   active_flag boolean DEFAULT true
 );
+COMMENT ON TABLE cts_pension.uploaded_files IS 'PensionModuleSchema';
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipt_sequences (
   id bigserial NOT NULL PRIMARY KEY,
@@ -27,6 +28,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipt_sequences (
   updated_by integer,
   active_flag boolean DEFAULT true
 );
+COMMENT ON TABLE cts_pension.ppo_receipt_sequences IS 'PensionModuleSchema';
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipts (
   id bigserial NOT NULL PRIMARY KEY,
@@ -47,6 +49,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipts (
   updated_by integer,
   active_flag boolean  NOT NULL
 );
+COMMENT ON TABLE cts_pension.ppo_receipts IS 'PensionModuleSchema';
 
 CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
   id bigserial NOT NULL PRIMARY KEY,
@@ -84,6 +87,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
   active_flag boolean NOT NULL,
   UNIQUE(ppo_id, treasury_code)
 );
+COMMENT ON TABLE cts_pension.pensioners IS 'PensionModuleSchema';
 
 CREATE TABLE IF NOT EXISTS cts_pension.life_certificates (
   id bigserial NOT NULL PRIMARY KEY,
@@ -103,6 +107,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.life_certificates (
   active_flag boolean DEFAULT true,
   UNIQUE(ppo_id, treasury_code)
 );
+COMMENT ON TABLE cts_pension.life_certificates IS 'PensionModuleSchema';
 
 CREATE TABLE IF NOT EXISTS cts_pension.dml_history (
   id bigserial NOT NULL PRIMARY KEY,
@@ -115,6 +120,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.dml_history (
 	updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   updated_by integer
 );
+COMMENT ON TABLE cts_pension.dml_history IS 'PensionModuleSchema';
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_id_sequences (
   id bigserial NOT NULL PRIMARY KEY,
@@ -127,6 +133,8 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_id_sequences (
   updated_by integer,
   active_flag boolean DEFAULT true
 );
+COMMENT ON TABLE cts_pension.ppo_id_sequences IS 'PensionModuleSchema';
+
 
 CREATE TABLE IF NOT EXISTS cts_pension.bank_accounts (
   id bigserial NOT NULL PRIMARY KEY,
@@ -145,6 +153,8 @@ CREATE TABLE IF NOT EXISTS cts_pension.bank_accounts (
   active_flag boolean NOT NULL,
   UNIQUE(ppo_id, treasury_code)
 );
+COMMENT ON TABLE cts_pension.bank_accounts IS 'PensionModuleSchema';
+
 
 CREATE TABLE IF NOT EXISTS cts_pension.nominees (
   id bigserial NOT NULL PRIMARY KEY,
@@ -169,6 +179,8 @@ CREATE TABLE IF NOT EXISTS cts_pension.nominees (
   active_flag boolean DEFAULT true,
   UNIQUE(ppo_id, treasury_code)
 );
+COMMENT ON TABLE cts_pension.nominees IS 'PensionModuleSchema';
+
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_status_flags (
   id bigserial NOT NULL PRIMARY KEY,
@@ -183,56 +195,101 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_status_flags (
   updated_by integer,
   active_flag boolean NOT NULL
 );
+COMMENT ON TABLE cts_pension.ppo_status_flags IS 'PensionModuleSchema';
 
-CREATE TABLE IF NOT EXISTS cts_pension.ppo_components (
+CREATE TABLE IF NOT EXISTS cts_pension.primary_categories (
   id bigserial NOT NULL PRIMARY KEY,
-  financial_year integer NOT NULL,
-  treasury_code character varying(3) NOT NULL,
-  ppo_id integer NOT NULL,
-  component_type CHAR(1) NOT NULL,
+  hoa_id character varying(30) NOT NULL UNIQUE,
+  primary_category_name character varying(100) NOT NULL ,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.primary_categories IS 'PensionModuleSchema';
+COMMENT ON COLUMN cts_pension.primary_categories.hoa_id IS 'Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00';
+
+CREATE TABLE IF NOT EXISTS cts_pension.sub_categories (
+  id bigserial NOT NULL PRIMARY KEY,
+  sub_category_name character varying(100) NOT NULL ,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.sub_categories IS 'PensionModuleSchema';
+
+CREATE TABLE IF NOT EXISTS cts_pension.categories (
+  id bigserial NOT NULL PRIMARY KEY,
+  primary_category_id bigint NOT NULL references cts_pension.primary_categories(id),
+  sub_category_id bigint NOT NULL references cts_pension.sub_categories(id),
+  category_name character varying(100) NOT NULL ,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.categories IS 'PensionModuleSchema';
+COMMENT ON COLUMN cts_pension.categories.category_name IS 'primary_category_name - sub_category_name';
+
+CREATE TABLE IF NOT EXISTS cts_pension.components (
+  id bigserial NOT NULL PRIMARY KEY,
   component_name character varying(100) NOT NULL ,
-  component_rate integer NOT NULL,
+  component_type CHAR(1) NOT NULL,
+  relief_flag boolean NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true,
-  UNIQUE(ppo_id, treasury_code)
+  active_flag boolean NOT NULL
 );
+COMMENT ON TABLE cts_pension.components IS 'PensionModuleSchema';
+COMMENT ON COLUMN cts_pension.components.id IS 'BreakupId';
+COMMENT ON COLUMN cts_pension.components.component_type IS 'P - Payment; D - Deduction;';
+COMMENT ON COLUMN cts_pension.components.relief_flag IS 'Relief Allowed (Yes/No)';
 
-CREATE TABLE IF NOT EXISTS cts_pension.ppo_payments (
+
+CREATE TABLE IF NOT EXISTS cts_pension.component_rates (
   id bigserial NOT NULL PRIMARY KEY,
-  financial_year integer NOT NULL,
-  treasury_code character varying(3) NOT NULL,
-  ppo_id integer NOT NULL,
-  payment_type CHAR(1) NOT NULL,
-  payment_amount integer NOT NULL,
+  category_id bigint NOT NULL references cts_pension.categories(id),
+  breakup_id bigint NOT NULL references cts_pension.components(id),
+  effective_from_date date NOT NULL,
+  rate_amount integer NOT NULL,
+  rate_type CHAR(1) NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true,
-  UNIQUE(ppo_id, treasury_code)
+  active_flag boolean NOT NULL
 );
+COMMENT ON TABLE cts_pension.component_rates IS 'PensionModuleSchema';
+COMMENT ON COLUMN cts_pension.component_rates.id IS 'RateId';
+COMMENT ON COLUMN cts_pension.component_rates.rate_type IS 'P - Percentage; A - Amount;';
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_bills (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer NOT NULL,
   treasury_code character varying(3) NOT NULL,
   ppo_id integer NOT NULL,
-  paid_from date NOT NULL,
-  paid_upto date NOT NULL,
+  from_date date NOT NULL,
+  to_date date NOT NULL,
   bill_type CHAR(1) NOT NULL,
   bill_no character varying(100) NOT NULL ,
   bill_date date NOT NULL,
-  bill_amount integer NOT NULL,
+  bill_gross_amount integer NOT NULL,
+  bill_net_amount integer NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true,
-  UNIQUE(ppo_id, treasury_code)
+  active_flag boolean NOT NULL,
+  UNIQUE(treasury_code, ppo_id, bill_no)
 );
+COMMENT ON TABLE cts_pension.ppo_bills IS 'PensionModuleSchema';
+COMMENT ON COLUMN cts_pension.ppo_bills.bill_type IS 'F - First Bill; R - Regular Bill;';
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_components (
   id bigserial NOT NULL PRIMARY KEY,
@@ -240,16 +297,18 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_components (
   treasury_code character varying(3) NOT NULL,
   ppo_id integer NOT NULL,
   bill_id bigint NOT NULL references cts_pension.ppo_bills(id),
-  component_id bigint NOT NULL references cts_pension.ppo_components(id),
-  component_wef date NOT NULL,
-  component_amount integer NOT NULL,
+  rate_id bigint NOT NULL references cts_pension.component_rates(id),
+  from_date date NOT NULL,
+  to_date date NOT NULL,
+  breakup_amount integer NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true,
-  UNIQUE(ppo_id, treasury_code)
+  active_flag boolean NOT NULL,
+  UNIQUE(treasury_code, ppo_id, bill_id, rate_id)
 );
+COMMENT ON TABLE cts_pension.ppo_bill_components IS 'PensionModuleSchema';
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_bytransfers (
   id bigserial NOT NULL PRIMARY KEY,
@@ -264,6 +323,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_bytransfers (
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true,
+  active_flag boolean NOT NULL,
   UNIQUE(ppo_id, treasury_code)
 );
+COMMENT ON TABLE cts_pension.ppo_bill_bytransfers IS 'PensionModuleSchema';
