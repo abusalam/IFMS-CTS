@@ -269,6 +269,24 @@ COMMENT ON TABLE cts_pension.component_rates IS 'PensionModuleSchema';
 COMMENT ON COLUMN cts_pension.component_rates.id IS 'RateId';
 COMMENT ON COLUMN cts_pension.component_rates.rate_type IS 'P - Percentage; A - Amount;';
 
+CREATE TABLE IF NOT EXISTS cts_pension.ppo_component_rates (
+  id bigserial NOT NULL PRIMARY KEY,
+  treasury_code character varying(3) NOT NULL,
+  ppo_id integer NOT NULL,
+  breakup_id bigint NOT NULL references cts_pension.components(id),
+  from_date date NOT NULL,
+  to_date date,
+  amount_per_month integer NOT NULL,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.ppo_component_rates IS 'PensionModuleSchema';
+COMMENT ON COLUMN cts_pension.ppo_component_rates.id IS 'RevisionId';
+COMMENT ON COLUMN cts_pension.ppo_component_rates.to_date IS 'To date (will be null for regular active bills)';
+
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_bills (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer NOT NULL,
