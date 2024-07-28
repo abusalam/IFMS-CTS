@@ -199,7 +199,7 @@ COMMENT ON TABLE cts_pension.ppo_status_flags IS 'PensionModuleSchema';
 
 CREATE TABLE IF NOT EXISTS cts_pension.primary_categories (
   id bigserial NOT NULL PRIMARY KEY,
-  hoa_id character varying(30) NOT NULL UNIQUE,
+  hoa_id character varying(50) NOT NULL,
   primary_category_name character varying(100) NOT NULL ,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
