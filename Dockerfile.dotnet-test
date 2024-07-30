@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0
 RUN groupadd --gid 1000 vscode \
     && useradd --uid 1000 --gid vscode --shell /bin/bash --create-home vscode
 
-WORKDIR /app/dotnet/CTS-BE
+WORKDIR /app/dotnet
 
 USER vscode
 
