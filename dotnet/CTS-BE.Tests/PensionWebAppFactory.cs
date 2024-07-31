@@ -28,13 +28,13 @@ namespace CTS_BE.Tests
                 services.AddNpgsql<PensionDbContext>(connString);
 
                 // Add the authentication handler
-                services.AddAuthentication(defaultScheme: "TestScheme")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-                        "TestScheme", options => { });
+                // services.AddAuthentication(defaultScheme: "TestScheme")
+                //     .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                //         "TestScheme", options => { });
 
                 // Delete the database (if exists) to ensure we start clean
-                PensionDbContext dbContext = CreateDbContext(services);
-                dbContext.Database.EnsureDeleted();
+                // PensionDbContext dbContext = CreateDbContext(services);
+                // dbContext.Database.EnsureDeleted();
             });
         }
 

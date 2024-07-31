@@ -61,11 +61,13 @@ services:
     container_name: "${PROJECT_NAME}_dotnet_test"
     depends_on:
       - dotnet
-    command: sh -c "cd .. && dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura \
-        && reportgenerator \
-         -reports:"./CTS-BE.Tests/coverage.cobertura.xml" \
-         -targetdir:"coveragereport" \
-         -reporttypes:Html"
+    # command: sh -c "cd .. && dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura \
+    #     && reportgenerator \
+    #      -reports:"./CTS-BE.Tests/coverage.cobertura.xml" \
+    #      -targetdir:"coveragereport" \
+    #      -reporttypes:Html"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Test
     volumes:
       - ./:/app
 
@@ -112,7 +114,7 @@ services:
       - '5432:5432'
     volumes:
       - ./postgres-init:/docker-entrypoint-initdb.d # Place init file(s) here.
-      - ./postgres-data:/var/lib/postgresql/data # Use bind mount
+      # - ./postgres-data:/var/lib/postgresql/data # Use bind mount
   
   # adminer:
   #   container_name: "${PROJECT_NAME}_adminer"

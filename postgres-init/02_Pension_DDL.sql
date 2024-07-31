@@ -200,7 +200,7 @@ COMMENT ON TABLE cts_pension.ppo_status_flags IS 'PensionModuleSchema';
 CREATE TABLE IF NOT EXISTS cts_pension.primary_categories (
   id bigserial NOT NULL PRIMARY KEY,
   hoa_id character varying(50) NOT NULL,
-  primary_category_name character varying(100) NOT NULL ,
+  primary_category_name character varying(100) NOT NULL UNIQUE,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
@@ -212,7 +212,7 @@ COMMENT ON COLUMN cts_pension.primary_categories.hoa_id IS 'Head of Account: 207
 
 CREATE TABLE IF NOT EXISTS cts_pension.sub_categories (
   id bigserial NOT NULL PRIMARY KEY,
-  sub_category_name character varying(100) NOT NULL ,
+  sub_category_name character varying(100) NOT NULL UNIQUE,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
@@ -230,14 +230,15 @@ CREATE TABLE IF NOT EXISTS cts_pension.categories (
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean NOT NULL
+  active_flag boolean NOT NULL,
+  UNIQUE(primary_category_id, sub_category_id)
 );
 COMMENT ON TABLE cts_pension.categories IS 'PensionModuleSchema';
 COMMENT ON COLUMN cts_pension.categories.category_name IS 'primary_category_name - sub_category_name';
 
 CREATE TABLE IF NOT EXISTS cts_pension.components (
   id bigserial NOT NULL PRIMARY KEY,
-  component_name character varying(100) NOT NULL ,
+  component_name character varying(100) NOT NULL UNIQUE,
   component_type CHAR(1) NOT NULL,
   relief_flag boolean NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
@@ -263,7 +264,8 @@ CREATE TABLE IF NOT EXISTS cts_pension.component_rates (
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean NOT NULL
+  active_flag boolean NOT NULL,
+  UNIQUE(category_id, breakup_id, effective_from_date)
 );
 COMMENT ON TABLE cts_pension.component_rates IS 'PensionModuleSchema';
 COMMENT ON COLUMN cts_pension.component_rates.id IS 'RateId';

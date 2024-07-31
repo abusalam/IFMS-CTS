@@ -24,7 +24,7 @@ INSERT INTO cts_pension.categories(
   (48, 1, 2, 'College( Government) Pension-ROPA 2009',true);
 
 INSERT INTO cts_pension.components(
-	id, component_name, component_type, relief_flag, created_at, created_by, updated_at, updated_by, active_flag) VALUES 
+	id, component_name, component_type, relief_flag, active_flag) VALUES 
   (1, 'BASIC PENSION', 'P', false, true),
   (2, 'DEARNESS RELIEF', 'P', true, true),
   (3, 'MEDICAL RELIEF', 'P', true, true),
