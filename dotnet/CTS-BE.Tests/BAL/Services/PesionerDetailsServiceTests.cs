@@ -10,6 +10,7 @@ using FluentAssertions.Execution;
 using Moq;
 using CTS_BE.DAL.Interfaces.Pension;
 using AutoMapper;
+using CTS_BE.Helper.Authentication;
 
 namespace CTS_BE.Tests.BAL.Services
 {
@@ -21,11 +22,14 @@ namespace CTS_BE.Tests.BAL.Services
             // Arrange
             Mock<IPensionerDetailsRepository> mockPensionerDetailsRepository = new();
             Mock<IPpoIdSequenceRepository> mockPpoIdSequenceRepository = new();
+            Mock<IClaimService> mockClaimService = new();
             Mock<IMapper> mockMapper = new();
             PensionerDetailsService pensionerDetailsService = new(
-                mockPensionerDetailsRepository.Object,
-                mockPpoIdSequenceRepository.Object,
-                mockMapper.Object);
+                    mockPensionerDetailsRepository.Object,
+                    mockPpoIdSequenceRepository.Object,
+                    mockClaimService.Object,
+                    mockMapper.Object
+                );
 
             int result = pensionerDetailsService.Add(1, 2);
             
