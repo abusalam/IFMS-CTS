@@ -228,9 +228,14 @@ namespace CTS_BE.Tests.Controllers
             responseData?.ApiResponseStatus.Should().Be(apiResponseStatus);
             responseData.Should().BeOfType<JsonAPIResponse<PensionerBankAcDTO>>();
             if(apiResponseStatus == Enum.APIResponseStatus.Success) {
-            responseData?.Result.Should().BeEquivalentTo(bankAccountEntryDTO);
+                responseData?.Result.Should().BeEquivalentTo(bankAccountEntryDTO);
+            } else {
+                responseData?.Result?.DataSource?.GetType().GetProperty("Message")?
+                    .GetValue(responseData.Result.DataSource)
+                    .Should().Be("Bank Account already exists!");
             }
             responseData?.Message.Should().Be(message);
         }
+    
     }
 }
