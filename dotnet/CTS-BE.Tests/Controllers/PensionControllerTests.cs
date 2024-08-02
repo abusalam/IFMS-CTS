@@ -53,10 +53,7 @@ namespace CTS_BE.Tests.Controllers
             var responseData = JsonSerializer
                 .Deserialize<JsonAPIResponse<DateOnlyDTO>>(
                         responseContentStream,
-                        new JsonSerializerOptions {
-                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                            WriteIndented = true
-                        }
+                        GetJsonSerializerOptions()
                     );
             // PrintOut(response.Content.ReadAsStringAsync().Result);
 
@@ -88,10 +85,7 @@ namespace CTS_BE.Tests.Controllers
             var responseData = JsonSerializer
                 .Deserialize<JsonAPIResponse<object>>(
                         responseContentStream,
-                        new JsonSerializerOptions {
-                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                            WriteIndented = true
-                        }
+                        GetJsonSerializerOptions()
                     );
             // PrintOut("ResponseData => " + JsonSerializer.Serialize(responseData));
             // Assert
@@ -128,10 +122,7 @@ namespace CTS_BE.Tests.Controllers
             var responseData = JsonSerializer
                 .Deserialize<JsonAPIResponse<ManualPpoReceiptResponseDTO>>(
                         responseContentStream,
-                        new JsonSerializerOptions {
-                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                            WriteIndented = true
-                        }
+                        GetJsonSerializerOptions()
                     );
 
             ManualPpoReceiptResponseDTO? responseResult = responseData?.Result;
@@ -152,12 +143,11 @@ namespace CTS_BE.Tests.Controllers
         {
             // Arrange
             PensionerEntryDTO pensionerEntryDTO = new() {
+                ReceiptId = 1,
                 PpoNo = $"PPO-{Random.Shared.Next(10000, 99999)}",
                 PpoType = 'P',
-                PsaType = 'A',
                 PpoSubType = 'N',
-                PpoCategory = 'C',
-                PpoSubCategory = 'N',
+                CategoryId = 31,
                 PensionerName = "John Doe",
                 DateOfBirth = DateOnly.FromDateTime(DateTime.Parse("1990-07-30")),
                 Gender = 'M',
@@ -185,10 +175,7 @@ namespace CTS_BE.Tests.Controllers
              var responseData = JsonSerializer
                 .Deserialize<JsonAPIResponse<PensionerResponseDTO>>(
                         responseContentStream,
-                        new JsonSerializerOptions {
-                            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                            WriteIndented = true
-                        }
+                        GetJsonSerializerOptions()
                     );
 
             PensionerResponseDTO? responseResult = responseData?.Result;

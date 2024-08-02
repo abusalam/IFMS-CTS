@@ -23,7 +23,7 @@ INSERT INTO cts_pension.categories(
   (138, 4, 12, 'Education Pension-ROPA 2019',true),
   (48, 1, 2, 'College( Government) Pension-ROPA 2009',true);
 
-INSERT INTO cts_pension.components(
+INSERT INTO cts_pension.breakups(
 	id, component_name, component_type, relief_flag, active_flag) VALUES 
   (1, 'BASIC PENSION', 'P', false, true),
   (2, 'DEARNESS RELIEF', 'P', true, true),
@@ -43,3 +43,11 @@ INSERT INTO cts_pension.component_rates(
   (827, 30, 2, '2016-01-01', 156, 'P', true),
   (1204, 138, 2, '2019-12-01', 0, 'P', true),
   (1205, 138, 3, '2019-12-01', 500, 'A', true);
+
+INSERT INTO cts_pension.ppo_receipt_sequences (
+  id, financial_year, treasury_code, next_sequence_value, active_flag) VALUES
+  (1, 2024, 'DAA', 2, true);
+INSERT INTO cts_pension.ppo_receipts (
+  financial_year,treasury_code,treasury_receipt_no,ppo_no,pensioner_name,date_of_commencement,mobile_number,receipt_date,psa_code,ppo_type,ppo_status,created_by,active_flag) VALUES
+  (2024,'DAA','DAA2024000001','PPO-955487','Jack Dowsel','2024-07-15','9090445140','2024-08-01','A','N','PPO Received',39,true);
+SELECT nextval('cts_pension.ppo_receipts_id_seq');
