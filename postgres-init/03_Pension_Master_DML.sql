@@ -36,6 +36,9 @@ INSERT INTO cts_pension.breakups(
 
 INSERT INTO cts_pension.component_rates(
 	id, category_id, breakup_id, effective_from_date, rate_amount, rate_type, active_flag) VALUES 
+  (1, 30, 1, '1900-01-01', 0, 'A', true),
+  (2, 30, 2, '1900-01-01', 0, 'A', true),
+  (3, 30, 3, '1900-01-01', 100, 'A', true),
   (38, 30, 3, '2009-04-01', 300, 'A', true),
   (39, 31, 1, '2014-01-01', 0, 'A', true),
   (826, 30, 2, '2007-04-01', 24, 'P', true),
