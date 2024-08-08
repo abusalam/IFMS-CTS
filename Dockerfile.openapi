@@ -1,0 +1,12 @@
+FROM openapitools/openapi-generator-cli
+
+RUN addgroup --gid 1000 vscode \
+  && adduser --uid 1000 --gid 1000 vscode
+
+WORKDIR /app
+
+RUN ln -s /usr/local/bin/docker-entrypoint.sh /usr/local/bin/openapi-generator-cli
+
+USER vscode
+
+CMD ["sleep", "infinity"]

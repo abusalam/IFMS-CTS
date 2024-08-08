@@ -26,6 +26,18 @@ services:
     labels:
       - "traefik.http.routers.${PROJECT_NAME}_angular.rule=Host(`${PROJECT_BASE_URL}`)"
 
+  openapi:
+    build:
+      context: .
+      dockerfile: Dockerfile.openapi
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_openapi"
+    # command: openapi-generator-cli generate -i swagger.json -g typescript-angular -o src/app/api \
+    #       --type-mappings=DateTime=number \
+    #       --additional-properties=ngVersion=14.0.7,supportsES6=true,npmVersion=10.8.2
+    volumes:
+      - ./angular:/app
+
   mailhog:
     image: mailhog/mailhog
     restart: unless-stopped
@@ -61,11 +73,11 @@ services:
     container_name: "${PROJECT_NAME}_dotnet_test"
     depends_on:
       - dotnet
-    # command: sh -c "cd .. && dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura \
+    # command: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura \
     #     && reportgenerator \
     #      -reports:"./CTS-BE.Tests/coverage.cobertura.xml" \
     #      -targetdir:"coveragereport" \
-    #      -reporttypes:Html"
+    #      -reporttypes:Html
     environment:
       - ASPNETCORE_ENVIRONMENT=Test
     volumes:
@@ -83,19 +95,19 @@ services:
     - "traefik.http.routers.${PROJECT_NAME}_nginx.rule=Host(`apitests.${PROJECT_BASE_URL}`)"
 
   #Ref: https://container-registry.oracle.com/ords/ocr/ba/database/express
-  oracle:
-    image: container-registry.oracle.com/database/express:18.4.0-xe
-    restart: unless-stopped
-    container_name: "${PROJECT_NAME}_oracle"
-    environment:
-      ORACLE_PWD: $DB_PASSWORD
-    ports:
-      - '5500:5500'
-      - '1521:1521'
-    volumes:
-      - ./oracle-home/startup:/docker-entrypoint-initdb.d/startup # Place init file(s) here.
-      - ./oracle-home/setup:/docker-entrypoint-initdb.d/setup # Place init file(s) here.
-      - ./oracle-home/data:/opt/oracle/oradata:Z # Use bind mount
+  # oracle:
+  #   image: container-registry.oracle.com/database/express:18.4.0-xe
+  #   restart: unless-stopped
+  #   container_name: "${PROJECT_NAME}_oracle"
+  #   environment:
+  #     ORACLE_PWD: $DB_PASSWORD
+  #   ports:
+  #     - '5500:5500'
+  #     - '1521:1521'
+  #   volumes:
+  #     - ./oracle-home/startup:/docker-entrypoint-initdb.d/startup # Place init file(s) here.
+  #     - ./oracle-home/setup:/docker-entrypoint-initdb.d/setup # Place init file(s) here.
+  #     - ./oracle-home/data:/opt/oracle/oradata:Z # Use bind mount
 
   postgres:
     image: postgres 

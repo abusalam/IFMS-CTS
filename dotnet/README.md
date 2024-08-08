@@ -1,3 +1,21 @@
+# OpenAPI Code Generator
+
+References 
+
+- [Documentation for the typescript-angular Generator](https://openapi-generator.tech/docs/generators/typescript-angular)
+- [Filter APIs by Convention](https://github.com/domaindrivendev/Swashbuckle.AspNetCore?tab=readme-ov-file#omit-actions-by-convention)
+- [Use method name as operationId](https://github.com/domaindrivendev/Swashbuckle.AspNetCore?tab=readme-ov-file#assign-explicit-operationids)
+
+### Generate Angular Services and Models
+Copy the `http://api.docker.test/swagger/v1/swagger.json` file to `./angular/swagger.json` then run the following command
+
+```sh
+docker-compose exec openapi openapi-generator-cli generate -i swagger.json \
+          -g typescript-angular -o src/app/api \
+          --type-mappings=DateTime=number \
+          --additional-properties=ngVersion=14.0.7,supportsES6=true,npmVersion=10.8.2,fileNaming=kebab-case
+``` 
+
 ## Setup xUnit testing and code coverage on Docker Linux Containers
 
 Reference [Use code coverage for unit testing - .NET | Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?tabs=linux)
