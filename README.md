@@ -26,6 +26,20 @@ sudo chown 54321:54321 oracle-home/data
 ```sh
 docker-compose up -d
 ```
+
+#### Or you can start only required containers
+
+To start dotnet container use the following command this will start only required stack for dotnet development
+```sh
+docker-compose up -d dotnet
+```
+or start angular using
+
+```sh
+docker-compose up -d angular
+```
+
+
 ![Docker Output](image.png)
 
 Initially when you are setting up for the first time it may take a little longer time as oracle initializes it's database

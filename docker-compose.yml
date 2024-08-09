@@ -8,6 +8,8 @@ services:
     image: rabbitmq:management
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_rabbitmq"
+    depends_on:
+      - traefik
     labels:
       - "traefik.http.services.${PROJECT_NAME}_rabbitmq.loadbalancer.server.port=15672"
       - "traefik.http.routers.${PROJECT_NAME}_rabbitmq.rule=Host(`rabbitmq.${PROJECT_BASE_URL}`)"
@@ -18,9 +20,11 @@ services:
       dockerfile: Dockerfile.angular
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_angular"
+    depends_on:
+      - dotnet
     command: ng serve --host 0.0.0.0 --port 4200 --disable-host-check
     volumes:
-      - ./angular:/app
+      - ./:/app
     expose:
       - '4200'
     labels:
@@ -32,9 +36,11 @@ services:
       dockerfile: Dockerfile.openapi
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_openapi"
+    depends_on:
+      - dotnet
     # command: openapi-generator-cli generate -i swagger.json -g typescript-angular -o src/app/api \
     #       --type-mappings=DateTime=number \
-    #       --additional-properties=ngVersion=14.0.7,supportsES6=true,npmVersion=10.8.2
+    #       --additional-properties=ngVersion=14.0.7,supportsES6=true,npmVersion=10.8.2,fileNaming=kebab-case
     volumes:
       - ./angular:/app
 
@@ -42,6 +48,8 @@ services:
     image: mailhog/mailhog
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_mailhog"
+    depends_on:
+      - traefik
     labels:
       - "traefik.http.services.${PROJECT_NAME}_mailhog.loadbalancer.server.port=8025"
       - "traefik.http.routers.${PROJECT_NAME}_mailhog.rule=Host(`mailhog.${PROJECT_BASE_URL}`)"
@@ -52,6 +60,8 @@ services:
       dockerfile: Dockerfile.dotnet
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_dotnet"
+    depends_on:
+      - postgres
     command: dotnet watch --project . run --urls "http://0.0.0.0:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -87,6 +97,8 @@ services:
     image: nginx
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_nginx"
+    depends_on:
+      - dotnet-test
     volumes:
     - ./dotnet/coveragereport:/usr/share/nginx/html:cached
     ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/laravel/local#docker-for-mac
@@ -95,24 +107,28 @@ services:
     - "traefik.http.routers.${PROJECT_NAME}_nginx.rule=Host(`apitests.${PROJECT_BASE_URL}`)"
 
   #Ref: https://container-registry.oracle.com/ords/ocr/ba/database/express
-  # oracle:
-  #   image: container-registry.oracle.com/database/express:18.4.0-xe
-  #   restart: unless-stopped
-  #   container_name: "${PROJECT_NAME}_oracle"
-  #   environment:
-  #     ORACLE_PWD: $DB_PASSWORD
-  #   ports:
-  #     - '5500:5500'
-  #     - '1521:1521'
-  #   volumes:
-  #     - ./oracle-home/startup:/docker-entrypoint-initdb.d/startup # Place init file(s) here.
-  #     - ./oracle-home/setup:/docker-entrypoint-initdb.d/setup # Place init file(s) here.
-  #     - ./oracle-home/data:/opt/oracle/oradata:Z # Use bind mount
+  oracle:
+    image: container-registry.oracle.com/database/express:18.4.0-xe
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_oracle"
+    depends_on:
+      - traefik
+    environment:
+      ORACLE_PWD: $DB_PASSWORD
+    ports:
+      - '5500:5500'
+      - '1521:1521'
+    volumes:
+      - ./oracle-home/startup:/docker-entrypoint-initdb.d/startup # Place init file(s) here.
+      - ./oracle-home/setup:/docker-entrypoint-initdb.d/setup # Place init file(s) here.
+      - ./oracle-home/data:/opt/oracle/oradata:Z # Use bind mount
 
   postgres:
     image: postgres 
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_postgres"
+    depends_on:
+      - traefik
     stop_grace_period: 30s
     shm_size: 1g
     command: -c 'max_connections=1000'
