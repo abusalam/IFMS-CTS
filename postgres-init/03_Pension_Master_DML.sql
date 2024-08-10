@@ -54,3 +54,10 @@ INSERT INTO cts_pension.ppo_receipts (
   financial_year,treasury_code,treasury_receipt_no,ppo_no,pensioner_name,date_of_commencement,mobile_number,receipt_date,psa_code,ppo_type,ppo_status,created_by,active_flag) VALUES
   (2024,'DAA','DAA2024000001','PPO-955487','Jack Dowsel','2024-07-15','9090445140','2024-08-01','A','N','PPO Received',39,true);
 SELECT nextval('cts_pension.ppo_receipts_id_seq');
+INSERT INTO cts_pension.pensioners 
+  (id, financial_year, treasury_code, receipt_id, ppo_id, ppo_no, ppo_type, ppo_sub_type, category_id, pensioner_name, date_of_birth, gender, mobile_number, email_id, pensioner_address, identification_mark, pan_no, aadhaar_no, date_of_retirement, date_of_commencement, basic_pension_amount, commuted_pension_amount, enhance_pension_amount, reduced_pension_amount, religion, created_by, active_flag) VALUES
+  (1, 2024, 'DAA', 1, 1, 'PPO-296128', 'P', 'N', 30, 'Jack Dowsel', '2024-08-10', 'M', '8882371949', 'string', 'Malda', 'S', 'PANNO4614F', '945148468446', '1997-03-25', '1997-03-26', 10000, 2000, 10000, 8000, 'H', 39, true);
+SELECT nextval('cts_pension.pensioners_id_seq');
+INSERT INTO cts_pension.ppo_id_sequences 
+(id, financial_year, treasury_code, next_sequence_value, active_flag) VALUES
+(1, 0, 'DAA', 1, true);

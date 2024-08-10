@@ -35,16 +35,3 @@ index 138425d..cd3c524 100644
 +    href="http://docker.test/cts/#/login/?token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbiI6IntcIklkXCI6MyxcIk5hbWVcIjpcIkNUU1wiLFwiTGV2ZWxzXCI6W3tcIklkXCI6OCxcIk5hbWVcIjpcIlRyZWFzdXJ5XCIsXCJTY29wZVwiOltcIkJBQVwiXX1dLFwiUm9sZXNcIjpbe1wiSWRcIjozMSxcIk5hbWVcIjpcImNoZXF1ZS1vcGVyYXRvclwiLFwiUGVybWlzc2lvbnNcIjpbXCJjYW4tY3JlYXRlLWNoZXF1ZS1pbmRlbnRcIl19XX0iLCJuYW1laWQiOiI2MyIsIm5hbWUiOiJDaGVxdWUgT3BlcmF0b3IgICAgICAgICAgICAgICAgICAgICIsIm5iZiI6MTcxNzk5NzA5MCwiZXhwIjoxNzE4MDgzNDkwLCJpYXQiOjE3MTc5OTcwOTB9.VL6fVMD53m-wvYTfYuN9dWDQIOYlyGbze6snNrVAcCOZNeSkY_dyTC2joiqJ_xmOnEJWO-J5LCSm0oMCYNyXSA"
      >CHEQUE-OPERATOR</a
  >
-diff --git a/src/environments/environment.ts b/src/environments/environment.ts
-index 951f88f..9414013 100644
---- a/src/environments/environment.ts
-+++ b/src/environments/environment.ts
-@@ -4,7 +4,7 @@
- 
- export const environment = {
-   production: false,
--  BaseURL:'https://localhost:7249/api/'
-+  BaseURL:'http://api.docker.test/api/'
- };
- 
- /*

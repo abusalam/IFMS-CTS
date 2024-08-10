@@ -155,9 +155,9 @@ namespace CTS_BE.Tests.Controllers
                 EmailId = "CnTqS@example.com",
                 PensionerAddress = "Pune",
                 IdentificationMark = "Mole",
-                PanNo = "ABCD1234E",
+                PanNo = "ABCDE1234F",
                 AadhaarNo = "123456789012",
-                DateOfRetirement = DateOnly.FromDateTime(DateTime.Parse("2034-07-30")),
+                DateOfRetirement = DateOnly.FromDateTime(DateTime.Parse("2014-07-30")),
                 DateOfCommencement = DateOnly.FromDateTime(DateTime.Parse("2024-07-30")),
                 BasicPensionAmount = 10000,
                 CommutedPensionAmount = 1000,
@@ -165,13 +165,13 @@ namespace CTS_BE.Tests.Controllers
                 ReducedPensionAmount = 9000,
                 Religion = 'H'
             };
-            // PrintOut("Request => " + JsonSerializer.Serialize(pensionerEntryDTO));
+            PrintOut("Request => " + JsonSerializer.Serialize(pensionerEntryDTO));
 
             // Act
             var response = await this.GetHttpClient()
                 .PostAsJsonAsync("/api/v1/ppo/details", pensionerEntryDTO);
             var responseContentStream = await response.Content.ReadAsStreamAsync();
-            // PrintOut("Response => " + response.Content.ReadAsStringAsync().Result);
+            PrintOut("Response => " + response.Content.ReadAsStringAsync().Result);
              var responseData = JsonSerializer
                 .Deserialize<JsonAPIResponse<PensionerResponseDTO>>(
                         responseContentStream,
@@ -204,18 +204,19 @@ namespace CTS_BE.Tests.Controllers
             PensionerBankAcDTO bankAccountEntryDTO = new() {
                 BankAcNo = "1234567890",
                 IfscCode = "SBI12345678",
-                BranchName = "Pune",
-                BankName = "SBI",
+                BranchCode = 531,
+                BankCode = 2,
                 AccountHolderName = "John Doe"
             };
 
-            // PrintOut("Request => " + JsonSerializer.Serialize(bankAccountEntryDTO));
+            PrintOut("Request => " + JsonSerializer.Serialize(bankAccountEntryDTO));
 
             // Act
             var response = await this.GetHttpClient()
                 .PostAsJsonAsync($"/api/v1/ppo/{ppoId}/bank-accounts", bankAccountEntryDTO);
             var responseContentStream = await response.Content.ReadAsStreamAsync();
-            // PrintOut("Response => " + response.Content.ReadAsStringAsync().Result);
+            PrintOut("Response => " + response.Content.ReadAsStringAsync().Result);
+
             var responseData = JsonSerializer
                 .Deserialize<JsonAPIResponse<PensionerBankAcDTO>>(
                         responseContentStream,

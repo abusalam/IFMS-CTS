@@ -1,7 +1,8 @@
 ## Setup the code repository
 
 #### Prerequisites:
-- You need access to the [cts](https://www.wbgitlab.nic.in/ifms/cts.git) and [ctsapi](https://www.wbgitlab.nic.in/ifms/ctsapi.git) repositories on https://www.wbgitlab.nic.in
+- Install [Docker Engine](https://docs.docker.com/engine/install/ubuntu/) and [Docker Compose (standalone)](https://docs.docker.com/compose/install/standalone/)  on Ubuntu
+- On Windows OS using [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) is preferred.
 
 Run the following commands to clone the whole repository
 
@@ -21,15 +22,10 @@ mkdir oracle-home/data
 sudo chown 54321:54321 oracle-home/data
 ```
 
-### Start docker-compose
-
-```sh
-docker-compose up -d
-```
-
-#### Or you can start only required containers
+### You can start only required containers
 
 To start dotnet container use the following command this will start only required stack for dotnet development
+
 ```sh
 docker-compose up -d dotnet
 ```
@@ -39,6 +35,11 @@ or start angular using
 docker-compose up -d angular
 ```
 
+#### Or Start all containers
+
+```sh
+docker-compose up -d
+```
 
 ![Docker Output](image.png)
 
