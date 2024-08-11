@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_status_flags (
 COMMENT ON TABLE cts_pension.ppo_status_flags IS 'PensionModuleSchema v1';
 
 
-CREATE TABLE IF NOT EXISTS cts_pension.ppo_component_rates (
+CREATE TABLE IF NOT EXISTS cts_pension.ppo_component_revisions (
   id bigserial NOT NULL PRIMARY KEY,
   treasury_code character varying(3) NOT NULL,
   ppo_id integer NOT NULL,
@@ -304,11 +304,11 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_component_rates (
   updated_by integer,
   active_flag boolean NOT NULL
 );
-COMMENT ON TABLE cts_pension.ppo_component_rates IS 'PensionModuleSchema v1';
-COMMENT ON COLUMN cts_pension.ppo_component_rates.id IS 'RevisionId';
-COMMENT ON COLUMN cts_pension.ppo_component_rates.from_date IS 'From date is the Date of Commencement of pension of the pensioner';
-COMMENT ON COLUMN cts_pension.ppo_component_rates.to_date IS 'To date (will be null for regular active bills)';
-COMMENT ON COLUMN cts_pension.ppo_component_rates.amount_per_month IS 'Amount per month is the actual amount paid for the mentioned period';
+COMMENT ON TABLE cts_pension.ppo_component_revisions IS 'PensionModuleSchema v1';
+COMMENT ON COLUMN cts_pension.ppo_component_revisions.id IS 'RevisionId';
+COMMENT ON COLUMN cts_pension.ppo_component_revisions.from_date IS 'From date is the Date of Commencement of pension of the pensioner';
+COMMENT ON COLUMN cts_pension.ppo_component_revisions.to_date IS 'To date (will be null for regular active bills)';
+COMMENT ON COLUMN cts_pension.ppo_component_revisions.amount_per_month IS 'Amount per month is the actual amount paid for the mentioned period';
 
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_bills (
@@ -328,6 +328,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bills (
   utr_no character varying(100),
   utr_at timestamp without time zone,
   bill_gross_amount integer NOT NULL,
+  bill_bytransfer_amount integer NOT NULL,
   bill_net_amount integer NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
@@ -350,6 +351,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_breakups (
   ppo_id integer NOT NULL,
   bill_id bigint NOT NULL references cts_pension.ppo_bills(id),
   rate_id bigint NOT NULL references cts_pension.component_rates(id),
+  revision_id bigint NOT NULL references cts_pension.ppo_component_revisions(id),
   from_date date NOT NULL,
   to_date date NOT NULL,
   breakup_amount integer NOT NULL,
@@ -371,9 +373,9 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_bytransfers (
   treasury_code character varying(3) NOT NULL,
   ppo_id integer NOT NULL,
   bill_id bigint NOT NULL references cts_pension.ppo_bills(id),
-  bytransfers_hoa_id integer NOT NULL,
-  bytransfers_wef date NOT NULL,
-  bytransfers_amount integer NOT NULL,
+  bytransfer_hoa_id integer NOT NULL,
+  bytransfer_wef date NOT NULL,
+  bytransfer_amount integer NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
