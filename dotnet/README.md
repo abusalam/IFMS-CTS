@@ -12,7 +12,7 @@ Copy the `http://api.docker.test/swagger/v1/swagger.json` file to `./angular/swa
 ```sh
 docker-compose exec openapi openapi-generator-cli generate -i swagger.json \
           -g typescript-angular -o src/app/api \
-          --type-mappings=DateTime=number \
+          --type-mappings=DateOnly=string \
           --additional-properties=ngVersion=14.0.7,supportsES6=true,npmVersion=10.8.2,fileNaming=kebab-case
 ``` 
 

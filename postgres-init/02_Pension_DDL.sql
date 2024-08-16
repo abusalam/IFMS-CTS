@@ -293,8 +293,9 @@ COMMENT ON TABLE cts_pension.ppo_status_flags IS 'PensionModuleSchema v1';
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_component_revisions (
   id bigserial NOT NULL PRIMARY KEY,
   treasury_code character varying(3) NOT NULL,
+  pensioner_id bigint NOT NULL references cts_pension.pensioners(id),
   ppo_id integer NOT NULL,
-  breakup_id bigint NOT NULL references cts_pension.breakups(id),
+  rate_id bigint NOT NULL references cts_pension.component_rates(id),
   from_date date NOT NULL,
   to_date date,
   amount_per_month integer NOT NULL,
@@ -321,15 +322,15 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bills (
   from_date date NOT NULL,
   to_date date NOT NULL,
   bill_type CHAR(1) NOT NULL,
-  bill_no character varying(100) NOT NULL,
+  bill_no integer NOT NULL,
   bill_date date NOT NULL,
   treasury_voucher_no character varying(100),
   treasury_voucher_date date,
   utr_no character varying(100),
   utr_at timestamp without time zone,
-  bill_gross_amount integer NOT NULL,
-  bill_bytransfer_amount integer NOT NULL,
-  bill_net_amount integer NOT NULL,
+  gross_amount integer NOT NULL,
+  bytransfer_amount integer NOT NULL,
+  net_amount integer NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
@@ -350,7 +351,6 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_breakups (
   treasury_code character varying(3) NOT NULL,
   ppo_id integer NOT NULL,
   bill_id bigint NOT NULL references cts_pension.ppo_bills(id),
-  rate_id bigint NOT NULL references cts_pension.component_rates(id),
   revision_id bigint NOT NULL references cts_pension.ppo_component_revisions(id),
   from_date date NOT NULL,
   to_date date NOT NULL,
@@ -360,11 +360,11 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_breakups (
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
   active_flag boolean NOT NULL,
-  UNIQUE(treasury_code, ppo_id, bill_id, rate_id)
+  UNIQUE(treasury_code, ppo_id, bill_id, revision_id, from_date)
 );
 COMMENT ON TABLE cts_pension.ppo_bill_breakups IS 'PensionModuleSchema v1';
 COMMENT ON COLUMN cts_pension.ppo_bill_breakups.bill_id IS 'BillId is to identify the bill on which the actual payment made';
-COMMENT ON COLUMN cts_pension.ppo_bill_breakups.rate_id IS 'RateId is to identify the component rate applied on the bill';
+COMMENT ON COLUMN cts_pension.ppo_bill_breakups.revision_id IS 'RevisionId is to identify the component rate applied on the bill';
 
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_bytransfers (
@@ -380,7 +380,6 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bill_bytransfers (
   created_by integer,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean NOT NULL,
-  UNIQUE(ppo_id, treasury_code)
+  active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.ppo_bill_bytransfers IS 'PensionModuleSchema v1';

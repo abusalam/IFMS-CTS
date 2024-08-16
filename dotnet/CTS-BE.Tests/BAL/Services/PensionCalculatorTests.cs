@@ -100,5 +100,18 @@ namespace CTS_BE.Tests.BAL.Services
             result.Id.Should().Be(expectedId, because);
         }
 
+        [Theory]
+        [InlineData("2010-01-01", "2010-11-20", 10, "Period is 10 months")]
+        [InlineData("2010-01-15", "2010-03-31", 2, "Period is 2 months")]
+        [InlineData("2010-02-01", "2021-02-28", 133, "Period is 133 months")]
+        public void PensionCalculator_CalculatePeriodInMonths(string fromDate, string toDate, int expected, string because) {
+            // Arrange
+            DateOnly fromDateOnly = DateOnly.Parse(fromDate);
+            DateOnly toDateOnly = DateOnly.Parse(toDate);
+            // Act
+            int result = PensionCalculator.CalculatePeriodInMonths(fromDateOnly, toDateOnly);
+            // Assert
+            result.Should().Be(expected, because);
+        }
     }
 }

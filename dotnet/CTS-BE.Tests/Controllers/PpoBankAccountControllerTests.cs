@@ -22,7 +22,7 @@ namespace CTS_BE.Tests.Controllers
             )
         {
             // Arrange
-            PensionerBankAcDTO bankAccountEntryDTO = new() {
+            PensionerBankAcEntryDTO bankAccountEntryDTO = new() {
                 BankAcNo = "1234567890",
                 IfscCode = "SBI12345678",
                 BranchCode = 531,
@@ -39,7 +39,7 @@ namespace CTS_BE.Tests.Controllers
             PrintOut("Response => " + response.Content.ReadAsStringAsync().Result);
 
             var responseData = JsonSerializer
-                .Deserialize<JsonAPIResponse<PensionerBankAcDTO>>(
+                .Deserialize<JsonAPIResponse<PensionerBankAcResponseDTO>>(
                         responseContentStream,
                         GetJsonSerializerOptions()
                     );
@@ -48,7 +48,7 @@ namespace CTS_BE.Tests.Controllers
             using (new AssertionScope())
             responseData.Should().NotBeNull();
             responseData?.ApiResponseStatus.Should().Be(apiResponseStatus);
-            responseData.Should().BeOfType<JsonAPIResponse<PensionerBankAcDTO>>();
+            responseData.Should().BeOfType<JsonAPIResponse<PensionerBankAcResponseDTO>>();
             if(apiResponseStatus == Enum.APIResponseStatus.Success) {
                 responseData?.Result.Should().BeEquivalentTo(bankAccountEntryDTO);
             } else {

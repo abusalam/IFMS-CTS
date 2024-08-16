@@ -30,6 +30,28 @@ services:
     labels:
       - "traefik.http.routers.${PROJECT_NAME}_angular.rule=Host(`${PROJECT_BASE_URL}`)"
 
+  angular-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.angular-test
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_angular_test"
+    links:
+      - "dotnet:api.${PROJECT_BASE_URL}"
+      - "angular:${PROJECT_BASE_URL}"
+    depends_on:
+      - dotnet
+    ipc: host
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    command: npx playwright test --ui-port=9323 --ui-host=0.0.0.0
+    volumes:
+      - ./:/app
+    expose:
+      - '9323'
+    labels:
+      - "traefik.http.routers.${PROJECT_NAME}_angular_test.rule=Host(`playwright.${PROJECT_BASE_URL}`)"
+
   openapi:
     build:
       context: .

@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/playwright:v1.46.0-jammy
+
+WORKDIR /app/angular
+
+RUN npm install -g npm@latest @angular/cli
+
+USER pwuser
+
+CMD ["sleep", "infinity"]
