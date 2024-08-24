@@ -14,8 +14,7 @@ namespace CTS_BE.Tests.Controllers
         {
             // Arrange
             PensionerEntryDTO pensionerEntryDTO = new() {
-                ReceiptId = 1,
-                PpoNo = $"PPO-{Random.Shared.Next(10000, 99999)}",
+                PpoNo = $"PPO-955487",
                 PpoType = 'P',
                 PpoSubType = 'N',
                 CategoryId = 31,
