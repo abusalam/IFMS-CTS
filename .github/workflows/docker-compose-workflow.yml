@@ -1,0 +1,20 @@
+name: DotNet & Angular CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo $(id -g)
+      - uses: actions/checkout@v4
+      - name: Setup Docker Compose Standalone
+        run: sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
+      - name: Build Docker Images
+        run: git submodule update --init --recursive && cp .env.docker .env && docker-compose build --build-arg HOST_UID=$UID
+      - name: Run DotNet Container
+        run: docker-compose up -d dotnet-test
+      - name: Run Tests
+        run: docker-compose exec dotnet-test dotnet test --filter PensionCalculator

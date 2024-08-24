@@ -1,7 +1,9 @@
 FROM openapitools/openapi-generator-cli
 
-RUN addgroup --gid 1000 vscode \
-  && adduser --uid 1000 --gid 1000 vscode
+ARG HOST_UID
+
+RUN addgroup --gid $HOST_UID vscode \
+  && adduser --uid $HOST_UID --gid $HOST_UID vscode
 
 WORKDIR /app
 

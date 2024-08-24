@@ -1,7 +1,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0
 
-RUN groupadd --gid 1000 vscode \
-    && useradd --uid 1000 --gid vscode --shell /bin/bash --create-home vscode
+ARG HOST_UID
+
+RUN groupadd --gid $HOST_UID vscode \
+    && useradd --uid $HOST_UID --gid vscode --shell /bin/bash --create-home vscode
 
 WORKDIR /app/dotnet
 
