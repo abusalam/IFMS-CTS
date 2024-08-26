@@ -1,3 +1,7 @@
+# IFMS-CTS Pension Module
+
+[![DotNet & Angular CI](https://github.com/abusalam/IFMS-CTS/actions/workflows/docker-compose-workflow.yml/badge.svg)](https://github.com/abusalam/IFMS-CTS/actions/workflows/docker-compose-workflow.yml)
+
 ## Setup the code repository
 
 #### Prerequisites:
@@ -9,15 +13,22 @@ Run the following commands to clone the whole repository
 ```sh
 git clone https://github.com/abusalam/IFMS-CTS.git ifms-cts
 cd ifms-cts
-git submodule init
-git submodule update
+git submodule update --init --recursive
+cp .env.docker .env 
 ```
-### Setup Oracle database
+
+### Build Docker Images
+
+Run the following command to build custom docker images to run this project
+
+```sh
+docker-compose build --build-arg HOST_UID=$UID
+```
+### Setup Oracle database (Optional)
 
 Run the following commands
 
 ```sh
-cp .env .env.docker
 mkdir oracle-home/data
 sudo chown 54321:54321 oracle-home/data
 ```

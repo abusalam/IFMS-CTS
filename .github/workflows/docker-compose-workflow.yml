@@ -4,17 +4,97 @@ on: [push]
 
 jobs:
   build:
+    name: Build DotNet
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet-version: [ '6.x', '7.x', '8.x' ]
 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup repository & environment
+        run: |
+          git submodule update --init --recursive
+          cp .env.docker .env
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+          # cache: true
+      - name: Install dependencies
+        run: |
+          cd dotnet/CTS-BE
+          dotnet restore
+      - name: Build DotNet
+        run: |
+          cd dotnet/CTS-BE
+          dotnet build
+
+  dotnet-test:
+    name: Run DotNet Tests in Docker
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo $(id -g)
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Setup Docker Compose Standalone
-        run: sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose && sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && sudo chmod +x /usr/local/bin/docker-compose
+        run: |
+          sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
       - name: Build Docker Images
-        run: git submodule update --init --recursive && cp .env.docker .env && docker-compose build --build-arg HOST_UID=$UID
+        run: |
+          git submodule update --init --recursive
+          cp .env.docker .env
+          docker-compose build dotnet dotnet-test --build-arg HOST_UID=$UID
       - name: Run DotNet Container
         run: docker-compose up -d dotnet-test
       - name: Run Tests
-        run: docker-compose exec dotnet-test dotnet test
+        run: docker-compose exec dotnet-test dotnet test --logger trx --results-directory "TestResults-7.x"
+      - name: Upload dotnet test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-results-7.x
+          path: dotnet/TestResults-7.x
+          # Use always() to always run this step to publish test results when there are test failures
+        if: ${{ always() }}
+
+  angular-test:
+    name: Run Playwright Tests on Docker
+    needs: [dotnet-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Docker Compose Standalone
+        run: |
+          sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+      - name: Build Docker Images
+        run: |
+          git submodule update --init --recursive
+          cp .env.docker .env
+          cd angular
+          cp .env.playwright.docker .env
+          cd ..
+          sudo chown -R 1000:1000 .
+          docker-compose build dotnet angular angular-test --build-arg HOST_UID=1000
+      - name: Run Angular Container
+        run: docker-compose up -d angular-test
+      - name: Setup Angular for Playwright
+        run: |
+          docker-compose exec angular-test npm ci
+      - name: Run Playwright tests
+        run: docker-compose exec angular-test npm test
+        # env:
+        #   NG_APP_ENV_DOCKER: true
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: angular/test-results/
+          retention-days: 30
