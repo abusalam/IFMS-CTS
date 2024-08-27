@@ -108,8 +108,8 @@ services:
       dockerfile: Dockerfile.dotnet-test
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_dotnet_test"
-    depends_on:
-      - dotnet
+    # depends_on:
+    #   - dotnet
     # command: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura \
     #     && reportgenerator \
     #      -reports:"./CTS-BE.Tests/coverage.cobertura.xml" \

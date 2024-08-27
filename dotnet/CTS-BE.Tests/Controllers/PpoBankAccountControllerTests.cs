@@ -12,24 +12,62 @@ namespace CTS_BE.Tests.Controllers
 {
     public class PpoBankAccountControllerTests : BaseControllerTests
     {
-        [Theory]
-        [InlineData(1, Enum.APIResponseStatus.Success, "Bank account details saved sucessfully!")]
-        [InlineData(1, Enum.APIResponseStatus.Error, "Error: Bank account details not saved! Check DataSource for more details!")]
-        public async Task PensionController_ControlPensionerBankAccountsCreate_CanCreate(
+
+        private readonly PensionerBankAcEntryDTO bankAccountEntryDTO = new() {
+            BankAcNo = "1234567890",
+            IfscCode = "SBI12345678",
+            BranchCode = 531,
+            BankCode = 2,
+            AccountHolderName = "John Doe"
+        };
+
+        [Fact]
+        public async Task PensionController_ControlPensionerBankAccountsCreate_CanCreate()
+        {
+            // Arrange
+
+
+            // Act
+
+            var responseData = await TryToCreateBankAccount(
+                1, 
+                Enum.APIResponseStatus.Success, 
+                "Bank account details saved sucessfully!"
+            );
+            var responseDataExists = await TryToCreateBankAccount(
+                1,
+                Enum.APIResponseStatus.Error,
+                "Bank Account already exists!"
+            );
+
+            // Assert
+            using (new AssertionScope())
+            
+            responseData.Should().NotBeNull();
+            responseDataExists.Should().NotBeNull();
+
+            responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
+            responseDataExists?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Error);
+
+            responseData.Should().BeOfType<JsonAPIResponse<PensionerBankAcResponseDTO>>();
+            responseDataExists.Should().BeOfType<JsonAPIResponse<PensionerBankAcResponseDTO>>();
+
+            responseData?.Result.Should().BeEquivalentTo(bankAccountEntryDTO);
+            responseDataExists?.Result?.DataSource?.GetType().GetProperty("Message")?
+                .GetValue(responseDataExists.Result.DataSource)
+                .Should().Be("Bank Account already exists!");
+
+            responseData?.Message.Should().Be("Bank account details saved sucessfully!");
+            responseDataExists?.Message.Should().Be("Bank Account already exists!");
+        }
+
+        private async Task<JsonAPIResponse<PensionerBankAcResponseDTO>?> TryToCreateBankAccount(
                 int ppoId,
                 Enum.APIResponseStatus apiResponseStatus,
                 string message
             )
         {
             // Arrange
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new() {
-                BankAcNo = "1234567890",
-                IfscCode = "SBI12345678",
-                BranchCode = 531,
-                BankCode = 2,
-                AccountHolderName = "John Doe"
-            };
-
             PrintOut("Request => " + JsonSerializer.Serialize(bankAccountEntryDTO));
 
             // Act
@@ -38,25 +76,12 @@ namespace CTS_BE.Tests.Controllers
             var responseContentStream = await response.Content.ReadAsStreamAsync();
             PrintOut("Response => " + response.Content.ReadAsStringAsync().Result);
 
-            var responseData = JsonSerializer
+            JsonAPIResponse<PensionerBankAcResponseDTO>? responseData = JsonSerializer
                 .Deserialize<JsonAPIResponse<PensionerBankAcResponseDTO>>(
                         responseContentStream,
                         GetJsonSerializerOptions()
                     );
-
-            // Assert
-            using (new AssertionScope())
-            responseData.Should().NotBeNull();
-            responseData?.ApiResponseStatus.Should().Be(apiResponseStatus);
-            responseData.Should().BeOfType<JsonAPIResponse<PensionerBankAcResponseDTO>>();
-            if(apiResponseStatus == Enum.APIResponseStatus.Success) {
-                responseData?.Result.Should().BeEquivalentTo(bankAccountEntryDTO);
-            } else {
-                responseData?.Result?.DataSource?.GetType().GetProperty("Message")?
-                    .GetValue(responseData.Result.DataSource)
-                    .Should().Be("Bank Account already exists!");
-            }
-            responseData?.Message.Should().Be(message);
+            return responseData;
         }
     
     }
