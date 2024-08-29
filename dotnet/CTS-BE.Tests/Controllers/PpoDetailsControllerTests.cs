@@ -3,6 +3,8 @@ using CTS_BE.Helper;
 using System.Text.Json;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using CTS_BE.Tests.Factory;
+using NPOI.OpenXmlFormats.Dml.Spreadsheet;
 
 namespace CTS_BE.Tests.Controllers
 {
@@ -13,40 +15,20 @@ namespace CTS_BE.Tests.Controllers
         public async Task PensionController_ControlPensionerDetailsCreate_CanCreate()
         {
             // Arrange
-            PensionerEntryDTO pensionerEntryDTO = new() {
-                PpoNo = $"PPO-955487",
-                PpoType = 'P',
-                PpoSubType = 'N',
-                CategoryId = 31,
-                PensionerName = "John Doe",
-                DateOfBirth = DateOnly.FromDateTime(DateTime.Parse("1990-07-30")),
-                Gender = 'M',
-                MobileNumber = "9876543210",
-                EmailId = "CnTqS@example.com",
-                PensionerAddress = "Pune",
-                IdentificationMark = "Mole",
-                PanNo = "ABCDE1234F",
-                AadhaarNo = "123456789012",
-                DateOfRetirement = DateOnly.FromDateTime(DateTime.Parse("2014-07-30")),
-                DateOfCommencement = DateOnly.FromDateTime(DateTime.Parse("2024-07-30")),
-                BasicPensionAmount = 10000,
-                CommutedPensionAmount = 1000,
-                EnhancePensionAmount = 10000,
-                ReducedPensionAmount = 9000,
-                Religion = 'H'
-            };
-            PrintOut("Request => " + JsonSerializer.Serialize(pensionerEntryDTO));
+            PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
+            var ppoReceipt = new PpoReceiptFactory().Create();
+            pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
+                    "/api/v1/manual-ppo/receipts",
+                    ppoReceipt
+                );
 
             // Act
-            var response = await this.GetHttpClient()
-                .PostAsJsonAsync("/api/v1/ppo/details", pensionerEntryDTO);
-            var responseContentStream = await response.Content.ReadAsStreamAsync();
-            PrintOut("Response => " + response.Content.ReadAsStringAsync().Result);
-             var responseData = JsonSerializer
-                .Deserialize<JsonAPIResponse<PensionerResponseDTO>>(
-                        responseContentStream,
-                        GetJsonSerializerOptions()
-                    );
+            var responseData = 
+                await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
+                    "/api/v1/ppo/details",
+                    pensionerEntryDTO
+                );
 
             PensionerResponseDTO? responseResult = responseData?.Result;
             responseResult.FillFrom(pensionerEntryDTO);

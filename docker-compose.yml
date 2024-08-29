@@ -116,6 +116,7 @@ services:
     #      -targetdir:"coveragereport" \
     #      -reporttypes:Html
     environment:
+      - CI=${NG_ENV_CI}
       - ASPNETCORE_ENVIRONMENT=Test
     volumes:
       - ./:/app

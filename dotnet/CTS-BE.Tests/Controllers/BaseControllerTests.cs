@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using CTS_BE.Helper;
+using Newtonsoft.Json;
+using NuGet.Protocol;
 using Xunit;
+using Xunit.Abstractions;
+
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace CTS_BE.Tests.Controllers
 {
-    public class BaseControllerTests
+    public class BaseControllerTests : ITestCollectionOrderer
     {
         private readonly PensionWebAppFactory _application;
         private readonly HttpClient _client;
@@ -25,11 +31,65 @@ namespace CTS_BE.Tests.Controllers
         public HttpClient GetHttpClient() => _client;
         public JsonSerializerOptions GetJsonSerializerOptions() => _jsonSerializerOptions;
 
-        public static void PrintOut(string textToWriteOnConsole){
+        public static void PrintOut(object? dataObject, bool noPrettyPrint = true, bool isRequest = false, string message = "") {
+            // Console.WriteLine("Environment: [" + Environment.GetEnvironmentVariables().ToJson().ToString() + "]");
+            
+            if(Environment.GetEnvironmentVariable("CI", EnvironmentVariableTarget.Process) == "true") return;
+
+            string textToWriteOnConsole = noPrettyPrint ? message : JsonConvert.SerializeObject(
+                dataObject,
+                Formatting.Indented
+            );
+            
             // Console.BackgroundColor = ConsoleColor.DarkGreen;
             Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            Console.Out.WriteLine(textToWriteOnConsole);
+            Console.Out.WriteLine((isRequest ? "Request => " : "Response => ") + textToWriteOnConsole);
             Console.ResetColor();
         }
+
+        protected async Task<JsonAPIResponse<TRespDTO>?> CallPostAsJsonAsync<TRespDTO, TEntryDTO>(
+            string url,
+            TEntryDTO dataEntryDTO
+        )
+        {
+            PrintOut(dataEntryDTO, false, true);
+
+            HttpResponseMessage? response = await this.GetHttpClient()
+                .PostAsJsonAsync(url, dataEntryDTO);
+            Stream? responseContentStream = await response.Content.ReadAsStreamAsync();
+
+            JsonAPIResponse<TRespDTO>? responseData = null;
+            try {
+
+                responseData = System.Text.Json.JsonSerializer
+                    .Deserialize<JsonAPIResponse<TRespDTO>>(
+                            responseContentStream,
+                            GetJsonSerializerOptions()
+                        );
+            }
+            catch(Exception ex) {
+                PrintOut(
+                    null,
+                    true,
+                    false,
+                    "Exception: " + ex.Message
+                );
+                PrintOut(
+                    null,
+                    true,
+                    false,
+                    "Stream: " + response.Content.ReadAsStringAsync().Result
+                );
+            }
+
+            PrintOut(responseData, false, false);
+            return responseData;
+        }
+
+        public IEnumerable<ITestCollection> OrderTestCollections(
+            IEnumerable<ITestCollection> testCollections
+        ) => testCollections.OrderBy(
+            collection => collection.DisplayName
+        );
     }
 }
