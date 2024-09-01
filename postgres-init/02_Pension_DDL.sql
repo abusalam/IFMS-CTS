@@ -293,7 +293,6 @@ COMMENT ON TABLE cts_pension.ppo_status_flags IS 'PensionModuleSchema v1';
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_component_revisions (
   id bigserial NOT NULL PRIMARY KEY,
-  treasury_code character varying(3) NOT NULL,
   pensioner_id bigint NOT NULL references cts_pension.pensioners(id),
   ppo_id integer NOT NULL,
   rate_id bigint NOT NULL references cts_pension.component_rates(id),
