@@ -18,6 +18,7 @@ namespace CTS_BE.Tests.Controllers
             PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
             var ppoReceipt = new PpoReceiptFactory().Create();
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
                     "/api/v1/manual-ppo/receipts",
                     ppoReceipt
