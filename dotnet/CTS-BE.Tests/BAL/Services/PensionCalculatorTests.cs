@@ -101,17 +101,19 @@ namespace CTS_BE.Tests.BAL.Services
         }
 
         [Theory]
-        [InlineData("2010-01-01", "2010-11-20", 10, "Period is 10 months")]
-        [InlineData("2010-01-15", "2010-03-31", 2, "Period is 2 months")]
-        [InlineData("2010-02-01", "2021-02-28", 133, "Period is 133 months")]
-        public void PensionCalculator_CalculatePeriodInMonths(string fromDate, string toDate, int expected, string because) {
+        [InlineData("2010-01-01", "2010-01-20", 0, 20, "Period is 0 months and 20 days")]
+        [InlineData("2010-02-20", "2010-01-01", 1, 20, "Period is 1 month and 20 days")]
+        [InlineData("2010-01-15", "2010-02-15", 1, 1, "Period is 1 months and 1 days")]
+        [InlineData("2016-02-01", "2016-09-30", 8, 0, "Period is 8 months and 0 days")]
+        public void PensionCalculator_CalculateMonthsAndDays(string fromDate, string toDate, int expectedMonths, int expectedDays, string because) {
             // Arrange
             DateOnly fromDateOnly = DateOnly.Parse(fromDate);
             DateOnly toDateOnly = DateOnly.Parse(toDate);
             // Act
-            int result = PensionCalculator.CalculatePeriodInMonths(fromDateOnly, toDateOnly);
+            int calculatedMonths = PensionCalculator.CalculateMonthsAndDays(fromDateOnly, toDateOnly, out int calculatedDays);
             // Assert
-            result.Should().Be(expected, because);
+            calculatedMonths.Should().Be(expectedMonths, because);
+            calculatedDays.Should().Be(expectedDays, because);
         }
     }
 }
