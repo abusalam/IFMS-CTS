@@ -50,7 +50,7 @@ namespace CTS_BE.Tests.Helper
                 StatusFlag = 12,
                 StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-20")),
                 CreatedAt = dateTime,
-                CreatedBy = null,
+                CreatedBy = 39,
                 UpdatedAt = null,
                 UpdatedBy = null,
                 ActiveFlag = true
@@ -76,7 +76,7 @@ namespace CTS_BE.Tests.Helper
                 targetEntity.StatusFlag.Should().Be(2);
                 targetEntity.StatusWef.Should().Be(DateOnly.FromDateTime(DateTime.Parse("2024-07-25")));
                 targetEntity.CreatedAt.Should().Be(dateTime);
-                targetEntity.CreatedBy.Should().Be(null);
+                targetEntity.CreatedBy.Should().Be(39);
                 targetEntity.UpdatedAt.Should().Be(null);
                 targetEntity.UpdatedBy.Should().Be(null);
                 targetEntity.ActiveFlag.Should().Be(true);
@@ -98,7 +98,7 @@ namespace CTS_BE.Tests.Helper
                 StatusFlag = 12,
                 StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-20")),
                 CreatedAt = dateTime,
-                CreatedBy = null,
+                CreatedBy = 39,
                 UpdatedAt = null,
                 UpdatedBy = null,
                 ActiveFlag = true
@@ -117,7 +117,7 @@ namespace CTS_BE.Tests.Helper
                 targetEntity.StatusFlag.Should().Be(12);
                 targetEntity.StatusWef.Should().Be(DateOnly.FromDateTime(DateTime.Parse("2024-07-20")));
                 targetEntity.CreatedAt.Should().Be(dateTime);
-                targetEntity.CreatedBy.Should().Be(null);
+                targetEntity.CreatedBy.Should().Be(39);
                 targetEntity.UpdatedAt.Should().Be(null);
                 targetEntity.UpdatedBy.Should().Be(null);
                 targetEntity.ActiveFlag.Should().Be(true);
