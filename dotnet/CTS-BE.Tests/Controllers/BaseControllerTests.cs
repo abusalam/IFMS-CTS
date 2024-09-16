@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading.Tasks;
 using CTS_BE.Helper;
 using Newtonsoft.Json;
-using NuGet.Protocol;
-using Xunit;
 using Xunit.Abstractions;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
@@ -54,9 +49,9 @@ namespace CTS_BE.Tests.Controllers
         {
             PrintOut(dataEntryDTO, false, true);
 
-            HttpResponseMessage? response = await this.GetHttpClient()
+            using HttpResponseMessage response = await this.GetHttpClient()
                 .PostAsJsonAsync(url, dataEntryDTO);
-            Stream? responseContentStream = await response.Content.ReadAsStreamAsync();
+            using Stream responseContentStream = await response.Content.ReadAsStreamAsync();
 
             JsonAPIResponse<TRespDTO>? responseData = null;
             try {
@@ -81,6 +76,123 @@ namespace CTS_BE.Tests.Controllers
                     "Stream: " + response.Content.ReadAsStringAsync().Result
                 );
             }
+
+            PrintOut(responseData, false, false);
+            return responseData;
+        }
+
+        protected async Task<JsonAPIResponse<TRespDTO>?> CallPutAsJsonAsync<TRespDTO, TEntryDTO>(
+            string url,
+            TEntryDTO dataEntryDTO
+        )
+        {
+            PrintOut(dataEntryDTO, false, true);
+
+            using HttpResponseMessage response = await this.GetHttpClient()
+                .PutAsJsonAsync(url, dataEntryDTO);
+            using Stream responseContentStream = await response.Content.ReadAsStreamAsync();
+
+            JsonAPIResponse<TRespDTO>? responseData = null;
+            try {
+
+                responseData = System.Text.Json.JsonSerializer
+                    .Deserialize<JsonAPIResponse<TRespDTO>>(
+                            responseContentStream,
+                            GetJsonSerializerOptions()
+                        );
+            }
+            catch(Exception ex) {
+                PrintOut(
+                    null,
+                    true,
+                    false,
+                    "Exception: " + ex.Message
+                );
+                PrintOut(
+                    null,
+                    true,
+                    false,
+                    "Stream: " + response.Content.ReadAsStringAsync().Result
+                );
+            }
+
+            PrintOut(responseData, false, false);
+            return responseData;
+        }
+
+        protected async Task<JsonAPIResponse<TRespDTO>?> CallGetAsJsonAsync<TRespDTO>(
+            string url
+        )
+        {
+            PrintOut(url, true, true);
+
+            using HttpResponseMessage response = await this.GetHttpClient().GetAsync(url);
+
+            using Stream responseContentStream = await response.Content.ReadAsStreamAsync();
+
+            JsonAPIResponse<TRespDTO>? responseData = null;
+            try {
+
+                responseData = System.Text.Json.JsonSerializer
+                    .Deserialize<JsonAPIResponse<TRespDTO>>(
+                            responseContentStream,
+                            GetJsonSerializerOptions()
+                        );
+            }
+            catch(Exception ex) {
+                PrintOut(
+                    null,
+                    true,
+                    false,
+                    "Exception: " + ex.Message
+                );
+                PrintOut(
+                    null,
+                    true,
+                    false,
+                    "Stream: " + response.Content.ReadAsStringAsync().Result
+                );
+            }
+
+
+            PrintOut(responseData, false, false);
+            return responseData;
+        }
+
+        protected async Task<JsonAPIResponse<TRespDTO>?> CallDeleteAsJsonAsync<TRespDTO>(
+            string url
+        )
+        {
+            PrintOut(url, true, true);
+
+            using HttpResponseMessage response = await this.GetHttpClient().DeleteAsync(url);
+
+            using Stream responseContentStream = await response.Content.ReadAsStreamAsync();
+
+            JsonAPIResponse<TRespDTO>? responseData = null;
+            try {
+
+                responseData = System.Text.Json.JsonSerializer
+                    .Deserialize<JsonAPIResponse<TRespDTO>>(
+                            responseContentStream,
+                            GetJsonSerializerOptions()
+                        );
+            }
+            catch(Exception ex) {
+                PrintOut(
+                    null,
+                    true,
+                    false,
+                    "Exception: " + ex.Message
+                );
+                PrintOut(
+                    null,
+                    true,
+                    false,
+                    "Stream: " + response.Content.ReadAsStringAsync().Result
+                );
+            }
+
 
             PrintOut(responseData, false, false);
             return responseData;
