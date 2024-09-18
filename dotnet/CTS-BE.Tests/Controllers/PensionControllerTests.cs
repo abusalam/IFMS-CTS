@@ -10,6 +10,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Diagnostics;
 using CTS_BE.Helper;
+using CTS_BE.PensionEnum;
 
 namespace CTS_BE.Tests.Controllers
 {
@@ -21,26 +22,20 @@ namespace CTS_BE.Tests.Controllers
             // Arrange
             PensionStatusEntryDTO pensionStatusEntryDTO = new() {
                 PpoId = 10,
-                StatusFlag = 12,
+                StatusFlag = PensionStatusFlag.PpoRunning,
                 StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-25"))
             };
-            PrintOut("RequestInConsole:" + JsonSerializer.Serialize(pensionStatusEntryDTO));
 
             // Act
-            var response = await this.GetHttpClient()
-                .PostAsJsonAsync("/api/v1/echo", pensionStatusEntryDTO);
-            var responseContentStream = await response.Content.ReadAsStreamAsync();
-            // PrintOut("ResponseInConsole:" + response.Content.ReadAsStringAsync().Result);
-            var responseData = JsonSerializer
-                .Deserialize<JsonAPIResponse<object>>(
-                        responseContentStream,
-                        GetJsonSerializerOptions()
-                    );
-            PrintOut("ResponseData => " + JsonSerializer.Serialize(responseData));
+            var responseData = await CallPostAsJsonAsync<Object, PensionStatusEntryDTO>(
+                "/api/v1/echo",
+                pensionStatusEntryDTO
+            );
+
             // Assert
             using (new AssertionScope())
             responseData.Should().NotBeNull();
-            responseData.Should().BeOfType<JsonAPIResponse<object>>();
+            responseData.Should().BeOfType<JsonAPIResponse<Object>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             responseData?.Message.Should().Be("Echoing Request");
             responseData?.Result?.ToString().Should().Be(
@@ -53,20 +48,14 @@ namespace CTS_BE.Tests.Controllers
         {
             // Arrange
             var content = new DateOnlyDTO() {
-                    DateOnly = DateOnly.FromDateTime(DateTime.Parse("2024-07-29")) 
-                };
-            PrintOut("RequestInConsole:" + JsonSerializer.Serialize(content));
+                DateOnly = DateOnly.FromDateTime(DateTime.Parse("2024-07-29")) 
+            };
 
             // Act
-            var response = await this.GetHttpClient()
-                .PostAsJsonAsync("/api/v1/date-only", content);
-            var responseContentStream = await response.Content.ReadAsStreamAsync();
-            var responseData = JsonSerializer
-                .Deserialize<JsonAPIResponse<DateOnlyDTO>>(
-                        responseContentStream,
-                        GetJsonSerializerOptions()
-                    );
-            PrintOut("ResponseData => " + response.Content.ReadAsStringAsync().Result);
+            var responseData = await CallPostAsJsonAsync<DateOnlyDTO, DateOnlyDTO>(
+                "/api/v1/date-only",
+                content
+            );
 
             // Assert
             using (new AssertionScope())
@@ -83,8 +72,9 @@ namespace CTS_BE.Tests.Controllers
             // Arrange
 
             // Act
-            var response = await this.GetHttpClient()
-                .GetFromJsonAsync<JsonAPIResponse<DateOnly>>("/api/v1/date-only");
+            var response = await CallGetAsJsonAsync<DateOnly>(
+                "/api/v1/date-only"
+            );
 
             // Assert
             using (new AssertionScope())

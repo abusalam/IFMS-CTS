@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CTS_BE.DTOs;
 using CTS_BE.Factories.Pension;
 using CTS_BE.Helper;
+using CTS_BE.PensionEnum;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Xunit;
@@ -149,6 +150,17 @@ namespace CTS_BE.Tests.Controllers
                 $"/api/v1/ppo/{ppoId}/bank-accounts",
                 bankAccountEntryDTO
             );
+
+            PensionStatusEntryDTO pensionStatusEntryDTO = new () {
+                PpoId = ppoId,
+                StatusFlag = PensionStatusFlag.PpoApproved,
+                StatusWef = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _ = await CallPostAsJsonAsync<PensionStatusEntryDTO, PensionStatusEntryDTO>(
+                "/api/v1/ppo/status",
+                pensionStatusEntryDTO
+            );
+
             InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
                 PpoId = ppoId,
                 ToDate = DateOnly.FromDateTime(DateTime.Now)

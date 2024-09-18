@@ -9,6 +9,7 @@ using System.Dynamic;
 using CTS_BE.Helper;
 using CTS_BE.DAL.Entities.Pension;
 using CTS_BE.DTOs;
+using CTS_BE.PensionEnum;
 
 namespace CTS_BE.Tests.Helper
 {
@@ -47,7 +48,7 @@ namespace CTS_BE.Tests.Helper
                 FinancialYear = 2024,
                 TreasuryCode = "BAA",
                 PpoId = 2,
-                StatusFlag = 12,
+                StatusFlag = PensionStatusFlag.PpoApproved,
                 StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-20")),
                 CreatedAt = dateTime,
                 CreatedBy = 39,
@@ -59,7 +60,7 @@ namespace CTS_BE.Tests.Helper
 
             PensionStatusDTO srcDTO = new()
             {
-                StatusFlag = 2,
+                StatusFlag = PensionStatusFlag.FirstPensionBillApproved,
                 StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-25")),
             };
 
@@ -73,7 +74,7 @@ namespace CTS_BE.Tests.Helper
                 targetEntity.FinancialYear.Should().Be(2024);
                 targetEntity.TreasuryCode.Should().Be("BAA");
                 targetEntity.PpoId.Should().Be(2);
-                targetEntity.StatusFlag.Should().Be(2);
+                targetEntity.StatusFlag.Should().Be(PensionStatusFlag.FirstPensionBillApproved);
                 targetEntity.StatusWef.Should().Be(DateOnly.FromDateTime(DateTime.Parse("2024-07-25")));
                 targetEntity.CreatedAt.Should().Be(dateTime);
                 targetEntity.CreatedBy.Should().Be(39);
@@ -95,7 +96,7 @@ namespace CTS_BE.Tests.Helper
                 FinancialYear = 2024,
                 TreasuryCode = "BAA",
                 PpoId = 2,
-                StatusFlag = 12,
+                StatusFlag = PensionStatusFlag.PpoApproved,
                 StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-20")),
                 CreatedAt = dateTime,
                 CreatedBy = 39,
@@ -114,7 +115,7 @@ namespace CTS_BE.Tests.Helper
                 targetEntity.FinancialYear.Should().Be(2024);
                 targetEntity.TreasuryCode.Should().Be("BAA");
                 targetEntity.PpoId.Should().Be(2);
-                targetEntity.StatusFlag.Should().Be(12);
+                targetEntity.StatusFlag.Should().Be(PensionStatusFlag.PpoApproved);
                 targetEntity.StatusWef.Should().Be(DateOnly.FromDateTime(DateTime.Parse("2024-07-20")));
                 targetEntity.CreatedAt.Should().Be(dateTime);
                 targetEntity.CreatedBy.Should().Be(39);
@@ -134,7 +135,7 @@ namespace CTS_BE.Tests.Helper
             PensionStatusDTO srcDTO = new()
             {
                 DataSource = null,
-                StatusFlag = 2,
+                StatusFlag = PensionStatusFlag.PpoApproved,
                 StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-25")),
             };
             // Act

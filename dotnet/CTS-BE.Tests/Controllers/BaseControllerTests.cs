@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using CTS_BE.Helper;
 using Newtonsoft.Json;
 using Xunit.Abstractions;
@@ -22,6 +23,7 @@ namespace CTS_BE.Tests.Controllers
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                     WriteIndented = true
                 };
+            _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         }
         public HttpClient GetHttpClient() => _client;
         public JsonSerializerOptions GetJsonSerializerOptions() => _jsonSerializerOptions;
