@@ -1,14 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Bogus;
-using CTS_BE.BAL.Services.Pension;
-using CTS_BE.DAL.Repositories.Pension;
 using CTS_BE.DTOs;
 using CTS_BE.Helper;
-using CTS_BE.Tests.Factory;
+using CTS_BE.Factories.Pension;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using NPOI.SS.Formula.Functions;

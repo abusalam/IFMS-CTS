@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using CTS_BE.DTOs;
+using CTS_BE.Factories.Pension;
 using CTS_BE.Helper;
-using CTS_BE.Tests.Factory;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Xunit;
 
 namespace CTS_BE.Tests.Controllers
 {

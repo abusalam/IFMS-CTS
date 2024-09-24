@@ -25,7 +25,7 @@ namespace CTS_BE.Tests.Controllers
                 };
             _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         }
-        public HttpClient GetHttpClient() => _client;
+        private HttpClient GetHttpClient() => _client;
         public JsonSerializerOptions GetJsonSerializerOptions() => _jsonSerializerOptions;
 
         public static void PrintOut(object? dataObject, bool noPrettyPrint = true, bool isRequest = false, string message = "") {
@@ -49,6 +49,7 @@ namespace CTS_BE.Tests.Controllers
             TEntryDTO dataEntryDTO
         )
         {
+            PrintOut(null, true, true);
             PrintOut(dataEntryDTO, false, true);
 
             using HttpResponseMessage response = await this.GetHttpClient()
@@ -88,6 +89,7 @@ namespace CTS_BE.Tests.Controllers
             TEntryDTO dataEntryDTO
         )
         {
+            PrintOut(null, true, true, url);
             PrintOut(dataEntryDTO, false, true);
 
             using HttpResponseMessage response = await this.GetHttpClient()
@@ -126,7 +128,7 @@ namespace CTS_BE.Tests.Controllers
             string url
         )
         {
-            PrintOut(url, true, true);
+            PrintOut(null, true, true, url);
 
             using HttpResponseMessage response = await this.GetHttpClient().GetAsync(url);
 
@@ -165,7 +167,7 @@ namespace CTS_BE.Tests.Controllers
             string url
         )
         {
-            PrintOut(url, true, true);
+            PrintOut(null, true, true, url);
 
             using HttpResponseMessage response = await this.GetHttpClient().DeleteAsync(url);
 

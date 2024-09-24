@@ -1,4 +1,3 @@
-using CTS_BE.DAL.Entities;
 using CTS_BE.DTOs;
 using CTS_BE.Factories.Pension;
 using CTS_BE.Helper;
@@ -154,6 +153,148 @@ namespace CTS_BE.Tests.Controllers
 
             // Assert
             saveRegularBill?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
+        }
+
+        [Fact]
+        public async Task PpoBillController_GetFirstPensionBillByPpoId_CanGet()
+        {
+            // Arrange
+            PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
+            ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
+            pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
+            _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
+                    "/api/v1/manual-ppo/receipts",
+                    ppoReceipt
+                );
+            JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
+                "/api/v1/ppo/details",
+                pensionerEntryDTO
+            );
+            
+            int ppoId = pensioner?.Result?.PpoId ?? 0;
+            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
+            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
+                $"/api/v1/ppo/{ppoId}/bank-accounts",
+                bankAccountEntryDTO
+            );
+
+            PensionStatusEntryDTO pensionStatusEntryDTO = new () {
+                PpoId = ppoId,
+                StatusFlag = PensionStatusFlag.PpoApproved,
+                StatusWef = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _ = await CallPostAsJsonAsync<PensionStatusEntryDTO, PensionStatusEntryDTO>(
+                "/api/v1/ppo/status",
+                pensionStatusEntryDTO
+            );
+            
+            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
+                PpoId = ppoId,
+                ToDate = DateOnly.FromDateTime(DateTime.Now)
+            };
+
+            _ = await CallPostAsJsonAsync<InitiateFirstPensionBillResponseDTO, InitiateFirstPensionBillDTO>(
+                $"/api/v1/ppo/first-bill",
+                initiateFirstPensionBillDTO
+            );
+
+            // Act
+            var firstBill = await CallGetAsJsonAsync<PpoBillResponseDTO>(
+                $"/api/v1/ppo/first-bill/{ppoId}"
+            );
+
+            // Assert
+            using (new AssertionScope())
+            firstBill?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
+            firstBill?.Result?.Pensioner.PpoId.Should().Be(ppoId);
+
+        }
+    
+        [Fact]
+        public async Task PpoBillController_GetAllPposForRegularBill_CanGet()
+        {
+            // Arrange
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+
+            // Act
+            var firstBill = await CallGetAsJsonAsync<PpoListResponseDTO>(
+                $"/api/v1/ppo/pension-bill/{year}/{month}/ppos"
+            );
+            // Assert
+            using (new AssertionScope())
+            firstBill?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
+            firstBill?.Result.Should().NotBeNull();
+            firstBill?.Result?.PpoList.Count.Should().BeGreaterThan(0);
+        }
+
+        [Fact]
+        public async Task PpoBillController_GetAllRegularPensionBills_CanGet()
+        {
+            // Arrange
+            PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
+            ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
+            pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
+            _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
+                    "/api/v1/manual-ppo/receipts",
+                    ppoReceipt
+                );
+            JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
+                "/api/v1/ppo/details",
+                pensionerEntryDTO
+            );
+            
+            int ppoId = pensioner?.Result?.PpoId ?? 0;
+            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
+            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
+                $"/api/v1/ppo/{ppoId}/bank-accounts",
+                bankAccountEntryDTO
+            );
+
+            PensionStatusEntryDTO pensionStatusEntryDTO = new () {
+                PpoId = ppoId,
+                StatusFlag = PensionStatusFlag.PpoApproved,
+                StatusWef = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _ = await CallPostAsJsonAsync<PensionStatusEntryDTO, PensionStatusEntryDTO>(
+                "/api/v1/ppo/status",
+                pensionStatusEntryDTO
+            );
+
+            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
+                PpoId = ppoId,
+                ToDate = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _ = await CallPostAsJsonAsync<InitiateFirstPensionBillResponseDTO, InitiateFirstPensionBillDTO>(
+                $"/api/v1/ppo/first-bill",
+                initiateFirstPensionBillDTO
+            );
+
+            PpoBillEntryDTO ppoBillEntryDTO = new () {
+                PpoId = ppoId,
+                ToDate = DateOnly.FromDateTime(DateTime.Now)
+            };
+
+            _ = await CallPostAsJsonAsync<PpoBillSaveResponseDTO, PpoBillEntryDTO>(
+                $"/api/v1/ppo/pension-bill",
+                ppoBillEntryDTO
+            );
+
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+
+            // Act
+            var firstBill = await CallGetAsJsonAsync<BillListResponseDTO>(
+                $"/api/v1/ppo/pension-bill/{year}/{month}/regular-bills"
+            );
+
+            // Assert
+            using (new AssertionScope())
+            firstBill?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
+            firstBill?.Result.Should().NotBeNull();
+            firstBill?.Result?.Bills.Count.Should().BeGreaterThan(0);
         }
     }
 }

@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CTS_BE.DTOs;
 using CTS_BE.Factories.Pension;
 using CTS_BE.Helper;
 using CTS_BE.PensionEnum;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using Xunit;
 
 namespace CTS_BE.Tests.Controllers
 {
@@ -32,20 +27,6 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
-                PpoId = ppoId,
-                ToDate = DateOnly.FromDateTime(DateTime.Now)
-            };
-
-            JsonAPIResponse<InitiateFirstPensionBillResponseDTO>? saveFirstBill = await CallPostAsJsonAsync<InitiateFirstPensionBillResponseDTO, InitiateFirstPensionBillDTO>(
-                $"/api/v1/ppo/first-bill",
-                initiateFirstPensionBillDTO
-            );
 
             PpoComponentRevisionEntryDTO ppoComponentRevisionEntryDTO = new () {
                 RateId = 39,
@@ -84,20 +65,6 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
-                PpoId = ppoId,
-                ToDate = DateOnly.FromDateTime(DateTime.Now)
-            };
-
-            _ = await CallPostAsJsonAsync<InitiateFirstPensionBillResponseDTO, InitiateFirstPensionBillDTO>(
-                $"/api/v1/ppo/first-bill",
-                initiateFirstPensionBillDTO
-            );
 
             PpoComponentRevisionEntryDTO ppoComponentRevisionEntryDTO = new () {
                 RateId = 39,
@@ -213,31 +180,6 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
-                PpoId = ppoId,
-                ToDate = DateOnly.FromDateTime(DateTime.Now)
-            };
-
-            _ = await CallPostAsJsonAsync<InitiateFirstPensionBillResponseDTO, InitiateFirstPensionBillDTO>(
-                $"/api/v1/ppo/first-bill",
-                initiateFirstPensionBillDTO
-            );
-
-
-            PpoBillEntryDTO ppoBillEntryDTO = new () {
-                PpoId = ppoId,
-                ToDate = DateOnly.FromDateTime(DateTime.Now)
-            };
-
-            _ = await CallPostAsJsonAsync<PpoBillSaveResponseDTO, PpoBillEntryDTO>(
-                $"/api/v1/ppo/pension-bill",
-                ppoBillEntryDTO
-            );
 
             PpoComponentRevisionEntryDTO ppoComponentRevisionEntryDTO = new () {
                 RateId = 39,

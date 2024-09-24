@@ -1,14 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using CTS_BE.DTOs;
-using System.Net.Http.Json;
 using System.Text.Json;
-using System.Diagnostics;
 using CTS_BE.Helper;
 using CTS_BE.PensionEnum;
 
