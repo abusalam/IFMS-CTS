@@ -89,7 +89,7 @@ jobs:
         run: |
           docker-compose exec angular-test npm ci
       - name: Run Playwright tests
-        run: docker-compose exec angular-test npm test
+        run: docker-compose exec angular-test xvfb-run npx playwright test --reporter=list --headed
         # env:
         #   NG_APP_ENV_DOCKER: true
       - uses: actions/upload-artifact@v4
