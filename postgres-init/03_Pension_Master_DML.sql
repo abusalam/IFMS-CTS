@@ -26,6 +26,17 @@ INSERT INTO cts_pension.categories(
   (48, 1, 2, 'College( Government) Pension-ROPA 2009', 39, true);
 SELECT setval('cts_pension.categories_id_seq', 139, true);
 
+INSERT INTO cts_pension.banks (
+  id, treasury_code, bank_name, created_by, active_flag) VALUES
+  (1, 'DAA', 'State Bank of India', 39, true),
+  (2, 'DAA', 'Malda District Central Co-operative Bank', 39, true);
+INSERT INTO cts_pension.branches (
+  id, treasury_code, bank_id, ifsc_code, micr_code, branch_name, branch_address, created_by, active_flag) VALUES
+  (1, 'DAA', 1, 'SBIN0000001', '732002531', 'PUKURIA MORE', 'VILLAGE, PUKHURIA MORE PS: PUKHURIA, POST OFFICE: ARAIDANGA, PO & DISTRICT MALDA', 39, true),
+  (2, 'DAA', 1, 'SBIN0000002', '700002746', 'SBI INTOUCH SARAT BOSE ROAD', '88A, SARAT BOSE ROAD KOLKATA, PIN-700026', 39, true),
+  (3, 'DAA', 2, 'CCCB0000003', '732002532', 'PUKURIA MORE', 'VILLAGE, PUKHURIA MORE PS: PUKHURIA, POST OFFICE: ARAIDANGA, PO & DISTRICT MALDA', 39, true),
+  (4, 'DAA', 2, 'CCCB0000004', '700002747', 'MDCCB INTOUCH SARAT BOSE ROAD', '88A, SARAT BOSE ROAD KOLKATA, PIN-700026', 39, true);
+
 INSERT INTO cts_pension.breakups(
 	id, component_name, component_type, relief_flag, created_by, active_flag) VALUES 
   (1, 'BASIC PENSION', 'P', false, 39, true),
@@ -67,8 +78,8 @@ INSERT INTO cts_pension.ppo_receipts (
   (2024,'DAA','DAA2024000001','PPO-955487','Jack Dowsel','2024-07-15','9090445140','2024-08-01','A','N','PPO Received',39,true);
 SELECT setval('cts_pension.ppo_receipts_id_seq', 2, true);
 INSERT INTO cts_pension.pensioners 
-  (id, financial_year, treasury_code, receipt_id, ppo_id, ppo_no, ppo_type, ppo_sub_type, category_id, pensioner_name, date_of_birth, gender, mobile_number, email_id, pensioner_address, identification_mark, pan_no, aadhaar_no, date_of_retirement, date_of_commencement, basic_pension_amount, commuted_pension_amount, enhance_pension_amount, reduced_pension_amount, religion, created_by, active_flag) VALUES
-  (1, 2024, 'DAA', 1, 1, 'PPO-296128', 'P', 'N', 30, 'Jack Dowsel', '2024-08-10', 'M', '8882371949', 'string', 'Malda', 'S', 'PANNO4614F', '945148468446', '1997-03-25', '1997-03-26', 10000, 2000, 10000, 8000, 'H', 39, true);
+  (id, financial_year, treasury_code, receipt_id, ppo_id, ppo_no, ppo_type, ppo_sub_type, category_id, branch_id, account_holder_name, pay_mode, bank_ac_no, pensioner_name, date_of_birth, gender, mobile_number, email_id, pensioner_address, identification_mark, pan_no, aadhaar_no, date_of_retirement, date_of_commencement, basic_pension_amount, commuted_pension_amount, enhance_pension_amount, reduced_pension_amount, religion, created_by, active_flag) VALUES
+  (1, 2024, 'DAA', 1, 1, 'PPO-296128', 'P', 'N', 30, 1, 'Jack Dowsel', 'C', '9876543456789', 'Jack Dowsel', '2024-08-10', 'M', '8882371949', 'string', 'Malda', 'S', 'PANNO4614F', '945148468446', '1997-03-25', '1997-03-26', 10000, 2000, 10000, 8000, 'H', 39, true);
 SELECT setval('cts_pension.pensioners_id_seq', 2, true);
 INSERT INTO cts_pension.ppo_id_sequences 
 (id, financial_year, treasury_code, next_sequence_value, created_by, active_flag) VALUES

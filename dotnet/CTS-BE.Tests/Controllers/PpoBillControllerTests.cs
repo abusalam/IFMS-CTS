@@ -27,11 +27,7 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
+
             InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
                 PpoId = ppoId,
                 ToDate = DateOnly.FromDateTime(DateTime.Now)
@@ -66,11 +62,6 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
                 PpoId = ppoId,
@@ -115,11 +106,6 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
                 PpoId = ppoId,
@@ -140,8 +126,13 @@ namespace CTS_BE.Tests.Controllers
                 initiateFirstPensionBillDTO
             );
 
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+
             PpoBillEntryDTO ppoBillEntryDTO = new () {
                 PpoId = ppoId,
+                Year = year,
+                Month = month,
                 ToDate = DateOnly.FromDateTime(DateTime.Now)
             };
 
@@ -173,11 +164,6 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
                 PpoId = ppoId,
@@ -247,11 +233,6 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
                 PpoId = ppoId,
@@ -267,13 +248,18 @@ namespace CTS_BE.Tests.Controllers
                 PpoId = ppoId,
                 ToDate = DateOnly.FromDateTime(DateTime.Now)
             };
-            _ = await CallPostAsJsonAsync<InitiateFirstPensionBillResponseDTO, InitiateFirstPensionBillDTO>(
+            _ = await CallPostAsJsonAsync<PpoBillSaveResponseDTO, InitiateFirstPensionBillDTO>(
                 $"/api/v1/ppo/first-bill",
                 initiateFirstPensionBillDTO
             );
 
+            int year = DateTime.Now.Year;
+            int month = DateTime.Now.Month;
+
             PpoBillEntryDTO ppoBillEntryDTO = new () {
                 PpoId = ppoId,
+                Month = month,
+                Year = year,
                 ToDate = DateOnly.FromDateTime(DateTime.Now)
             };
 
@@ -282,11 +268,9 @@ namespace CTS_BE.Tests.Controllers
                 ppoBillEntryDTO
             );
 
-            int year = DateTime.Now.Year;
-            int month = DateTime.Now.Month;
 
             // Act
-            var firstBill = await CallGetAsJsonAsync<BillListResponseDTO>(
+            var firstBill = await CallGetAsJsonAsync<RegularBillListResponseDTO>(
                 $"/api/v1/ppo/pension-bill/{year}/{month}/regular-bills"
             );
 
@@ -294,7 +278,7 @@ namespace CTS_BE.Tests.Controllers
             using (new AssertionScope())
             firstBill?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             firstBill?.Result.Should().NotBeNull();
-            firstBill?.Result?.Bills.Count.Should().BeGreaterThan(0);
+            firstBill?.Result?.RegularBillCount.Should().BeGreaterThan(0);
         }
     }
 }
