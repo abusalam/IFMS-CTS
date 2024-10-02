@@ -161,6 +161,36 @@ COMMENT ON COLUMN cts_pension.component_rates.effective_from_date IS 'Effective 
 COMMENT ON COLUMN cts_pension.component_rates.rate_type IS 'P - Percentage; A - Amount;';
 
 
+CREATE TABLE IF NOT EXISTS cts_pension.banks (
+  id bigserial NOT NULL PRIMARY KEY,
+  treasury_code character varying(3) NOT NULL,
+  bank_name character varying(100) NOT NULL UNIQUE,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.banks IS 'PensionModuleSchema v1';
+
+
+CREATE TABLE IF NOT EXISTS cts_pension.branches (
+  id bigserial NOT NULL PRIMARY KEY,
+  treasury_code character varying(3) NOT NULL,
+  bank_id bigint NOT NULL references cts_pension.banks(id),
+  branch_name character varying(100) NOT NULL,
+  branch_address character varying(500) NOT NULL,
+  ifsc_code character varying(11) NOT NULL,
+  micr_code character varying(11) NOT NULL,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.branches IS 'PensionModuleSchema v1';
+
+
 CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer NOT NULL,
@@ -171,10 +201,14 @@ CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
   ppo_type CHAR(1) NOT NULL,
   ppo_sub_type CHAR(1) NOT NULL,
   category_id bigint NOT NULL references cts_pension.categories(id),
-	pensioner_name character varying(100) NOT NULL , 
+  branch_id bigint NOT NULL references cts_pension.branches(id),
+	bank_ac_no character varying(30) NOT NULL,
+	account_holder_name character varying(100) NOT NULL,
+  pay_mode CHAR(1) NOT NULL,
+	pensioner_name character varying(100) NOT NULL, 
 	date_of_birth date NOT NULL,
 	date_of_death date DEFAULT NULL,
-	gender CHAR(1),
+	gender CHAR(1) NOT NULL,
 	mobile_number character varying(10), 
 	email_id character varying(100), 
 	pensioner_address character varying(500), 
@@ -261,28 +295,6 @@ CREATE TABLE IF NOT EXISTS cts_pension.life_certificates (
 COMMENT ON TABLE cts_pension.life_certificates IS 'PensionModuleSchema v1';
 
 
-CREATE TABLE IF NOT EXISTS cts_pension.bank_accounts (
-  id bigserial NOT NULL PRIMARY KEY,
-  financial_year integer NOT NULL,
-  treasury_code character varying(3) NOT NULL,
-  pensioner_id bigint NOT NULL references cts_pension.pensioners(id),
-	ppo_id integer NOT NULL,
-	account_holder_name character varying(100) NOT NULL,
-  pay_mode CHAR(1) NOT NULL,
-	bank_ac_no character varying(30),
-	ifsc_code character varying(11),
-  bank_code bigint,
-  branch_code bigint,
-	created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  created_by integer NOT NULL,
-  updated_at timestamp without time zone DEFAULT NULL,
-  updated_by integer,
-  active_flag boolean NOT NULL,
-  UNIQUE(ppo_id, treasury_code)
-);
-COMMENT ON TABLE cts_pension.bank_accounts IS 'PensionModuleSchema v1';
-
-
 CREATE TABLE IF NOT EXISTS cts_pension.nominees (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer NOT NULL,
@@ -360,6 +372,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.bills (
   financial_year integer NOT NULL,
   treasury_code character varying(3) NOT NULL,
   hoa_id character varying(50) NOT NULL,
+  branch_id bigint NOT NULL references cts_pension.branches(id),
   bill_no integer NOT NULL,
   bill_date date NOT NULL,
   treasury_voucher_no character varying(100),
@@ -384,7 +397,6 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bills (
   treasury_code character varying(3) NOT NULL,
   bill_id bigint NOT NULL references cts_pension.bills(id),
   pensioner_id bigint NOT NULL references cts_pension.pensioners(id),
-  bank_account_id bigint NOT NULL references cts_pension.bank_accounts(id),
   ppo_id integer NOT NULL,
   bill_type CHAR(1) NOT NULL,
   utr_no character varying(100),

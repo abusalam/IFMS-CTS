@@ -113,11 +113,6 @@ namespace CTS_BE.Tests.Controllers
             );
             
             int ppoId = pensioner?.Result?.PpoId ?? 0;
-            PensionerBankAcEntryDTO bankAccountEntryDTO = new BankAccountFactory().Create();
-            _ = await CallPostAsJsonAsync<PensionerBankAcResponseDTO, PensionerBankAcEntryDTO>(
-                $"/api/v1/ppo/{ppoId}/bank-accounts",
-                bankAccountEntryDTO
-            );
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
                 PpoId = ppoId,
