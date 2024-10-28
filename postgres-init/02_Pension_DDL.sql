@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.dml_history (
   treasury_code character varying(3) NOT NULL,
 	ppo_id integer NOT NULL,
   updated_table_field character varying(200) NOT NULL,
-	from_record_id bigint NOT NULL , 
+	from_record_id bigint NOT NULL,
 	to_record_id bigint NOT NULL,
 	updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   updated_by integer
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.uploaded_files (
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true
+  active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.uploaded_files IS 'PensionModuleSchema v1';
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipt_sequences (
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true
+  active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.ppo_receipt_sequences IS 'PensionModuleSchema v1';
 
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_id_sequences (
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true
+  active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.ppo_id_sequences IS 'PensionModuleSchema v1';
 
@@ -77,9 +77,81 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipts (
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean  NOT NULL
+  active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.ppo_receipts IS 'PensionModuleSchema v1';
+
+
+CREATE TABLE IF NOT EXISTS cts_pension.eppo_receipts (
+  id bigserial NOT NULL PRIMARY KEY,
+  financial_year integer NOT NULL,
+  treasury_code character varying(5) NOT NULL,
+	ppo_id integer,
+  pension_appln_no character varying(100) NOT NULL UNIQUE,
+  fresh_revision_flag CHAR(1) NOT NULL,
+  ppo_type_code CHAR(1) NOT NULL,
+  ppo_no character varying(100) NOT NULL,
+  issuing_letter_no character varying(500),
+  issuing_letter_date date,
+  pen_cat_id integer NOT NULL,
+  sanction_authority character varying(500) NOT NULL,
+  sanction_no character varying(500) NOT NULL,
+  sanction_date date NOT NULL,
+  provisional_pension_status CHAR(1) NOT NULL,
+  pensioner_name character varying(100) NOT NULL,
+  religion CHAR(1) NOT NULL,
+	pensioner_address character varying(500),
+  mobile_number character varying(10),
+	aadhaar_no character varying(12),
+  date_of_birth date NOT NULL,
+  date_of_retirement date NOT NULL,
+  date_of_death date DEFAULT NULL,
+  qualifying_service_gross_years integer,
+  qualifying_service_gross_months integer,
+  qualifying_service_gross_days integer,
+  employee_last_pay integer,
+  employee_last_pay_notional integer,
+  commuted_pension_amount integer NOT NULL,
+  withdrawn boolean,
+  withdraw_date date,
+  withdraw_reason character varying(500),
+  ppo_status character varying(100) NOT NULL,
+  photo_file_id bigint references cts_pension.uploaded_files(id),
+  signature_file_id bigint references cts_pension.uploaded_files(id),
+  eppo_file_id bigint references cts_pension.uploaded_files(id),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.eppo_receipts IS 'PensionModuleSchema v1';
+
+
+CREATE TABLE IF NOT EXISTS cts_pension.eppo_revisions (
+  id bigserial NOT NULL PRIMARY KEY,
+  financial_year integer NOT NULL,
+  treasury_code character varying(5) NOT NULL,
+	ppo_id integer,
+  pension_appln_no character varying(100) NOT NULL UNIQUE,
+  ppo_no character varying(100) NOT NULL,
+  issuing_letter_no character varying(500),
+  issuing_letter_date date,
+  fresh_revision_flag CHAR(1) NOT NULL,
+  ppo_type_code CHAR(1) NOT NULL,
+  ppo_sub_type CHAR(1) NOT NULL,
+  pen_cat_id integer NOT NULL,
+  employee_last_pay integer,
+  employee_last_pay_notional integer,
+  commuted_pension_amount integer NOT NULL,
+  eppo_file_id bigint references cts_pension.uploaded_files(id),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.eppo_revisions IS 'PensionModuleSchema v1';
 
 
 CREATE TABLE IF NOT EXISTS cts_pension.primary_categories (
@@ -205,15 +277,15 @@ CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
 	bank_ac_no character varying(30) NOT NULL,
 	account_holder_name character varying(100) NOT NULL,
   pay_mode CHAR(1) NOT NULL,
-	pensioner_name character varying(100) NOT NULL, 
+	pensioner_name character varying(100) NOT NULL,
 	date_of_birth date NOT NULL,
 	date_of_death date DEFAULT NULL,
 	gender CHAR(1) NOT NULL,
-	mobile_number character varying(10), 
-	email_id character varying(100), 
-	pensioner_address character varying(500), 
-	identification_mark character varying(100), 
-	pan_no character varying(10), 
+	mobile_number character varying(10),
+	email_id character varying(100),
+	pensioner_address character varying(500),
+	identification_mark character varying(100),
+	pan_no character varying(10),
 	aadhaar_no character varying(12),
   date_of_retirement date NOT NULL,
   date_of_commencement date NOT NULL,
@@ -224,8 +296,6 @@ CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
   enhance_pension_amount integer NOT NULL,
   reduced_pension_amount integer NOT NULL,
   religion CHAR(1) NOT NULL,
-  photo_file_id bigint references cts_pension.uploaded_files(id),
-  signature_file_id bigint references cts_pension.uploaded_files(id),
 	created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
@@ -289,8 +359,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.life_certificates (
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true,
-  UNIQUE(ppo_id, treasury_code)
+  active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.life_certificates IS 'PensionModuleSchema v1';
 
@@ -301,14 +370,14 @@ CREATE TABLE IF NOT EXISTS cts_pension.nominees (
   treasury_code character varying(3) NOT NULL,
   pensioner_id bigint NOT NULL references cts_pension.pensioners(id),
 	ppo_id integer NOT NULL,
-	nominee_name character varying(100) NOT NULL , 
+	nominee_name character varying(100) NOT NULL ,
 	date_of_birth date NOT NULL,
 	gender CHAR(1),
-	mobile_number character varying(10), 
-	email_id character varying(100), 
-	nominee_address character varying(500), 
-	identification_mark character varying(100), 
-	pan_no character varying(10), 
+	mobile_number character varying(10),
+	email_id character varying(100),
+	nominee_address character varying(500),
+	identification_mark character varying(100),
+	pan_no character varying(10),
 	aadhaar_no character varying(12),
   photo_file_id bigint references cts_pension.uploaded_files(id),
   signature_file_id bigint references cts_pension.uploaded_files(id),
@@ -316,8 +385,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.nominees (
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
-  active_flag boolean DEFAULT true,
-  UNIQUE(ppo_id, treasury_code)
+  active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.nominees IS 'PensionModuleSchema v1';
 
