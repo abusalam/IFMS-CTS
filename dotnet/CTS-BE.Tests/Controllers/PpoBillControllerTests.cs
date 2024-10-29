@@ -10,6 +10,84 @@ namespace CTS_BE.Tests.Controllers
     public class PpoBillControllerTests : BaseControllerTests
     {
         [Fact]
+        public async Task PpoBillController_GetAllPposForFirstBill_CanGet()
+        {
+            // Arrange
+            PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
+            ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
+            pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
+            _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
+                    "/api/v1/manual-ppo/receipts",
+                    ppoReceipt
+                );
+            JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
+                "/api/v1/ppo/details",
+                pensionerEntryDTO
+            );
+
+            int ppoId = pensioner?.Result?.PpoId ?? 0;
+
+            PensionStatusEntryDTO pensionStatusEntryDTO = new () {
+                PpoId = ppoId,
+                StatusFlag = PensionStatusFlag.PpoApproved,
+                StatusWef = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _ = await CallPostAsJsonAsync<PensionStatusEntryDTO, PensionStatusEntryDTO>(
+                "/api/v1/ppo/status",
+                pensionStatusEntryDTO
+            );
+
+            // Act
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>? response = await CallGetAsJsonAsync<TableResponseDTO<PensionerListItemDTO>>(
+                $"/api/v1/ppo/first-bill/ppos"
+            );
+
+            // Assert
+            using (new AssertionScope())
+            response?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
+        }
+        [Fact]
+        public async Task PpoBillController_GetPposForFirstBillPrint_CanGet()
+        {
+            // Arrange
+            PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
+            ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
+            pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
+            _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
+                    "/api/v1/manual-ppo/receipts",
+                    ppoReceipt
+                );
+            JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
+                "/api/v1/ppo/details",
+                pensionerEntryDTO
+            );
+
+            int ppoId = pensioner?.Result?.PpoId ?? 0;
+
+            PensionStatusEntryDTO pensionStatusEntryDTO = new () {
+                PpoId = ppoId,
+                StatusFlag = PensionStatusFlag.PpoApproved,
+                StatusWef = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _ = await CallPostAsJsonAsync<PensionStatusEntryDTO, PensionStatusEntryDTO>(
+                "/api/v1/ppo/status",
+                pensionStatusEntryDTO
+            );
+
+            // Act
+            JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>? response = await CallGetAsJsonAsync<TableResponseDTO<PensionerListItemDTO>>(
+                $"/api/v1/ppo/first-bill-print/ppos"
+            );
+
+            // Assert
+            using (new AssertionScope())
+            response?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
+        }
+
+
+        [Fact]
         public async Task PpoBillController_GenerateFirstPensionBill_CanGenerate()
         {
             // Arrange
@@ -25,7 +103,7 @@ namespace CTS_BE.Tests.Controllers
                 "/api/v1/ppo/details",
                 pensionerEntryDTO
             );
-            
+
             int ppoId = pensioner?.Result?.PpoId ?? 0;
 
             InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
@@ -60,7 +138,7 @@ namespace CTS_BE.Tests.Controllers
                 "/api/v1/ppo/details",
                 pensionerEntryDTO
             );
-            
+
             int ppoId = pensioner?.Result?.PpoId ?? 0;
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
@@ -72,7 +150,7 @@ namespace CTS_BE.Tests.Controllers
                 "/api/v1/ppo/status",
                 pensionStatusEntryDTO
             );
-            
+
             InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
                 PpoId = ppoId,
                 ToDate = DateOnly.FromDateTime(DateTime.Now)
@@ -104,7 +182,7 @@ namespace CTS_BE.Tests.Controllers
                 "/api/v1/ppo/details",
                 pensionerEntryDTO
             );
-            
+
             int ppoId = pensioner?.Result?.PpoId ?? 0;
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
@@ -162,7 +240,7 @@ namespace CTS_BE.Tests.Controllers
                 "/api/v1/ppo/details",
                 pensionerEntryDTO
             );
-            
+
             int ppoId = pensioner?.Result?.PpoId ?? 0;
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
@@ -174,7 +252,7 @@ namespace CTS_BE.Tests.Controllers
                 "/api/v1/ppo/status",
                 pensionStatusEntryDTO
             );
-            
+
             InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new () {
                 PpoId = ppoId,
                 ToDate = DateOnly.FromDateTime(DateTime.Now)
@@ -196,7 +274,7 @@ namespace CTS_BE.Tests.Controllers
             firstBill?.Result?.Pensioner.PpoId.Should().Be(ppoId);
 
         }
-    
+
         [Fact]
         public async Task PpoBillController_GetAllPposForRegularBill_CanGet()
         {
@@ -231,7 +309,7 @@ namespace CTS_BE.Tests.Controllers
                 "/api/v1/ppo/details",
                 pensionerEntryDTO
             );
-            
+
             int ppoId = pensioner?.Result?.PpoId ?? 0;
 
             PensionStatusEntryDTO pensionStatusEntryDTO = new () {
