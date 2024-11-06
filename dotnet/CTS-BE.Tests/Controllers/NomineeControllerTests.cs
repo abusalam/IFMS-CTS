@@ -94,6 +94,46 @@ namespace CTS_BE.Tests.Controllers
         }
 
         [Fact]
+        public async Task NomineeController_DaleteNomineeDetailsById_CanDalete()
+        {
+            // Arrange
+            ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
+            PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
+            NomineeEntryDTO? nomineeDetails = new NomineeFactory().Create();
+            pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
+            _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
+                    "/api/v1/manual-ppo/receipts",
+                    ppoReceipt
+                );
+
+            JsonAPIResponse<PensionerResponseDTO>? pensionerData =
+                await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
+                    "/api/v1/ppo/details",
+                    pensionerEntryDTO
+                );
+            nomineeDetails.PpoId = pensionerData?.Result?.PpoId ?? 0;
+
+            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData =
+                await CallPostAsJsonAsync<NomineeResponseDTO, NomineeEntryDTO>(
+                    "/api/v1/ppo/nominee",
+                    nomineeDetails
+                );
+
+            // Act
+            JsonAPIResponse<NomineeResponseDTO>? responseData =
+                await CallDeleteAsJsonAsync<NomineeResponseDTO>(
+                    "/api/v1/ppo/nominee/" + nomineeDetailsData?.Result?.Id
+                );
+
+            // Assert
+            using (new AssertionScope())
+            responseData.Should().NotBeNull();
+            responseData.Should().BeOfType<JsonAPIResponse<NomineeResponseDTO>>();
+            responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
+        }
+
+        [Fact]
         public async Task NomineeController_GetNomineeDetailsById_CanGet()
         {
             // Arrange
@@ -161,17 +201,17 @@ namespace CTS_BE.Tests.Controllers
                 );
 
             // Act
-            JsonAPIResponse<NomineeListResponseDTO>? responseData =
-                await CallGetAsJsonAsync<NomineeListResponseDTO>(
+            JsonAPIResponse<TableResponseDTO<NomineeResponseDTO>>? responseData =
+                await CallGetAsJsonAsync<TableResponseDTO<NomineeResponseDTO>>(
                     $"/api/v1/ppo/{nomineeDetails.PpoId}/nominees"
                 );
 
             // Assert
             using (new AssertionScope())
             responseData.Should().NotBeNull();
-            responseData.Should().BeOfType<JsonAPIResponse<NomineeListResponseDTO>>();
-            responseData?.Result?.Nominees.Should().NotBeEmpty();
-            responseData?.Result?.NomineeCount.Should().BeGreaterThan(0);
+            responseData.Should().BeOfType<JsonAPIResponse<TableResponseDTO<NomineeResponseDTO>>>();
+            responseData?.Result?.Data.Should().NotBeEmpty();
+            responseData?.Result?.DataCount.Should().BeGreaterThan(0);
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
         }
     }
