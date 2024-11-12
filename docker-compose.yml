@@ -101,7 +101,7 @@ services:
       - '8081'
     labels:
       - "traefik.http.routers.${PROJECT_NAME}_dotnet.rule=Host(`api.${PROJECT_BASE_URL}`)"
-  
+
   dotnet-test:
     build:
       context: .
@@ -133,6 +133,20 @@ services:
     #    - backend:/var/www/html
     labels:
     - "traefik.http.routers.${PROJECT_NAME}_nginx.rule=Host(`apitests.${PROJECT_BASE_URL}`)"
+
+  nginx-uat:
+    image: nginx:1.26
+    restart: unless-stopped
+    container_name: "${PROJECT_NAME}_nginx-uat"
+    depends_on:
+      - dotnet
+    volumes:
+    - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    - ./angular/dist:/usr/share/nginx/html:cached
+    ## Alternative for macOS users: Mutagen https://wodby.com/docs/stacks/laravel/local#docker-for-mac
+    #    - backend:/var/www/html
+    labels:
+    - "traefik.http.routers.${PROJECT_NAME}_nginx-uat.rule=Host(`uat.${PROJECT_BASE_URL}`)"
 
   #Ref: https://container-registry.oracle.com/ords/ocr/ba/database/express
   # oracle:
@@ -172,7 +186,7 @@ services:
     volumes:
       - ./postgres-init:/docker-entrypoint-initdb.d # Place init file(s) here.
       # - ./postgres-data:/var/lib/postgresql/data # Use bind mount
-  
+
   # adminer:
   #   container_name: "${PROJECT_NAME}_adminer"
   #   image: wodby/adminer:$ADMINER_TAG

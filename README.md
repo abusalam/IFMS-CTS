@@ -14,7 +14,7 @@ Run the following commands to clone the whole repository
 git clone https://github.com/abusalam/IFMS-CTS.git ifms-cts
 cd ifms-cts
 git submodule update --init --recursive
-cp .env.docker .env 
+cp .env.docker .env
 ```
 
 ### Build Docker Images
@@ -110,9 +110,9 @@ git apply ../../dotnet-env.patch
 Make host entry: add the following line to your `%WINDIR%\System32\drivers\etc\hosts` file
 
 ```
-127.0.0.1	docker.test api.docker.test rabbitmq.docker.test mailhog.docker.test
+127.0.0.1	docker.test api.docker.test uat.docker.test rabbitmq.docker.test mailhog.docker.test
 ```
-Open Angular UI http://docker.test/#/static-login
+Open Angular UI http://docker.test/static-login
 
 ![Angular UI](image-6.png)
 
@@ -120,7 +120,7 @@ Open Dotnet Swagger UI http://api.docker.test/swagger/index.html
 
 ![Dotnet Swagger UI](image-7.png)
 
-RabbitMQ Management UI http://rabbitmq.docker.test 
+RabbitMQ Management UI http://rabbitmq.docker.test
 
 - Default Login: `guest/guest`
 
