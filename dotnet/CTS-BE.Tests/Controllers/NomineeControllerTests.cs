@@ -94,7 +94,7 @@ namespace CTS_BE.Tests.Controllers
         }
 
         [Fact]
-        public async Task NomineeController_DaleteNomineeDetailsById_CanDalete()
+        public async Task NomineeController_DeleteNomineeDetailsById_CanDalete()
         {
             // Arrange
             ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
