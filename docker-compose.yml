@@ -88,7 +88,8 @@ services:
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_dotnet"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     command: dotnet watch --project . run --urls "http://0.0.0.0:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -109,7 +110,8 @@ services:
     restart: unless-stopped
     container_name: "${PROJECT_NAME}_dotnet_test"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     # command: dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura \
     #     && reportgenerator \
     #      -reports:"./CTS-BE.Tests/coverage.cobertura.xml" \
@@ -183,6 +185,10 @@ services:
       POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
     ports:
       - '5432:5432'
+    healthcheck:
+      test: "pg_isready --username=${DB_USER} && psql --username=${DB_USER} --list"
+      timeout: 10s
+      retries: 20
     volumes:
       - ./postgres-init:/docker-entrypoint-initdb.d # Place init file(s) here.
       # - ./postgres-data:/var/lib/postgresql/data # Use bind mount
