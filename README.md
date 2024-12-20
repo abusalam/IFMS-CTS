@@ -33,6 +33,32 @@ mkdir oracle-home/data
 sudo chown 54321:54321 oracle-home/data
 ```
 
+### Backup and Restore Oracle Database
+
+Run the following commands to prepare the directory and put backup(*.dmp) files there and change the ownership of backup files also
+
+```sh
+mkdir oracle-home/backup
+sudo chown 54321:54321 oracle-home/backup
+```
+
+Backup CTSPENSION Schema
+
+```sh
+docker-compose exec oracle expdp IPENSION/password@XEPDB1 schemas=CTSPENSION directory=EXP_DIR dumpfile=CTSPENSION.dmp logfile=CTSPENSION.log
+```
+Compress the Backup file
+
+```sh
+xz -zv9k oracle-home/backup/CTSPENSION.dmp
+```
+
+Restore CTSPENSION Schema as ICTS Schema
+
+```sh
+docker-compose exec oracle impdp IPENSION/password@XEPDB1 schemas=CTSPENSION directory=EXP_DIR dumpfile=CTSPENSION.dmp logfile=CTSPENSION.log remap_schema=CTSPENSION:ICTS
+```
+
 ### You can start only required containers
 
 To start dotnet container use the following command this will start only required stack for dotnet development

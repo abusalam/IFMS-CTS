@@ -166,6 +166,10 @@ services:
   #     - ./oracle-home/startup:/docker-entrypoint-initdb.d/startup # Place init file(s) here.
   #     - ./oracle-home/setup:/docker-entrypoint-initdb.d/setup # Place init file(s) here.
   #     - ./oracle-home/data:/opt/oracle/oradata:Z # Use bind mount
+  #     - ./oracle-home/backup:/home/oracle # Use bind mount
+  #   healthcheck:
+  #     test: [  "CMD", "bash", "-c", "echo 'select 1 from dual;' | sqlplus sys/${DB_PASSWORD}@localhost:1521/XEPDB1 as sysdba"]
+  #     interval: 10s
 
   postgres:
     image: postgres:16
