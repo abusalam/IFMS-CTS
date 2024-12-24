@@ -201,7 +201,7 @@ COMMENT ON TABLE cts_pension.eppo_revisions IS 'PensionModuleSchema v1';
 
 CREATE TABLE IF NOT EXISTS cts_pension.primary_categories (
   id bigserial NOT NULL PRIMARY KEY,
-  hoa_id character varying(50) NOT NULL,
+  account_head_id bigint NOT NULL references cts_pension.account_heads(id),
   primary_category_name character varying(100) NOT NULL UNIQUE,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer NOT NULL,
@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.primary_categories (
   active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.primary_categories IS 'PensionModuleSchema v1';
-COMMENT ON COLUMN cts_pension.primary_categories.hoa_id IS 'Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00';
+COMMENT ON COLUMN cts_pension.primary_categories.account_head_id IS 'Head of Account: 2071 - 01 - 109 - 00 - 001 - V - 04 - 00';
 
 
 CREATE TABLE IF NOT EXISTS cts_pension.sub_categories (
@@ -508,7 +508,7 @@ CREATE TABLE IF NOT EXISTS cts_pension.bills (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer NOT NULL,
   treasury_code character varying(3) NOT NULL,
-  hoa_id character varying(50) NOT NULL,
+  account_head_id bigint NOT NULL references cts_pension.account_heads(id),
   branch_id bigint NOT NULL references cts_pension.branches(id),
   bill_no integer NOT NULL,
   bill_date date NOT NULL,

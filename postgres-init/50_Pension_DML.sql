@@ -1,8 +1,8 @@
 INSERT INTO cts_pension.primary_categories (
-  id,hoa_id,primary_category_name,created_by,active_flag) VALUES
-	(1,'2071 - 01 - 101 - 00 - 005 - V - 04 - 00','College( Government) Pension',39,true),
-  (4,'2071 - 01 - 109 - 00 - 001 - V - 04 - 00','Education Pension',39,true),
-  (43,'2071 - 01 - 101 - 00 - 005 - V - 04 - 00','State Pension',39,true);
+  id,account_head_id,primary_category_name,created_by,active_flag) VALUES
+	(1,197256,'College( Government) Pension',39,true),
+  (4,69552,'Education Pension',39,true),
+  (43,197256,'State Pension',39,true);
 SELECT setval('cts_pension.primary_categories_id_seq', 44, true);
 
 INSERT INTO cts_pension.sub_categories (
