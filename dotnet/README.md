@@ -1,6 +1,6 @@
 # OpenAPI Code Generator
 
-References 
+References
 
 - [Documentation for the typescript-angular Generator](https://openapi-generator.tech/docs/generators/typescript-angular)
 - [Filter APIs by Convention](https://github.com/domaindrivendev/Swashbuckle.AspNetCore?tab=readme-ov-file#omit-actions-by-convention)
@@ -14,7 +14,7 @@ docker-compose exec openapi openapi-generator-cli generate -i swagger.json \
           -g typescript-angular -o src/app/api \
           --type-mappings=DateOnly=string \
           --additional-properties=ngVersion=14.0.7,supportsES6=true,npmVersion=10.8.2,fileNaming=kebab-case
-``` 
+```
 
 ## Setup xUnit testing and code coverage on Docker Linux Containers
 
@@ -31,6 +31,12 @@ docker-compose exec dotnet-test sh -c "dotnet sln XUnit.Coverage.sln add **/*.cs
 docker-compose exec dotnet-test sh -c "cd CTS-BE.Tests && dotnet add package Moq --version 4.20.70"
 docker-compose exec dotnet-test sh -c "cd CTS-BE.Tests && dotnet add package FluentAssertions --version 6.12.0"
 docker-compose exec dotnet-test dotnet build
+```
+
+### Run xUnit Tests
+
+```sh
+docker-compose exec dotnet-test dotnet test --logger trx --results-directory "TestResults-8.x"
 ```
 
 ### Generate Code Coverage report
