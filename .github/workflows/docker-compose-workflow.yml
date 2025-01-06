@@ -6,9 +6,6 @@ jobs:
   build:
     name: Build DotNet
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        dotnet-version: [ '6.x', '7.x', '8.x' ]
 
     steps:
       - name: Checkout repository
@@ -21,7 +18,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: '8.x'
           # cache: true
       - name: Install dependencies
         run: |

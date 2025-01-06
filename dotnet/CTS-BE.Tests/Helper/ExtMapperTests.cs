@@ -13,20 +13,15 @@ using CTS_BE.PensionEnum;
 
 namespace CTS_BE.Tests.Helper
 {
-    public class TestTargetObject {
+    public class TestTargetObject(string? treasuryCode, int statusFlag)
+    {
         public int Id;
         public int FinancialYear;
-        public readonly string? TreasuryCode;
+        public readonly string? TreasuryCode = treasuryCode;
         public int PpoId;
-        public readonly int StatusFlag;
+        public readonly int StatusFlag = statusFlag;
         public bool ActiveFlag;
         public string? DataSource;
-
-        public TestTargetObject(string? treasuryCode, int statusFlag)
-        {
-            TreasuryCode = treasuryCode;
-            StatusFlag = statusFlag;
-        }
     }
     public class TestSourceObject {
         public string? TreasuryCode;
@@ -82,10 +77,9 @@ namespace CTS_BE.Tests.Helper
                 targetEntity.UpdatedBy.Should().Be(null);
                 targetEntity.ActiveFlag.Should().Be(true);
             }
-        
+
         }
-    
-    
+
         [Fact]
         public void ExtMapper_FillFrom_NullArgTest()
         {
@@ -104,9 +98,10 @@ namespace CTS_BE.Tests.Helper
                 UpdatedBy = null,
                 ActiveFlag = true
             };
+            PensionStatusDTO nullSrcObject = null!;
 
             // Act
-            targetEntity.FillFrom<PpoStatusFlag, PensionStatusDTO>(null);
+            targetEntity.FillFrom<PpoStatusFlag, PensionStatusDTO>(nullSrcObject);
 
             // Assert
             using (new AssertionScope())
@@ -123,10 +118,10 @@ namespace CTS_BE.Tests.Helper
                 targetEntity.UpdatedBy.Should().Be(null);
                 targetEntity.ActiveFlag.Should().Be(true);
             }
-        
-        }        
-        
-                [Fact]
+
+        }
+
+        [Fact]
         public void ExtMapper_FillFrom_NullSourceTest()
         {
             // Arrange
@@ -146,8 +141,8 @@ namespace CTS_BE.Tests.Helper
             {
                 targetEntity.Should().BeNull();
             }
-        
-        } 
+
+        }
 
         [Fact]
         public void ExtMapper_FillFrom_CanWriteCheckTest()
@@ -186,8 +181,8 @@ namespace CTS_BE.Tests.Helper
                 // targetEntity.Invoking(ext => ext.FillFrom(srcDTO))
                 // .Should().Throw<ArgumentException>();
             }
-        
+
         }
-    
+
     }
 }

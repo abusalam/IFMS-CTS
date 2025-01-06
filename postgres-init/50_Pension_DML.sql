@@ -1,3 +1,22 @@
+INSERT INTO cts_pension.classifications (id,classification_name,account_head_id,due_draw_flag,classification_flag,active_flag,created_by,created_at,commuted_value_pension) VALUES
+	 (1,'Retirement/Death Gratuities',7418,'P','O',false,39,'2014-12-08',false),
+	 (2,'Commuted value of Pension',7415,'P','O',false,39,'2014-12-08',false),
+	 (6,'Retiring Gratuity- Final',312596,'P','P',true,39,'2014-10-29',true),
+	 (7,'Death Gratuity- Final ',312584,'P','P',true,39,'2014-10-29',true),
+	 (8,'PROV PENSION',332019,'D','P',true,39,'2014-10-29',false),
+	 (9,'Commuted Value of Pension- First Time',183560,'P','D',true,39,'2014-10-29',true),
+	 (10,'Retiring Gratuity- Additional/Revision',312596,'P','P',true,39,'2014-12-17',false),
+	 (11,'Retiring Gratuity- Provisional',312596,'D','P',true,39,'2014-12-17',false),
+	 (12,'Death Gratuity- Provisional',312584,'D','P',true,39,'2014-12-17',false),
+	 (13,'Death Gratuity- Additional/Revision',312584,'P','P',true,39,'2014-12-17',false),
+	 (14,'Additional Commuted Value of Pension',183560,'P','D',true,39,'2014-12-17',false),
+	 (15,'Interest For Court Case Payment',312757,'P','P',true,39,'2014-12-17',false),
+	 (16,'Arrear (Adj.)',69545,'P','P',true,39,'2015-01-05',false),
+	 (17,'Recovery (Adj.)',12148,'D','P',false,39,'2015-01-05',false),
+	 (18,'C.A. to Minister',12148,'M','P',false,39,'2015-01-08',false),
+	 (19,'LTA / Arrear',197256,'P','P',true,39,'2015-05-07',false);
+SELECT setval('cts_pension.classifications_id_seq', 20, true);
+
 INSERT INTO cts_pension.primary_categories (
   id,account_head_id,primary_category_name,created_by,active_flag) VALUES
 	(1,197256,'College( Government) Pension',39,true),
