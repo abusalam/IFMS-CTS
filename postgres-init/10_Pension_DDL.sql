@@ -17,6 +17,18 @@ CREATE TABLE IF NOT EXISTS cts_pension.dml_history (
 );
 COMMENT ON TABLE cts_pension.dml_history IS 'PensionModuleSchema v1';
 
+
+CREATE TABLE IF NOT EXISTS cts_pension.financial_years (
+  financial_year integer NOT NULL PRIMARY KEY,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.financial_years IS 'PensionModuleSchema v1';
+
+
 CREATE TABLE cts_pension.account_heads (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer,
@@ -36,6 +48,7 @@ CREATE TABLE cts_pension.account_heads (
   active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.account_heads IS 'PensionModuleSchema v1';
+
 
 CREATE TABLE cts_pension.treasuries (
   id bigserial NOT NULL PRIMARY KEY,
@@ -59,6 +72,7 @@ CREATE TABLE cts_pension.treasuries (
   active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.treasuries IS 'PensionModuleSchema v1';
+
 
 CREATE TABLE IF NOT EXISTS cts_pension.uploaded_files (
   id bigserial NOT NULL PRIMARY KEY,
