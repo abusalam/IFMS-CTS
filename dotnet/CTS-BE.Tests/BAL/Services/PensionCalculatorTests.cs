@@ -26,14 +26,12 @@ namespace CTS_BE.Tests.BAL.Services
         )
         {
             // Arrange
-            ComponentRate componentRate = new() {
-                RateAmount = rateAmount,
-                RateType = rateType
-            };
+            ComponentRate componentRate = new() { RateAmount = rateAmount, RateType = rateType };
             // Act
             long result = PensionCalculator.CalculatePerMonthBreakupAmount(
-                componentRate, basicPensionAmount
-                );
+                componentRate,
+                basicPensionAmount
+            );
             // Assert
             result.Should().Be(totalPensionAmount, because);
         }
@@ -45,10 +43,17 @@ namespace CTS_BE.Tests.BAL.Services
         [InlineData("2020-01-01", 3, "Effective date is 2019-10-01")]
         [InlineData("2023-08-01", 4, "Effective date is 2022-07-01")]
         [InlineData("2026-10-01", 5, "Effective date is 2025-12-01")]
-        public void PensionCalculator_CalculateEffectiveRate(string forDate, int expectedId, string because) {
+        public void PensionCalculator_CalculateEffectiveRate(
+            string forDate,
+            int expectedId,
+            string because
+        )
+        {
             // Arrange
-            List<ComponentRate> componentRates = new() {
-                new() {
+            List<ComponentRate> componentRates = new()
+            {
+                new()
+                {
                     Id = 1,
                     CategoryId = 1,
                     BreakupId = 1,
@@ -56,7 +61,8 @@ namespace CTS_BE.Tests.BAL.Services
                     RateType = 'P',
                     EffectiveFromDate = DateOnly.Parse("2009-01-01"),
                 },
-                new() {
+                new()
+                {
                     Id = 2,
                     CategoryId = 1,
                     BreakupId = 1,
@@ -64,7 +70,8 @@ namespace CTS_BE.Tests.BAL.Services
                     RateType = 'P',
                     EffectiveFromDate = DateOnly.Parse("2014-01-01"),
                 },
-                new() {
+                new()
+                {
                     Id = 3,
                     CategoryId = 1,
                     BreakupId = 1,
@@ -72,7 +79,8 @@ namespace CTS_BE.Tests.BAL.Services
                     RateType = 'P',
                     EffectiveFromDate = DateOnly.Parse("2019-10-01"),
                 },
-                new() {
+                new()
+                {
                     Id = 4,
                     CategoryId = 1,
                     BreakupId = 1,
@@ -80,7 +88,8 @@ namespace CTS_BE.Tests.BAL.Services
                     RateType = 'P',
                     EffectiveFromDate = DateOnly.Parse("2022-07-01"),
                 },
-                new() {
+                new()
+                {
                     Id = 5,
                     CategoryId = 1,
                     BreakupId = 1,
@@ -88,14 +97,13 @@ namespace CTS_BE.Tests.BAL.Services
                     RateType = 'P',
                     EffectiveFromDate = DateOnly.Parse("2025-12-01"),
                 },
-
             };
             // Act
-            ComponentRate? result = PensionCalculator.CalculateEffectiveRate (
+            ComponentRate? result = PensionCalculator.CalculateEffectiveRate(
                 componentRates,
                 1,
                 DateOnly.Parse(forDate)
-                );
+            );
             // Assert
             result.Id.Should().Be(expectedId, because);
         }
@@ -105,12 +113,23 @@ namespace CTS_BE.Tests.BAL.Services
         [InlineData("2010-02-20", "2010-01-01", 1, 20, "Period is 1 month and 20 days")]
         [InlineData("2010-01-15", "2010-02-15", 1, 1, "Period is 1 months and 1 days")]
         [InlineData("2016-02-01", "2016-09-30", 8, 0, "Period is 8 months and 0 days")]
-        public void PensionCalculator_CalculateMonthsAndDays(string fromDate, string toDate, int expectedMonths, int expectedDays, string because) {
+        public void PensionCalculator_CalculateMonthsAndDays(
+            string fromDate,
+            string toDate,
+            int expectedMonths,
+            int expectedDays,
+            string because
+        )
+        {
             // Arrange
             DateOnly fromDateOnly = DateOnly.Parse(fromDate);
             DateOnly toDateOnly = DateOnly.Parse(toDate);
             // Act
-            int calculatedMonths = PensionCalculator.CalculateMonthsAndDays(fromDateOnly, toDateOnly, out int calculatedDays);
+            int calculatedMonths = PensionCalculator.CalculateMonthsAndDays(
+                fromDateOnly,
+                toDateOnly,
+                out int calculatedDays
+            );
             // Assert
             calculatedMonths.Should().Be(expectedMonths, because);
             calculatedDays.Should().Be(expectedDays, because);

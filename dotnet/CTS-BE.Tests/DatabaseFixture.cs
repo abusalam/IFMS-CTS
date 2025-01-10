@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+
 namespace CTS_BE.Tests
 {
     public class DatabaseFixture : IDisposable
@@ -19,7 +20,8 @@ namespace CTS_BE.Tests
             TemplateDatabaseName = $"my_db_tmpl_{id}";
 
             // Create connection string and store it for later use
-            Connection = $"Host=my_host;Database={TemplateDatabaseName};Username=my_user;Password=my_pw";
+            Connection =
+                $"Host=my_host;Database={TemplateDatabaseName};Username=my_user;Password=my_pw";
 
             // Configure DbContext
             var optionsBuilder = new DbContextOptionsBuilder();
@@ -53,9 +55,8 @@ namespace CTS_BE.Tests
 
     internal class MyApplicationDbContext : DbContext
     {
-        public MyApplicationDbContext(DbContextOptions options) : base(options)
-        {
-        }
+        public MyApplicationDbContext(DbContextOptions options)
+            : base(options) { }
     }
 }
 

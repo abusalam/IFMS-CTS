@@ -2,21 +2,23 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using CTS_BE.DAL;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using CTS_BE.DAL;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
 
 namespace CTS_BE.Tests
 {
     internal class PensionWebAppFactory : WebApplicationFactory<Program>
     {
-        override protected void ConfigureWebHost(Microsoft.AspNetCore.Hosting.IWebHostBuilder builder)
+        protected override void ConfigureWebHost(
+            Microsoft.AspNetCore.Hosting.IWebHostBuilder builder
+        )
         {
             builder.ConfigureTestServices(services =>
             {
@@ -54,7 +56,7 @@ namespace CTS_BE.Tests
             var scope = serviceProvider.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<PensionDbContext>();
             return dbContext;
-        }    
+        }
     }
 }
 

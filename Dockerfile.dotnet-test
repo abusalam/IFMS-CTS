@@ -12,7 +12,8 @@ USER vscode
 RUN dotnet dev-certs https \
     && dotnet tool update -g dotnet-aspnet-codegenerator --version 8.0.7 \
     && dotnet tool update --global dotnet-ef --version 8.0.11 \
-    && dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.3
+    && dotnet tool install --global dotnet-reportgenerator-globaltool --version 5.4.3 \
+    && dotnet tool install --global csharpier --version 0.30.5
 
 ENV PATH="${PATH}:/home/vscode/.dotnet/tools"
 

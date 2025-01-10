@@ -23,32 +23,28 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    ppoReceipt
-                );
+                "/api/v1/manual-ppo/receipts",
+                ppoReceipt
+            );
 
-            JsonAPIResponse<PensionerResponseDTO>? pensionerData =
-                await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
-                    "/api/v1/ppo/details",
-                    pensionerEntryDTO
-                );
+            JsonAPIResponse<PensionerResponseDTO>? pensionerData = await CallPostAsJsonAsync<
+                PensionerResponseDTO,
+                PensionerEntryDTO
+            >("/api/v1/ppo/details", pensionerEntryDTO);
             nomineeDetails.PpoId = pensionerData?.Result?.PpoId ?? 0;
 
-
             // Act
-            JsonAPIResponse<NomineeResponseDTO>? responseData =
-                await CallPostAsJsonAsync<NomineeResponseDTO, NomineeEntryDTO>(
-                    "/api/v1/ppo/nominee",
-                    nomineeDetails
-                );
+            JsonAPIResponse<NomineeResponseDTO>? responseData = await CallPostAsJsonAsync<
+                NomineeResponseDTO,
+                NomineeEntryDTO
+            >("/api/v1/ppo/nominee", nomineeDetails);
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<NomineeResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
         }
-
 
         [Fact]
         public async Task NomineeController_UpdateNomineeDetailsById_CanUpdate()
@@ -60,35 +56,32 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    ppoReceipt
-                );
+                "/api/v1/manual-ppo/receipts",
+                ppoReceipt
+            );
 
-            JsonAPIResponse<PensionerResponseDTO>? pensionerData =
-                await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
-                    "/api/v1/ppo/details",
-                    pensionerEntryDTO
-                );
+            JsonAPIResponse<PensionerResponseDTO>? pensionerData = await CallPostAsJsonAsync<
+                PensionerResponseDTO,
+                PensionerEntryDTO
+            >("/api/v1/ppo/details", pensionerEntryDTO);
             nomineeDetails.PpoId = pensionerData?.Result?.PpoId ?? 0;
 
-            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData =
-                await CallPostAsJsonAsync<NomineeResponseDTO, NomineeEntryDTO>(
-                    "/api/v1/ppo/nominee",
-                    nomineeDetails
-                );
+            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData = await CallPostAsJsonAsync<
+                NomineeResponseDTO,
+                NomineeEntryDTO
+            >("/api/v1/ppo/nominee", nomineeDetails);
             NomineeEntryDTO nomineeDetailsUpdate = new NomineeFactory().Create();
             nomineeDetailsUpdate.PpoId = pensionerData?.Result?.PpoId ?? 0;
 
             // Act
-            JsonAPIResponse<NomineeResponseDTO>? responseData =
-                await CallPutAsJsonAsync<NomineeResponseDTO, NomineeEntryDTO>(
-                    "/api/v1/ppo/nominee/" + nomineeDetailsData?.Result?.Id,
-                    nomineeDetailsUpdate
-                );
+            JsonAPIResponse<NomineeResponseDTO>? responseData = await CallPutAsJsonAsync<
+                NomineeResponseDTO,
+                NomineeEntryDTO
+            >("/api/v1/ppo/nominee/" + nomineeDetailsData?.Result?.Id, nomineeDetailsUpdate);
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<NomineeResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
         }
@@ -103,22 +96,20 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    ppoReceipt
-                );
+                "/api/v1/manual-ppo/receipts",
+                ppoReceipt
+            );
 
-            JsonAPIResponse<PensionerResponseDTO>? pensionerData =
-                await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
-                    "/api/v1/ppo/details",
-                    pensionerEntryDTO
-                );
+            JsonAPIResponse<PensionerResponseDTO>? pensionerData = await CallPostAsJsonAsync<
+                PensionerResponseDTO,
+                PensionerEntryDTO
+            >("/api/v1/ppo/details", pensionerEntryDTO);
             nomineeDetails.PpoId = pensionerData?.Result?.PpoId ?? 0;
 
-            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData =
-                await CallPostAsJsonAsync<NomineeResponseDTO, NomineeEntryDTO>(
-                    "/api/v1/ppo/nominee",
-                    nomineeDetails
-                );
+            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData = await CallPostAsJsonAsync<
+                NomineeResponseDTO,
+                NomineeEntryDTO
+            >("/api/v1/ppo/nominee", nomineeDetails);
 
             // Act
             JsonAPIResponse<NomineeResponseDTO>? responseData =
@@ -128,7 +119,7 @@ namespace CTS_BE.Tests.Controllers
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<NomineeResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
         }
@@ -143,22 +134,20 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    ppoReceipt
-                );
+                "/api/v1/manual-ppo/receipts",
+                ppoReceipt
+            );
 
-            JsonAPIResponse<PensionerResponseDTO>? pensionerData =
-                await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
-                    "/api/v1/ppo/details",
-                    pensionerEntryDTO
-                );
+            JsonAPIResponse<PensionerResponseDTO>? pensionerData = await CallPostAsJsonAsync<
+                PensionerResponseDTO,
+                PensionerEntryDTO
+            >("/api/v1/ppo/details", pensionerEntryDTO);
             nomineeDetails.PpoId = pensionerData?.Result?.PpoId ?? 0;
 
-            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData =
-                await CallPostAsJsonAsync<NomineeResponseDTO, NomineeEntryDTO>(
-                    "/api/v1/ppo/nominee",
-                    nomineeDetails
-                );
+            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData = await CallPostAsJsonAsync<
+                NomineeResponseDTO,
+                NomineeEntryDTO
+            >("/api/v1/ppo/nominee", nomineeDetails);
 
             // Act
             JsonAPIResponse<NomineeResponseDTO>? responseData =
@@ -168,7 +157,7 @@ namespace CTS_BE.Tests.Controllers
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<NomineeResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
         }
@@ -183,22 +172,20 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    ppoReceipt
-                );
+                "/api/v1/manual-ppo/receipts",
+                ppoReceipt
+            );
 
-            JsonAPIResponse<PensionerResponseDTO>? pensionerData =
-                await CallPostAsJsonAsync<PensionerResponseDTO, PensionerEntryDTO>(
-                    "/api/v1/ppo/details",
-                    pensionerEntryDTO
-                );
+            JsonAPIResponse<PensionerResponseDTO>? pensionerData = await CallPostAsJsonAsync<
+                PensionerResponseDTO,
+                PensionerEntryDTO
+            >("/api/v1/ppo/details", pensionerEntryDTO);
             nomineeDetails.PpoId = pensionerData?.Result?.PpoId ?? 0;
 
-            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData =
-                await CallPostAsJsonAsync<NomineeResponseDTO, NomineeEntryDTO>(
-                    "/api/v1/ppo/nominee",
-                    nomineeDetails
-                );
+            JsonAPIResponse<NomineeResponseDTO>? nomineeDetailsData = await CallPostAsJsonAsync<
+                NomineeResponseDTO,
+                NomineeEntryDTO
+            >("/api/v1/ppo/nominee", nomineeDetails);
 
             // Act
             JsonAPIResponse<TableResponseDTO<NomineeResponseDTO>>? responseData =
@@ -208,7 +195,7 @@ namespace CTS_BE.Tests.Controllers
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<TableResponseDTO<NomineeResponseDTO>>>();
             responseData?.Result?.Data.Should().NotBeEmpty();
             responseData?.Result?.DataCount.Should().BeGreaterThan(0);

@@ -1,9 +1,9 @@
-using FluentAssertions;
-using FluentAssertions.Execution;
-using CTS_BE.DTOs;
 using System.Text.Json;
+using CTS_BE.DTOs;
 using CTS_BE.Helper;
 using CTS_BE.PensionEnum;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace CTS_BE.Tests.Controllers
 {
@@ -13,10 +13,11 @@ namespace CTS_BE.Tests.Controllers
         public async Task PensionController_Echo_CanEcho()
         {
             // Arrange
-            PensionStatusEntryDTO pensionStatusEntryDTO = new() {
+            PensionStatusEntryDTO pensionStatusEntryDTO = new()
+            {
                 PpoId = 10,
                 StatusFlag = PensionStatusFlag.PpoRunning,
-                StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-25"))
+                StatusWef = DateOnly.FromDateTime(DateTime.Parse("2024-07-25")),
             };
 
             // Act
@@ -27,21 +28,23 @@ namespace CTS_BE.Tests.Controllers
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<Object>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             responseData?.Message.Should().Be("Echoing Request");
-            responseData?.Result?.ToString().Should().Be(
-                    JsonSerializer.Serialize(pensionStatusEntryDTO)
-                );
+            responseData
+                ?.Result?.ToString()
+                .Should()
+                .Be(JsonSerializer.Serialize(pensionStatusEntryDTO));
         }
 
         [Fact]
         public async Task PensionController_SetDateOnly_CanSetDateOnly()
         {
             // Arrange
-            var content = new DateOnlyDTO() {
-                DateOnly = DateOnly.FromDateTime(DateTime.Parse("2024-07-29")) 
+            var content = new DateOnlyDTO()
+            {
+                DateOnly = DateOnly.FromDateTime(DateTime.Parse("2024-07-29")),
             };
 
             // Act
@@ -52,7 +55,7 @@ namespace CTS_BE.Tests.Controllers
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<DateOnlyDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             responseData?.Message.Should().Be("Writing DateOnly");
@@ -65,18 +68,15 @@ namespace CTS_BE.Tests.Controllers
             // Arrange
 
             // Act
-            var response = await CallGetAsJsonAsync<DateOnly>(
-                "/api/v1/date-only"
-            );
+            var response = await CallGetAsJsonAsync<DateOnly>("/api/v1/date-only");
 
             // Assert
             using (new AssertionScope())
-            response?.Should().NotBeNull();
+                response?.Should().NotBeNull();
             response?.Should().BeOfType<JsonAPIResponse<DateOnly>>();
             response?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             response?.Message.Should().Be("Reading DateOnly");
             response?.Result.Should().Be(DateOnly.FromDateTime(DateTime.Now));
         }
-    
     }
 }

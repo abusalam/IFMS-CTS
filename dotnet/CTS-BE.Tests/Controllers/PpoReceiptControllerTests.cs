@@ -15,50 +15,47 @@ namespace CTS_BE.Tests.Controllers
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO = new PpoReceiptFactory().Create();
 
             // Act
-            JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData = 
-                await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    manualPpoReceiptEntryDTO
-                );
+            JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData = await CallPostAsJsonAsync<
+                ManualPpoReceiptResponseDTO,
+                ManualPpoReceiptEntryDTO
+            >("/api/v1/manual-ppo/receipts", manualPpoReceiptEntryDTO);
 
             ManualPpoReceiptResponseDTO? responseResult = responseData?.Result;
             responseResult.FillFrom(manualPpoReceiptEntryDTO);
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<ManualPpoReceiptResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             responseData?.Message.Should().Be("PPO Received Successfully!");
             responseData?.Result.Should().BeEquivalentTo(responseResult);
         }
-       
+
         [Fact]
         public async Task PpoReceiptController_UpdatePpoReceipt_CanUpdate()
         {
             // Arrange
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO = new PpoReceiptFactory().Create();
-            JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = 
-                await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    manualPpoReceiptEntryDTO
-                );
+            JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = await CallPostAsJsonAsync<
+                ManualPpoReceiptResponseDTO,
+                ManualPpoReceiptEntryDTO
+            >("/api/v1/manual-ppo/receipts", manualPpoReceiptEntryDTO);
 
             ManualPpoReceiptEntryDTO receiptUpdateDTO = new PpoReceiptFactory().Create();
 
             // Act
-            JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData = 
-                await CallPutAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    $"/api/v1/manual-ppo/receipt/{savedReceipt?.Result?.Id ?? 0}",
-                    receiptUpdateDTO
-                );
+            JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData = await CallPutAsJsonAsync<
+                ManualPpoReceiptResponseDTO,
+                ManualPpoReceiptEntryDTO
+            >($"/api/v1/manual-ppo/receipt/{savedReceipt?.Result?.Id ?? 0}", receiptUpdateDTO);
 
             ManualPpoReceiptResponseDTO? responseResult = responseData?.Result;
             responseResult.FillFrom(receiptUpdateDTO);
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<ManualPpoReceiptResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             responseData?.Result.Should().BeEquivalentTo(responseResult);
@@ -69,14 +66,13 @@ namespace CTS_BE.Tests.Controllers
         {
             // Arrange
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO = new PpoReceiptFactory().Create();
-            JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = 
-                await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    manualPpoReceiptEntryDTO
-                );
+            JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = await CallPostAsJsonAsync<
+                ManualPpoReceiptResponseDTO,
+                ManualPpoReceiptEntryDTO
+            >("/api/v1/manual-ppo/receipts", manualPpoReceiptEntryDTO);
 
             // Act
-            JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData = 
+            JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData =
                 await CallGetAsJsonAsync<ManualPpoReceiptResponseDTO>(
                     $"/api/v1/manual-ppo/receipt/{savedReceipt?.Result?.Id ?? 0}"
                 );
@@ -86,7 +82,7 @@ namespace CTS_BE.Tests.Controllers
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<ManualPpoReceiptResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             responseData?.Result.Should().BeEquivalentTo(responseResult);
@@ -97,14 +93,13 @@ namespace CTS_BE.Tests.Controllers
         {
             // Arrange
             ManualPpoReceiptEntryDTO manualPpoReceiptEntryDTO = new PpoReceiptFactory().Create();
-            JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = 
-                await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                    "/api/v1/manual-ppo/receipts",
-                    manualPpoReceiptEntryDTO
-                );
+            JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = await CallPostAsJsonAsync<
+                ManualPpoReceiptResponseDTO,
+                ManualPpoReceiptEntryDTO
+            >("/api/v1/manual-ppo/receipts", manualPpoReceiptEntryDTO);
 
             // Act
-            JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData = 
+            JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData =
                 await CallGetAsJsonAsync<ManualPpoReceiptResponseDTO>(
                     $"/api/v1/manual-ppo/receipts/{savedReceipt?.Result?.TreasuryReceiptNo ?? "null"}"
                 );
@@ -114,11 +109,10 @@ namespace CTS_BE.Tests.Controllers
 
             // Assert
             using (new AssertionScope())
-            responseData.Should().NotBeNull();
+                responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<ManualPpoReceiptResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
             responseData?.Result.Should().BeEquivalentTo(responseResult);
         }
-       
     }
 }
