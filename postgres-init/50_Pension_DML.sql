@@ -1,4 +1,4 @@
-INSERT INTO cts_pension.financial_years (financial_year,created_at,created_by,updated_at,updated_by,active_flag) VALUES
+INSERT INTO cts_pension.financial_years (current_year,created_at,created_by,updated_at,updated_by,active_flag) VALUES
 	 (2009,'2025-01-09 13:17:20.996283',39,NULL,NULL,false),
 	 (2010,'2025-01-09 13:17:20.996283',39,NULL,NULL,false),
 	 (2011,'2025-01-09 13:17:20.996283',39,NULL,NULL,false),

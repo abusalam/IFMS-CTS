@@ -19,7 +19,7 @@ COMMENT ON TABLE cts_pension.dml_history IS 'PensionModuleSchema v1';
 
 
 CREATE TABLE IF NOT EXISTS cts_pension.financial_years (
-  financial_year integer NOT NULL PRIMARY KEY,
+  current_year integer NOT NULL PRIMARY KEY,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
