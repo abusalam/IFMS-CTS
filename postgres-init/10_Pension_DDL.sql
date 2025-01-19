@@ -654,18 +654,54 @@ COMMENT ON COLUMN cts_pension.ppo_bill_breakups.ppo_bill_id IS 'BillId is to ide
 COMMENT ON COLUMN cts_pension.ppo_bill_breakups.revision_id IS 'RevisionId is to identify the component rate applied on the bill';
 
 
-CREATE TABLE IF NOT EXISTS cts_pension.bytransfers (
+CREATE TABLE IF NOT EXISTS cts_pension.bytransfer_heads (
   id bigserial NOT NULL PRIMARY KEY,
-  financial_year integer NOT NULL,
-  treasury_code character varying(3) NOT NULL,
-  ppo_bill_id bigint NOT NULL references cts_pension.ppo_bills(id),
-  bytransfer_hoa_id integer NOT NULL,
-  bytransfer_wef date NOT NULL,
-  bytransfer_amount integer NOT NULL,
+  bytransfer_type CHAR(1) NOT NULL,
+  account_head_id bigint NOT NULL references cts_pension.account_heads(id),
+  bytransfer_description character varying(500) NOT NULL,
+  ag_bytransfer boolean NOT NULL,
   created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
   created_by integer NOT NULL,
   updated_at timestamp without time zone DEFAULT NULL,
   updated_by integer,
   active_flag boolean NOT NULL
 );
-COMMENT ON TABLE cts_pension.bytransfers IS 'PensionModuleSchema v1';
+COMMENT ON TABLE cts_pension.bytransfer_heads IS 'PensionModuleSchema v1';
+COMMENT ON COLUMN cts_pension.bytransfer_heads.bytransfer_type IS 'P - Payment; R - Recovery;';
+
+
+CREATE TABLE IF NOT EXISTS cts_pension.bill_bytransfers (
+  id bigserial NOT NULL PRIMARY KEY,
+  financial_year integer NOT NULL,
+  treasury_code character varying(3) NOT NULL,
+  ppo_bill_id bigint NOT NULL references cts_pension.ppo_bills(id),
+  bytransfer_head_id bigint NOT NULL references cts_pension.bytransfer_heads(id),
+  bytransfer_amount integer NOT NULL,
+  remarks character varying(500),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.bill_bytransfers IS 'PensionModuleSchema v1';
+
+
+CREATE TABLE IF NOT EXISTS cts_pension.ppo_bytransfers (
+  id bigserial NOT NULL PRIMARY KEY,
+  financial_year integer NOT NULL,
+  treasury_code character varying(3) NOT NULL,
+  pensioner_id bigint NOT NULL references cts_pension.pensioners(id),
+  ppo_id integer NOT NULL,
+  from_date date NOT NULL,
+  to_date date NOT NULL,
+  bytransfer_head_id bigint NOT NULL references cts_pension.bytransfer_heads(id),
+  bytransfer_amount integer NOT NULL,
+  remarks character varying(500),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.bill_bytransfers IS 'PensionModuleSchema v1';
