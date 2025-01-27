@@ -117,28 +117,6 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_id_sequences (
 COMMENT ON TABLE cts_pension.ppo_id_sequences IS 'PensionModuleSchema v1';
 
 
-CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipts (
-  id bigserial NOT NULL PRIMARY KEY,
-  financial_year integer NOT NULL,
-  treasury_code character varying(3) NOT NULL,
-  treasury_receipt_no character varying(100) NOT NULL UNIQUE,
-  ppo_no character varying(100) NOT NULL UNIQUE,
-  pensioner_name character varying(100) NOT NULL,
-  date_of_commencement date NOT NULL,
-  mobile_number character varying(10),
-  receipt_date date NOT NULL,
-  psa_code CHAR(1) NOT NULL,
-  ppo_type CHAR(1) NOT NULL,
-  ppo_status character varying(100) NOT NULL,
-  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  created_by integer NOT NULL,
-  updated_at timestamp without time zone DEFAULT NULL,
-  updated_by integer,
-  active_flag boolean NOT NULL
-);
-COMMENT ON TABLE cts_pension.ppo_receipts IS 'PensionModuleSchema v1';
-
-
 CREATE TABLE IF NOT EXISTS cts_pension.primary_categories (
   id bigserial NOT NULL PRIMARY KEY,
   account_head_id bigint NOT NULL references cts_pension.account_heads(id),
@@ -381,6 +359,31 @@ CREATE TABLE IF NOT EXISTS cts_pension.branches (
 COMMENT ON TABLE cts_pension.branches IS 'PensionModuleSchema v1';
 
 
+CREATE TABLE IF NOT EXISTS cts_pension.ppo_receipts (
+  id bigserial NOT NULL PRIMARY KEY,
+  financial_year integer NOT NULL,
+  treasury_code character varying(3) NOT NULL,
+  treasury_receipt_no character varying(100) NOT NULL UNIQUE,
+  ppo_no character varying(100) NOT NULL UNIQUE,
+  pensioner_name character varying(100) NOT NULL,
+  date_of_commencement date NOT NULL,
+  mobile_number character varying(10),
+  receipt_date date NOT NULL,
+  psa_code CHAR(1) NOT NULL,
+  ppo_type CHAR(1) NOT NULL,
+  ppo_status character varying(100) NOT NULL,
+  receipt_type character varying(30) DEFAULT 'PPO' NOT NULL,
+  eppo_receipt_id bigint references cts_pension.eppo_receipts(id),
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL
+);
+COMMENT ON TABLE cts_pension.ppo_receipts IS 'PensionModuleSchema v1';
+COMMENT ON COLUMN cts_pension.ppo_receipts.receipt_type IS 'PPO - PpoReceipt; EPPO - EppoReceipt;';
+
+
 CREATE TABLE IF NOT EXISTS cts_pension.pensioners (
   id bigserial NOT NULL PRIMARY KEY,
   financial_year integer NOT NULL,
@@ -444,6 +447,7 @@ COMMENT ON COLUMN cts_pension.pensioners.ppo_type IS 'P - Pension; F - Family Pe
 COMMENT ON COLUMN cts_pension.pensioners.ppo_sub_type IS 'E - Employed; L - Widow Daughter; U - Unmarried Daughter; V - Divorced Daughter; N - Minor Son; R - Minor Daughter; P - Handicapped Son; G - Handicapped Daughter; J - Dependent Father; K - Dependent Mother; H - Husband; W - Wife;';
 COMMENT ON COLUMN cts_pension.pensioners.gender IS 'M - Male; F - Female;';
 COMMENT ON COLUMN cts_pension.pensioners.religion IS 'H - Hindu; M - Muslim; O - Other;';
+
 
 CREATE TABLE IF NOT EXISTS cts_pension.ppo_sanction_details (
   id bigserial NOT NULL PRIMARY KEY,
@@ -526,6 +530,10 @@ CREATE TABLE IF NOT EXISTS cts_pension.nominees (
   active_flag boolean NOT NULL
 );
 COMMENT ON TABLE cts_pension.nominees IS 'PensionModuleSchema v1';
+COMMENT ON COLUMN cts_pension.nominees.nominee_type IS '1 - Family; 5 - LTA; 6 - Death Gratuity;';
+COMMENT ON COLUMN cts_pension.nominees.nominee_adult_minor IS 'A - Adult; M - Minor;';
+COMMENT ON COLUMN cts_pension.nominees.relation IS 'F - Father; M - Mother; H - Husband; W - Wife; S - Son; D - Daughter; B - Brother; T - Sister; E - Self; I - Brother(Minor); A - Sister(Unmarried); C - Sister(Widowed); O - Other;';
+COMMENT ON COLUMN cts_pension.nominees.nominee_priority IS '1 - First; 2 - Second; 3 - Third; 4 - Fourth; 5 - Fifth;';
 
 -- CREATE TYPE cts_pension.pension_status AS ENUM(
 --   'PpoApproved',
@@ -575,6 +583,7 @@ COMMENT ON COLUMN cts_pension.ppo_component_revisions.id IS 'RevisionId';
 COMMENT ON COLUMN cts_pension.ppo_component_revisions.from_date IS 'From date is the Date of Commencement of pension of the pensioner';
 COMMENT ON COLUMN cts_pension.ppo_component_revisions.to_date IS 'To date (will be null for regular active bills)';
 COMMENT ON COLUMN cts_pension.ppo_component_revisions.amount_per_month IS 'Amount per month is the actual amount paid for the mentioned period';
+
 
 CREATE TABLE IF NOT EXISTS cts_pension.bills (
   id bigserial NOT NULL PRIMARY KEY,
@@ -654,6 +663,27 @@ COMMENT ON COLUMN cts_pension.ppo_bill_breakups.ppo_bill_id IS 'BillId is to ide
 COMMENT ON COLUMN cts_pension.ppo_bill_breakups.revision_id IS 'RevisionId is to identify the component rate applied on the bill';
 
 
+CREATE TABLE IF NOT EXISTS cts_pension.ppo_paid_amounts (
+  id bigserial NOT NULL PRIMARY KEY,
+  financial_year integer NOT NULL,
+  treasury_code character varying(3) NOT NULL,
+  ppo_id integer NOT NULL,
+  ppo_bill_id bigint NOT NULL references cts_pension.ppo_bills(id),
+  breakup_id bigint NOT NULL references cts_pension.breakups(id),
+  paid_from_date date NOT NULL,
+  paid_to_date date NOT NULL,
+  breakup_amount integer NOT NULL,
+  created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+  created_by integer NOT NULL,
+  updated_at timestamp without time zone DEFAULT NULL,
+  updated_by integer,
+  active_flag boolean NOT NULL,
+  UNIQUE(treasury_code, ppo_id, ppo_bill_id, breakup_id, paid_from_date)
+);
+COMMENT ON TABLE cts_pension.ppo_paid_amounts IS 'PensionModuleSchema v1';
+COMMENT ON COLUMN cts_pension.ppo_paid_amounts.ppo_bill_id IS 'BillId is to identify the bill on which the actual payment made';
+
+
 CREATE TABLE IF NOT EXISTS cts_pension.bytransfer_heads (
   id bigserial NOT NULL PRIMARY KEY,
   bytransfer_type CHAR(1) NOT NULL,
@@ -704,4 +734,4 @@ CREATE TABLE IF NOT EXISTS cts_pension.ppo_bytransfers (
   updated_by integer,
   active_flag boolean NOT NULL
 );
-COMMENT ON TABLE cts_pension.bill_bytransfers IS 'PensionModuleSchema v1';
+COMMENT ON TABLE cts_pension.ppo_bytransfers IS 'PensionModuleSchema v1';

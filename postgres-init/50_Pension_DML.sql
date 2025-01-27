@@ -60,7 +60,9 @@ SELECT setval('cts_pension.classifications_id_seq', 20, true);
 INSERT INTO cts_pension.primary_categories (
   id,account_head_id,primary_category_name,created_by,active_flag) VALUES
 	(1,197256,'College( Government) Pension',39,true),
+	(2,69545,'College( Government) Pension Family',39,true),
   (4,69552,'Education Pension',39,true),
+  (7,69545,'State Pension Family',39,true),
   (43,197256,'State Pension',39,true);
 SELECT setval('cts_pension.primary_categories_id_seq', 44, true);
 
@@ -78,12 +80,18 @@ SELECT setval('cts_pension.sub_categories_id_seq', 13, true);
 INSERT INTO cts_pension.categories(
   id, primary_category_id, sub_category_id, category_name, created_by, active_flag)	VALUES
   (25, 43, 2, 'State Pension-ROPA 2009', 39, true),
+  (26, 43, 3, 'State Pension-ROPA 1998', 39, true),
   (29, 4, 2, 'Education Pension-ROPA 2009', 39, true),
   (30, 4, 3, 'Education Pension-ROPA 1998', 39, true),
   (31, 4, 7, 'Education Pension-Pension Rules 1966(Pre 81)', 39, true),
+  (58, 7, 2, 'State Pension Family-ROPA 2009', 39, true),
+  (59, 7, 3, 'State Pension Family-ROPA 1998', 39, true),
+  (136, 1, 12, 'College( Government) Pension-ROPA 2019', 39, true),
   (138, 4, 12, 'Education Pension-ROPA 2019', 39, true),
+  (139, 7, 12, 'Education Pension-ROPA 2019', 39, true),
+  (140, 43, 12, 'State Pension-ROPA 2019', 39, true),
   (48, 1, 2, 'College( Government) Pension-ROPA 2009', 39, true);
-SELECT setval('cts_pension.categories_id_seq', 139, true);
+SELECT setval('cts_pension.categories_id_seq', 141, true);
 
 INSERT INTO cts_pension.breakups(
 	id, component_name, component_type, relief_flag, created_by, active_flag) VALUES
