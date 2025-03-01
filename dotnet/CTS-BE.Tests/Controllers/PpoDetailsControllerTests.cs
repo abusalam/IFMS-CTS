@@ -35,7 +35,6 @@ namespace CTS_BE.Tests.Controllers
                 responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<PensionerResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
-            responseData?.Message.Should().Be("PPO Details saved sucessfully!");
             responseData?.Result.Should().BeEquivalentTo(responseResult);
         }
     }

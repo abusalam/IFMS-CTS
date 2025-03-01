@@ -65,7 +65,7 @@ namespace CTS_BE.Tests.Controllers
             // Act
             JsonAPIResponse<TableResponseDTO<PpoComponentRevisionPpoListItemDTO>>? responseData =
                 await CallGetAsJsonAsync<TableResponseDTO<PpoComponentRevisionPpoListItemDTO>>(
-                    $"/api/v1/ppo/component-revision/ppos"
+                    $"/api/v1/ppo-component-revision/ppos"
                 );
 
             // Assert
@@ -224,7 +224,7 @@ namespace CTS_BE.Tests.Controllers
             // Act
             JsonAPIResponse<IEnumerable<PpoComponentRevisionResponseDTO>>? responseData =
                 await CallGetAsJsonAsync<IEnumerable<PpoComponentRevisionResponseDTO>>(
-                    $"/api/v1/ppo/{ppoId}/component-revision"
+                    $"/api/v1/ppo/{ppoId}/component-revisions"
                 );
 
             // Assert
