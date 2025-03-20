@@ -16,9 +16,10 @@ namespace CTS_BE.Tests.Controllers
             PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
             ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -42,7 +43,7 @@ namespace CTS_BE.Tests.Controllers
             // Act
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>? response =
                 await CallGetAsJsonAsync<TableResponseDTO<PensionerListItemDTO>>(
-                    $"/api/v1/ppo/first-bill/ppos"
+                    $"/api/v1/first-bill/ppos"
                 );
 
             // Assert
@@ -57,9 +58,10 @@ namespace CTS_BE.Tests.Controllers
             PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
             ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -83,7 +85,7 @@ namespace CTS_BE.Tests.Controllers
             // Act
             JsonAPIResponse<TableResponseDTO<PensionerListItemDTO>>? response =
                 await CallGetAsJsonAsync<TableResponseDTO<PensionerListItemDTO>>(
-                    $"/api/v1/ppo/first-bill-print/ppos"
+                    $"/api/v1/first-bill-print/ppos"
                 );
 
             // Assert
@@ -98,9 +100,10 @@ namespace CTS_BE.Tests.Controllers
             PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
             ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -110,7 +113,18 @@ namespace CTS_BE.Tests.Controllers
 
             int ppoId = pensioner?.Result?.PpoId ?? 0;
 
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new()
+            PensionStatusEntryDTO pensionStatusEntryDTO = new()
+            {
+                PpoId = ppoId,
+                StatusFlag = PensionStatusFlag.PpoApproved,
+                StatusWef = DateOnly.FromDateTime(DateTime.Now),
+            };
+            _ = await CallPostAsJsonAsync<PensionStatusEntryDTO, PensionStatusEntryDTO>(
+                "/api/v1/ppo/status",
+                pensionStatusEntryDTO
+            );
+
+            InitiateFirstPensionBillEntryDTO initiateFirstPensionBillDTO = new()
             {
                 PpoId = ppoId,
                 ToDate = DateOnly.FromDateTime(DateTime.Now),
@@ -120,8 +134,8 @@ namespace CTS_BE.Tests.Controllers
             JsonAPIResponse<InitiateFirstPensionBillResponseDTO>? generateFirstBill =
                 await CallPostAsJsonAsync<
                     InitiateFirstPensionBillResponseDTO,
-                    InitiateFirstPensionBillDTO
-                >($"/api/v1/ppo/first-bill-generate", initiateFirstPensionBillDTO);
+                    InitiateFirstPensionBillEntryDTO
+                >($"/api/v1/first-bill-generate", initiateFirstPensionBillDTO);
 
             // Assert
             using (new AssertionScope())
@@ -135,9 +149,10 @@ namespace CTS_BE.Tests.Controllers
             PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
             ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -158,7 +173,7 @@ namespace CTS_BE.Tests.Controllers
                 pensionStatusEntryDTO
             );
 
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new()
+            InitiateFirstPensionBillEntryDTO initiateFirstPensionBillDTO = new()
             {
                 PpoId = ppoId,
                 ToDate = DateOnly.FromDateTime(DateTime.Now),
@@ -168,8 +183,8 @@ namespace CTS_BE.Tests.Controllers
             JsonAPIResponse<InitiateFirstPensionBillResponseDTO>? saveFirstBill =
                 await CallPostAsJsonAsync<
                     InitiateFirstPensionBillResponseDTO,
-                    InitiateFirstPensionBillDTO
-                >($"/api/v1/ppo/first-bill", initiateFirstPensionBillDTO);
+                    InitiateFirstPensionBillEntryDTO
+                >($"/api/v1/first-bill", initiateFirstPensionBillDTO);
 
             // Assert
             saveFirstBill?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
@@ -182,9 +197,10 @@ namespace CTS_BE.Tests.Controllers
             PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
             ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -205,15 +221,15 @@ namespace CTS_BE.Tests.Controllers
                 pensionStatusEntryDTO
             );
 
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new()
+            InitiateFirstPensionBillEntryDTO initiateFirstPensionBillDTO = new()
             {
                 PpoId = ppoId,
-                ToDate = DateOnly.FromDateTime(DateTime.Now),
+                ToDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-1)),
             };
             _ = await CallPostAsJsonAsync<
                 InitiateFirstPensionBillResponseDTO,
-                InitiateFirstPensionBillDTO
-            >($"/api/v1/ppo/first-bill", initiateFirstPensionBillDTO);
+                InitiateFirstPensionBillEntryDTO
+            >($"/api/v1/first-bill", initiateFirstPensionBillDTO);
 
             int year = DateTime.Now.Year;
             int month = DateTime.Now.Month;
@@ -230,7 +246,7 @@ namespace CTS_BE.Tests.Controllers
             JsonAPIResponse<PpoBillSaveResponseDTO>? saveRegularBill = await CallPostAsJsonAsync<
                 PpoBillSaveResponseDTO,
                 PpoBillEntryDTO
-            >($"/api/v1/ppo/pension-bill", ppoBillEntryDTO);
+            >($"/api/v1/regular-bill", ppoBillEntryDTO);
 
             // Assert
             saveRegularBill?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
@@ -243,9 +259,10 @@ namespace CTS_BE.Tests.Controllers
             PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
             ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -266,7 +283,7 @@ namespace CTS_BE.Tests.Controllers
                 pensionStatusEntryDTO
             );
 
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new()
+            InitiateFirstPensionBillEntryDTO initiateFirstPensionBillDTO = new()
             {
                 PpoId = ppoId,
                 ToDate = DateOnly.FromDateTime(DateTime.Now),
@@ -274,12 +291,12 @@ namespace CTS_BE.Tests.Controllers
 
             _ = await CallPostAsJsonAsync<
                 InitiateFirstPensionBillResponseDTO,
-                InitiateFirstPensionBillDTO
-            >($"/api/v1/ppo/first-bill", initiateFirstPensionBillDTO);
+                InitiateFirstPensionBillEntryDTO
+            >($"/api/v1/first-bill", initiateFirstPensionBillDTO);
 
             // Act
             var firstBill = await CallGetAsJsonAsync<PpoBillResponseDTO>(
-                $"/api/v1/ppo/first-bill/{ppoId}"
+                $"/api/v1/first-bill/{ppoId}"
             );
 
             // Assert
@@ -292,12 +309,13 @@ namespace CTS_BE.Tests.Controllers
         public async Task PpoBillController_GetAllPposForRegularBill_CanGet()
         {
             // Arrange
-            int year = DateTime.Now.Year;
-            int month = DateTime.Now.Month;
+            DateOnly dateOfNextMonth = DateOnly.FromDateTime(DateTime.Now).AddMonths(1);
+            int year = dateOfNextMonth.Year;
+            int month = dateOfNextMonth.Month;
 
             // Act
             var firstBill = await CallGetAsJsonAsync<PpoListResponseDTO>(
-                $"/api/v1/ppo/pension-bill/{year}/{month}/ppos"
+                $"/api/v1/regular-bill/{year}/{month}/ppos"
             );
             // Assert
             using (new AssertionScope())
@@ -313,9 +331,10 @@ namespace CTS_BE.Tests.Controllers
             PensionerEntryDTO pensionerEntryDTO = new PensionerFactory().Create();
             ManualPpoReceiptEntryDTO? ppoReceipt = new PpoReceiptFactory().Create();
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
+            pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -336,13 +355,13 @@ namespace CTS_BE.Tests.Controllers
                 pensionStatusEntryDTO
             );
 
-            InitiateFirstPensionBillDTO initiateFirstPensionBillDTO = new()
+            InitiateFirstPensionBillEntryDTO initiateFirstPensionBillDTO = new()
             {
                 PpoId = ppoId,
-                ToDate = DateOnly.FromDateTime(DateTime.Now),
+                ToDate = DateOnly.FromDateTime(DateTime.Now.AddMonths(-1)),
             };
-            _ = await CallPostAsJsonAsync<PpoBillSaveResponseDTO, InitiateFirstPensionBillDTO>(
-                $"/api/v1/ppo/first-bill",
+            _ = await CallPostAsJsonAsync<PpoBillSaveResponseDTO, InitiateFirstPensionBillEntryDTO>(
+                $"/api/v1/first-bill",
                 initiateFirstPensionBillDTO
             );
 
@@ -358,13 +377,13 @@ namespace CTS_BE.Tests.Controllers
             };
 
             _ = await CallPostAsJsonAsync<PpoBillSaveResponseDTO, PpoBillEntryDTO>(
-                $"/api/v1/ppo/pension-bill",
+                $"/api/v1/regular-bill",
                 ppoBillEntryDTO
             );
 
             // Act
             var firstBill = await CallGetAsJsonAsync<RegularBillListResponseDTO>(
-                $"/api/v1/ppo/pension-bill/{year}/{month}/regular-bills"
+                $"/api/v1/regular-bill/{year}/{month}/bills"
             );
 
             // Assert

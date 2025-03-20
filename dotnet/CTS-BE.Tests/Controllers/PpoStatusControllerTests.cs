@@ -20,7 +20,7 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -59,7 +59,7 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<
@@ -101,7 +101,7 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.CategoryId = 30;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
             JsonAPIResponse<PensionerResponseDTO>? pensioner = await CallPostAsJsonAsync<

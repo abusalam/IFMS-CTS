@@ -5,30 +5,33 @@
 #
 @PensionAPI_HostAddress = {{$dotenv API_BASE_URL}}
 # {{Login.response.body.$.accessToken}}
-@AccessToken = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhcHBsaWNhdGlvbiI6IntcIklkXCI6MyxcIk5hbWVcIjpcIkNUU1wiLFwiTGV2ZWxzXCI6W3tcIklkXCI6OCxcIk5hbWVcIjpcIlRyZWFzdXJ5XCIsXCJTY29wZVwiOltcIkRBQVwiXX1dLFwiUm9sZXNcIjpbe1wiSWRcIjoyNyxcIk5hbWVcIjpcImNsZXJrXCIsXCJQZXJtaXNzaW9uc1wiOltcImNhbi1yZWNlaXZlLWJpbGxcIl19XX0iLCJuYW1laWQiOiIzOSIsIm5hbWUiOiJDVFMgQ2xlcmsiLCJuYmYiOjE3MTc5OTY2OTksImV4cCI6MTcxODA4MzA5OSwiaWF0IjoxNzE3OTk2Njk5fQ.tLMRXKlXb2eyiE2ApSRgFgbX9EjvPbGNi1dgp_UpGadv-UitDdS4su2ZV6B4kp4Rf0TXjDQHTW7YvNkwciQVQg
-@ApprovedPpoId = {{SetPPOApprovedFlag.response.body.$.result.ppoId}}
-@ApprovedPpoIdStatusFlag = {{SetPPOApprovedFlag.response.body.$.result.statusFlag}}
-@BillDate = {{GenerateFirstPensionBill.response.body.$.result.billDate}}
-@BillFromDate = {{GenerateFirstPensionBill.response.body.$.result.pensioner.dateOfCommencement}}
-@BillUptoDate = {{GenerateFirstPensionBill.response.body.$.result.billGeneratedUptoDate}}
+@AccessToken = {{$dotenv API_TOKEN}}
+@ApprovedPpoId = {{PpoStatusController_SetPPOApprovedFlag.response.body.$.result.ppoId}}
+@ApprovedPpoIdStatusFlag = {{PpoStatusController_SetPPOApprovedFlag.response.body.$.result.statusFlag}}
+@BillDate = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.billDate}}
+@BillFromDate = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.pensioner.dateOfCommencement}}
+@BillUptoDate = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.billGeneratedUptoDate}}
+@BreakupId = {{PensionComponentController_CreateComponent.response.body.$.result.id}}
 @ByTransferHeadMapId = {{ByTransferController_CreateByTransferHeadMap.response.body.$.result.id}}
+@CategoryId = {{PensionCategoryController_CreateCategory.response.body.$.result.id}}
 @ConsumerTag = {{MqController_StartMqComsumer.response.body.$.result}}
-@DateOfCommencement = {{CreatePPOReceipt.response.body.$.result.dateOfCommencement}}
-@EPpoReceiptId = {{CreateEPpoReceipt.response.body.$.result.id}}
+@DateOfCommencement = {{PpoReceiptController_CreatePPOReceipt.response.body.$.result.dateOfCommencement}}
+@EPpoReceiptId = {{EPpoReceiptController_CreateEPpoReceipt.response.body.$.result.id}}
 @FileId = {{FileStorageController_StoreFile.response.body.$.result.id}}
 @GeneratedPpoId = {{PpoDetailsController_CreatePensioner.response.body.$.result.ppoId}}
-@GrossAmount = {{GenerateFirstPensionBill.response.body.$.result.grossAmount}}
-@NetAmount = {{GenerateFirstPensionBill.response.body.$.result.netAmount}}
-@NomineeId = {{RegisterNomineeDetails.response.body.$.result.id}}
+@GrossAmount = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.grossAmount}}
+@NetAmount = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.netAmount}}
+@NomineeId = {{NomineeController_RegisterNomineeDetails.response.body.$.result.id}}
 @PensionerId = {{PpoDetailsController_CreatePensioner.response.body.$.result.id}}
-@PensionerPayments = {{GenerateFirstPensionBill.response.body.$.result.pensionerPayments}}
-@PpoNo = {{CreatePPOReceipt.response.body.$.result.ppoNo}}
-@PpoReceiptID = {{CreatePPOReceipt.response.body.$.result.id}}
-@ReceiptID = {{CreatePPOReceipt.response.body.$.result.id}}
+@PensionerPayments = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.pensionerPayments}}
+@PpoNo = {{PpoReceiptController_CreatePPOReceipt.response.body.$.result.ppoNo}}
+@PpoReceiptId = {{PpoReceiptController_CreatePPOReceipt.response.body.$.result.id}}
+@PrimaryCategoryId = {{PensionCategoryController_CreatePrimaryCategory.response.body.$.result.id}}
 @RevisionId = {{PpoComponentRevisionController_CreateSinglePpoComponentRevision.response.body.$.result.id}}
-@SanctionDetailsId = {{CreateSanctionDetails.response.body.$.result.id}}
-@TaxAmount = {{GenerateFirstPensionBill.response.body.$.result.grossAmount}}
-@TreasuryReceiptNo = {{CreatePPOReceipt.response.body.$.result.treasuryReceiptNo}}
+@SanctionDetailsId = {{PpoSanctionDetailsController_CreateSanctionDetails.response.body.$.result.id}}
+@SubCategoryId = {{PensionCategoryController_CreateSubCategory.response.body.$.result.id}}
+@TaxAmount = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.grossAmount}}
+@TreasuryReceiptNo = {{PpoReceiptController_CreatePPOReceipt.response.body.$.result.treasuryReceiptNo}}
 #**************************************************************************#
 #                                                                          #
 # Note: The variables must be arranged alphabetically                      #
@@ -37,7 +40,10 @@
 #**************************************************************************#
 @BankId = 1
 @BranchId = 1
-@CategoryID = 30
+# @CategoryId = 30
+@Contents = 50
+@QueueName = cts
+@SeedCount = 60
 @SeederName = DatabaseSeeder
 # @SeederName = AccountHeadSeeder
 # @SeederName = BankSeeder
@@ -61,8 +67,11 @@
 # @SeederName = PrimaryCategorySeeder
 # @SeederName = SubCategorySeeder
 # @SeederName = TreasurySeeder
-@SeedCount = 60
-@QueueName = cts
+
+
+# @NomineeId = 1
+
+# @GeneratedPpoId = 2
 
 
 
@@ -114,11 +123,172 @@ Authorization: Bearer {{AccessToken}}
 
 
 
+### Send Message
+# @name MqController_SendMessage
+POST {{PensionAPI_HostAddress}}/api/v1/mq/message/{{QueueName}}?contents={{Contents}}
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Receive SingleMessage
+# @name MqController_ReceiveSingleMessage
+GET {{PensionAPI_HostAddress}}/api/v1/mq/message/{{QueueName}}
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Start Message Queue Comsumer
+# @name MqController_StartMqComsumer
+GET {{PensionAPI_HostAddress}}/api/v1/mq/start-worker/{{QueueName}}
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Stop Message Queue Comsumer
+# @name MqController_StopMqComsumer
+GET {{PensionAPI_HostAddress}}/api/v1/mq/stop-worker/{{ConsumerTag}}
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get Banks
+# @name BankBranchController_GetBanks
+GET {{PensionAPI_HostAddress}}/api/v1/banks
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get Branches By BankId
+# @name BankBranchController_GetBranchesByBankId
+GET {{PensionAPI_HostAddress}}/api/v1/branches/{{BankId}}
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Create By Transfer Head Mapping
+# @name ByTransferController_CreateByTransferHeadMap
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmap
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "byTransferType": "P",
+  "accountHeadId": 69545,
+  "byTransferDescription": "INCOME TAX - T.D.S",
+  "agBytransfer": true
+}
+
+
+
+
+
+
+
+
+
+### Get all ByTransferHeads
+# @name ByTransferController_GetAllByTransferHeads
+GET {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmaps
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
 ### Get ByTransferHead By Id
 # @name ByTransferController_GetByTransferHeadById
 GET {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmap/{{ByTransferHeadMapId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+###Update By Transfer Head Mapping
+# @name ByTransferController_UpdateByTransferHeadMap
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/update-by-transfer-headmap
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "byTransferType": "R",
+  "accountHeadId": 69545,
+  "byTransferDescription": "INCOME TAX - T.D.S Update",
+  "agBytransfer": true
+}
+
+
+
+
+
+
+
+
+
+###Delete By Transfer Head Mapping
+# @name ByTransferController_DeleteByTransferHeadMap
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+DELETE {{PensionAPI_HostAddress}}/api/v1/delete-by-transfer-headmap/{bytransferheadid}
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
 
 
 
@@ -213,20 +383,6 @@ Content-Type: application/json
 
 
 
-### Get all ByTransferHeads
-# @name ByTransferController_GetAllByTransferHeads
-GET {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmaps
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
 ### Create Pension Component
 # @name PensionComponentController_CreateComponent
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
@@ -236,7 +392,7 @@ Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
-  "ComponentName": "Interim Relief 2016",
+  "ComponentName": "BASIC PENSION",
   "ComponentType": "P",
   "ReliefFlag": false
 }
@@ -258,10 +414,10 @@ Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
-  "CategoryId": 30,
-  "BreakupId": 3,
-  "EffectiveFromDate": "2016-05-01",
-  "RateAmount": 500,
+  "CategoryId": {{CategoryId}},
+  "BreakupId": {{BreakupId}},
+  "EffectiveFromDate": "2000-01-01",
+  "RateAmount": 0,
   "RateType": "A"
 }
 
@@ -275,7 +431,7 @@ Content-Type: application/json
 
 ### Get Component Rates By CategoryId
 # @name PensionComponentController_GetComponentRatesByCategoryId
-GET {{PensionAPI_HostAddress}}/api/v1/pension-component/{{CategoryID}}/rates
+GET {{PensionAPI_HostAddress}}/api/v1/pension-component/{{CategoryId}}/rates
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -312,8 +468,29 @@ Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
-  "PrimaryCategoryId": 4,
-  "SubCategoryId": 3
+  "PrimaryCategoryId": {{PrimaryCategoryId}},
+  "SubCategoryId": {{SubCategoryId}}
+}
+
+
+
+
+
+
+
+
+
+### Create Pension PrimaryCategory
+# @name PensionCategoryController_CreatePrimaryCategory
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "AccountHeadId": 69545,
+  "PrimaryCategoryName": "Central Pension"
 }
 
 
@@ -326,7 +503,7 @@ Content-Type: application/json
 
 ### Get Category By Id
 # @name PensionCategoryController_GetCategoryById
-GET {{PensionAPI_HostAddress}}/api/v1/pension/category/{categoryId}
+GET {{PensionAPI_HostAddress}}/api/v1/pension/category/{{CategoryId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -340,7 +517,7 @@ Authorization: Bearer {{AccessToken}}
 
 ### Get PrimaryCategories
 # @name PensionCategoryController_GetPrimaryCategories
-GET {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
+GET {{PensionAPI_HostAddress}}/api/v1/pension/primary-categories
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -354,7 +531,7 @@ Authorization: Bearer {{AccessToken}}
 
 ### Get PrimaryCategories
 # @name PensionCategoryController_GetSubCategories
-GET {{PensionAPI_HostAddress}}/api/v1/pension/sub-category
+GET {{PensionAPI_HostAddress}}/api/v1/pension/sub-categories
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -368,7 +545,7 @@ Authorization: Bearer {{AccessToken}}
 
 ### Get PrimaryCategories
 # @name PensionCategoryController_GetCategories
-GET {{PensionAPI_HostAddress}}/api/v1/pension/category
+GET {{PensionAPI_HostAddress}}/api/v1/pension/categories
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -403,70 +580,8 @@ Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
-  "SubCategoryName": "ROPA 2026"
+  "SubCategoryName": "ROPA 2000"
 }
-
-
-
-
-
-
-
-
-
-### Create By Transfer Head Mapping
-# @name ByTransferController_CreateByTransferHeadMap
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/by-transfer-headmap
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "byTransferType": "P",
-  "accountHeadId": 69545,
-  "byTransferDescription": "INCOME TAX - T.D.S",
-  "agBytransfer": true
-}
-
-
-
-
-
-
-
-
-
-###Update By Transfer Head Mapping
-# @name ByTransferController_UpdateByTransferHeadMap
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-PUT {{PensionAPI_HostAddress}}/api/v1/update-by-transfer-headmap
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "byTransferType": "R",
-  "accountHeadId": 69545,
-  "byTransferDescription": "INCOME TAX - T.D.S Update",
-  "agBytransfer": true
-}
-
-
-
-
-
-
-
-
-
-###Delete By Transfer Head Mapping
-# @name ByTransferController_DeleteByTransferHeadMap
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-DELETE {{PensionAPI_HostAddress}}/api/v1/delete-by-transfer-headmap/{bytransferheadid}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
 
 
 
@@ -477,7 +592,7 @@ Content-Type: application/json
 
 
 ### Create PPO By Transfer Mapping
-# @name CreatePPOByTransferMap
+# @name PpoByTransferController_CreatePPOByTransferMap
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/save-ppo-by-transfer-headmap
 Accept: application/json
@@ -485,7 +600,7 @@ Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
-  "ppoId": 1,
+  "ppoId": {{GeneratedPpoId}},
   "fromDate": "2024-02-19",
   "toDate": "2024-03-19",
   "bytransferHeadId": 9,
@@ -502,7 +617,7 @@ Content-Type: application/json
 
 
 ### Update PPO By Transfer Mapping
-# @name UpdatePPOByTransferMap
+# @name PpoByTransferController_UpdatePPOByTransferMap
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 PUT {{PensionAPI_HostAddress}}/api/v1/update-ppo-by-transfer-headmap
 Accept: application/json
@@ -525,7 +640,7 @@ Content-Type: application/json
 
 
 ###Delete PPO By Transfer
-# @name DeletePPOByTransfer
+# @name PpoByTransferController_DeletePPOByTransfer
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 DELETE {{PensionAPI_HostAddress}}/api/v1/delete-ppo-by-transfer/{ppobytransferid}
 Accept: application/json
@@ -541,7 +656,7 @@ Content-Type: application/json
 
 
 ### Get PPO ByTransfer By Id
-# @name GetPPOByTransferById
+# @name PpoByTransferController_GetPPOByTransferById
 GET {{PensionAPI_HostAddress}}/api/v1/by-transfer/{{GeneratedPpoId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -555,7 +670,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Create PPO By Transfer Head Mapping
-# @name CreatePPOByTransferHeadMap
+# @name PpoByTransferController_CreatePPOByTransferHeadMap
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/ppo-by-transfer-headmap
 Accept: application/json
@@ -581,7 +696,7 @@ Content-Type: application/json
 
 
 ### Update PPO By Transfer Mapping
-# @name UpdatePPOByTransferMap
+# @name PpoByTransferController_UpdatePPOByTransferMap
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 PUT {{PensionAPI_HostAddress}}/api/v1/update-ppo-by-transfer-headmap
 Accept: application/json
@@ -604,218 +719,11 @@ Content-Type: application/json
 
 
 ###Delete PPO By Transfer
-# @name DeletePPOByTransfer
+# @name PpoByTransferController_DeletePPOByTransfer
 DELETE {{PensionAPI_HostAddress}}/api/v1/delete-ppo-by-transfer/{ppobytransferid}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
-
-
-
-
-
-
-
-
-
-### Create Pension PrimaryCategory
-# @name PensionCategoryController_CreatePrimaryCategory
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/pension/primary-category
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "HoaId": "2071 - 01 - 109 - 00 - 001 - V - 04 - 00",
-  "PrimaryCategoryName": "Defence Pension"
-}
-
-
-
-
-
-
-
-
-
-### Get Banks
-# @name BankBranchController_GetBanks
-GET {{PensionAPI_HostAddress}}/api/v1/banks
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Get First Pension Bill By PpoId
-# @name GetFirstPensionBillByPpoId
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill/{{GeneratedPpoId}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Send Bill
-# @name SendFirstPensionBill
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/send-bill
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "message": "GeneratePensionBillRequest"
-}
-
-
-
-
-
-
-
-
-
-### Generate First Pension Bill
-# @name GenerateFirstPensionBill
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill-generate
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "PpoId": {{GeneratedPpoId}},
-  "billType": "F",
-  "toDate": "2024-12-05"
-}
-
-
-
-
-
-
-
-
-
-### Send Message
-# @name MqController_SendMessage
-POST {{PensionAPI_HostAddress}}/api/v1/mq/message/{{QueueName}}?contents={{Contents}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-@Contents = 50
-
-
-
-
-
-
-
-
-
-### Receive SingleMessage
-# @name MqController_ReceiveSingleMessage
-GET {{PensionAPI_HostAddress}}/api/v1/mq/message/{{QueueName}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Start Message Queue Comsumer
-# @name MqController_StartMqComsumer
-GET {{PensionAPI_HostAddress}}/api/v1/mq/start-worker/{{QueueName}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Stop Message Queue Comsumer
-# @name MqController_StopMqComsumer
-GET {{PensionAPI_HostAddress}}/api/v1/mq/stop-worker/{{ConsumerTag}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Set PPO Running Flag
-# @name SetPPORunningFlag
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "PpoId": "{{ApprovedPpoId}}",
-  "StatusFlag": "PpoRunning",
-  "StatusWef": "{{$datetime "YYYY-MM-DD" -2 d}}"
-}
-
-
-
-
-
-
-
-
-
-### Get Branches By BankId
-# @name BankBranchController_GetBranchesByBankId
-GET {{PensionAPI_HostAddress}}/api/v1/branches/{{BankId}}
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Save First Pension Bill
-# @name SaveFirstPensionBill
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "ppoId": {{GeneratedPpoId}},
-  "toDate": "{{$datetime "YYYY-MM-DD"}}"
-}
 
 
 
@@ -834,24 +742,23 @@ Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
-  "receiptId": {{PpoReceiptID}},
+  "receiptId": {{PpoReceiptId}},
   "ppoNo": "{{PpoNo}}",
   "ppoType": "P",
   "psaType": "A",
   "ppoSubType": "N",
-  "categoryId": 30,
+  "categoryId": {{CategoryId}},
   "payMode": "Q",
   "bankAcNo": "6831551168546692",
   "accountHolderName": "Jerome Fay",
   "branchId": {{$randomInt 1 4}},
-  "categoryId": 30,
   "commutedFromDate": "2024-02-01",
   "commutedUptoDate": "2031-02-01",
   "pensionerName": "Jack Dowsel",
   "dateOfBirth": "1954-01-01",
   "gender": "M",
   "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
-  "emailId": "string",
+  "emailId": "pensioner@example.com",
   "pensionerAddress": "Malda",
   "identificationMark": "S",
   "panNo": "PANNO{{$randomInt 1000 9999}}F",
@@ -958,8 +865,30 @@ Authorization: Bearer {{AccessToken}}
 
 
 
+### Set PPO Running Flag
+# @name PpoStatusController_SetPPORunningFlag
+POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "PpoId": "{{ApprovedPpoId}}",
+  "StatusFlag": "PpoRunning",
+  "StatusWef": "{{$datetime "YYYY-MM-DD" -2 d}}"
+}
+
+
+
+
+
+
+
+
+
 ### Set PPO Approved Flag
-# @name SetPPOApprovedFlag
+# @name PpoStatusController_SetPPOApprovedFlag
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/status
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -980,7 +909,7 @@ Content-Type: application/json
 
 
 ### Clear PPO Approved Flag
-# @name ClearPpoStatusFlagByPpoId
+# @name PpoStatusController_ClearPpoStatusFlagByPpoId
 DELETE {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status/{{ApprovedPpoIdStatusFlag}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -994,7 +923,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Check PPO Approved Flag
-# @name GetPpoStatusFlagByPpoId
+# @name PpoStatusController_GetPpoStatusFlagByPpoId
 Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{ApprovedPpoId}}/status/{{ApprovedPpoIdStatusFlag}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1007,37 +936,9 @@ Authorization: Bearer {{AccessToken}}
 
 
 
-### Read PPO Receipt Request
-# @name GetPPOReceiptByTreasuryReceiptNo
-GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{TreasuryReceiptNo}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Get Unused PPO Receipts
-# @name GetAllUnusedPpoReceipts
-GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/unused
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
 ### Create PPO Receipt Request
-# @name CreatePPOReceipt
-POST {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts
+# @name PpoReceiptController_CreatePPOReceipt
+POST {{PensionAPI_HostAddress}}/api/v1/manual-ppo-receipt
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1061,10 +962,66 @@ Content-Type: application/json
 
 
 
-### Update PPO Receipt Request
-# @name UpdatePpoReceiptByTreasuryReceiptNo
+### Get Unused PPO Receipts
+# @name PpoReceiptController_GetAllUnusedPpoReceipts
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo-receipts/unused
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get PPO Receipt By Receipt ID
+# @name PpoReceiptController_GetPpoReceiptById
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo-receipt/{{PpoReceiptId}}
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Read PPO Receipt Request
+# @name PpoReceiptController_GetPpoReceiptByTreasuryReceiptNo
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo-receipt/trid/{{TreasuryReceiptNo}}
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get PPO Receipt By Receipt ID
+# @name PpoReceiptController_GetPpoReceipts
+GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo-receipts
+Accept: application/json
+Authorization: Bearer {{AccessTok
+
+
+
+
+
+
+
+
+
+### Update PPO Receipt By Receipt ID
+# @name PpoReceiptController_UpdatePPOReceipt
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{TreasuryReceiptNo}}
+PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo-receipt/{{PpoReceiptId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
@@ -1088,9 +1045,9 @@ Content-Type: application/json
 
 
 ### Update PPO Receipt Request
-# @name UpdatePpoReceipt
+# @name PpoReceiptController_UpdatePpoReceiptByTreasuryReceiptNo
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipts/{{ReceiptID}}
+PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo-receipt/trid/{{TreasuryReceiptNo}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
@@ -1116,20 +1073,6 @@ Content-Type: application/json
 ### Get DateOnly Request
 # @name PensionController_GetDateOnly
 GET {{PensionAPI_HostAddress}}/api/v1/date-only
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Get Ppo List for Regular Bill Generation
-# @name GetAllPposForRegularBill
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/ppos
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -1194,36 +1137,17 @@ Authorization: Bearer {{AccessToken}}
 
 
 
-### Get PPO Receipt By Receipt ID
-# @name GetPPOReceiptById
-GET {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipt/{{ReceiptID}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Update PPO Receipt By Receipt ID
-# @name UpdatePPOReceiptById
+### Generate First Pension Bill
+# @name PpoBillController_GenerateFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-PUT {{PensionAPI_HostAddress}}/api/v1/manual-ppo/receipt/{{ReceiptID}}
+POST {{PensionAPI_HostAddress}}/api/v1/first-bill-generate
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
-  "ppoNo": "PPO-{{$randomInt 100000 999999}}",
-  "pensionerName": "Jack Smith",
-  "dateOfCommencement": "2024-07-19",
-  "mobileNumber": "{{$randomInt 6000000000 9999999999}}",
-  "receiptDate": "{{$datetime "YYYY-MM-DD"}}",
-  "psaCode": "A",
-  "ppoType": "N"
+  "PpoId": {{GeneratedPpoId}},
+  "toDate": "2024-10-10"
 }
 
 
@@ -1234,9 +1158,37 @@ Content-Type: application/json
 
 
 
+### Get Ppo List for First Bill Generation
+# @name PpoBillController_GetAllPposForFirstBill
+GET {{PensionAPI_HostAddress}}/api/v1/first-bill/ppos
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get Ppo List for Regular Bill Generation
+# @name PpoBillController_GetAllPposForRegularBill
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/ppos
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
 ### Get List of Regular Bills All Category & All Bank
-# @name GetAllRegularBills
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills
+# @name PpoBillController_GetAllRegularPensionBills
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -1249,8 +1201,8 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Get List of Regular Bills  Specific Category & Specific Bank
-# @name GetAllRegularBillsByCategoryAndBank
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?categoryId=30&bankId=2
+# @name PpoBillController_GetAllRegularPensionBills_ByCategoryAndBank
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?categoryId=30&bankId=2
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -1263,8 +1215,8 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Get List of Regular Bills Specific Category & All Bank
-# @name GetAllRegularBillsByCategory
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?categoryId=30
+# @name PpoBillController_GetAllRegularPensionBills_ByCategory
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?categoryId=30
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -1277,8 +1229,8 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Get List of Regular Bills All Category & Specific Bank
-# @name GetAllRegularBillsByBank
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?bankId=2
+# @name PpoBillController_GetAllRegularPensionBills_ByBank
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?bankId=2
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -1291,8 +1243,8 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Get List of Regular Bills All Category & Specific List of Branches
-# @name GetAllRegularBillsByBankBranchList
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/regular-bills?id=2&id=4
+# @name PpoBillController_GetAllRegularPensionBills_ByBankBranchList
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?id=2&id=4
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 
@@ -1304,11 +1256,46 @@ Authorization: Bearer {{AccessToken}}
 
 
 
-### Get Ppo List for First Bill Generation
-# @name GetAllPposForFirstBillGeneration
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill/ppos
+### Get First Pension Bill By PpoId
+# @name PpoBillController_GetFirstPensionBillByPpoId
+GET {{PensionAPI_HostAddress}}/api/v1/first-bill/{{GeneratedPpoId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get Ppo List for First Bill Print
+# @name PpoBillController_GetPposForFirstBillPrint
+GET {{PensionAPI_HostAddress}}/api/v1/first-bill-print/ppos
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Save First Pension Bill
+# @name PpoBillController_SaveFirstPensionBill
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+POST {{PensionAPI_HostAddress}}/api/v1/first-bill
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "toDate": "2024-10-15"
+}
 
 
 
@@ -1319,17 +1306,17 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Save Regular Pension Bill
-# @name SaveRegularPensionBill
+# @name PpoBillController_SaveRegularPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/ppo/pension-bill
+POST {{PensionAPI_HostAddress}}/api/v1/regular-bill
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
 
 {
   "ppoId": {{GeneratedPpoId}},
-  "month": {{$datetime "MM"}},
-  "year": {{$datetime "YYYY"}},
+  "month": 1,
+  "year": 2025,
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
 
@@ -1342,7 +1329,7 @@ Content-Type: application/json
 
 
 ### Get Convert to Family Pension List
-# @name GetPensionersToConvert
+# @name ConvertToFamilyPensionController_GetPensionersToConvert
 GET {{PensionAPI_HostAddress}}/api/v1/convert-to-family-pension-list
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1356,7 +1343,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Create PPO Sanction Details
-# @name CreateSanctionDetails
+# @name PpoSanctionDetailsController_CreateSanctionDetails
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/sanction
 Accept: application/json
@@ -1380,69 +1367,10 @@ Content-Type: application/json
 
 
 
-### Submit Life Certificate
-# @name SubmitLifeCertificate
+### Get PPO Sanction Details
+# @name PpoSanctionDetailsController_GetSanctionDetailsById
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-POST {{PensionAPI_HostAddress}}/api/v1/lifecertificate
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "ppoId": {{GeneratedPpoId}},
-  "financialYear": {{$datetime "YYYY"}},
-  "certificateSubmitted": true
-}
-
-
-
-
-
-
-
-
-
-### Get Life Certificate
-# @name GetLifeCertificateByPpoId
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-GET {{PensionAPI_HostAddress}}/api/v1/lifecertificate/ppo/{{GeneratedPpoId}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-
-
-
-
-
-
-
-
-### Update Life Certificate
-# @name UpdateLifeCertificate
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-PUT {{PensionAPI_HostAddress}}/api/v1/lifecertificate/ppo/{{GeneratedPpoId}}
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-Content-Type: application/json
-
-{
-  "financialYear": {{$datetime "YYYY"}},
-  "certificateSubmitted": false
-}
-
-
-
-
-
-
-
-
-
-### List of Life Certificates
-# @name GetLifeCertificatesByBranchId
-# POST {{PensionAPI_HostAddress}}/api/v1/echo
-GET {{PensionAPI_HostAddress}}/api/v1/lifecertificate/branch/{{BranchId}}
+GET {{PensionAPI_HostAddress}}/api/v1/ppo/sanction/{{SanctionDetailsId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
@@ -1456,7 +1384,7 @@ Content-Type: application/json
 
 
 ### Update PPO Sanction Details
-# @name UpdateSanctionDetailsById
+# @name PpoSanctionDetailsController_UpdateSanctionDetailsById
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 PUT {{PensionAPI_HostAddress}}/api/v1/ppo/sanction/{{SanctionDetailsId}}
 Accept: application/json
@@ -1480,10 +1408,32 @@ Content-Type: application/json
 
 
 
-### Get PPO Sanction Details
-# @name GetSanctionDetailsById
+### Submit Life Certificate
+# @name LifeCertificateController_SubmitLifeCertificate
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/sanction/{{SanctionDetailsId}}
+POST {{PensionAPI_HostAddress}}/api/v1/lifecertificate
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "ppoId": {{GeneratedPpoId}},
+  "financialYear": {{$datetime "YYYY"}},
+  "certificateSubmitted": true
+}
+
+
+
+
+
+
+
+
+
+### Get Life Certificate
+# @name LifeCertificateController_GetLifeCertificateByPpoId
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+GET {{PensionAPI_HostAddress}}/api/v1/lifecertificate/ppo/{{GeneratedPpoId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
 Content-Type: application/json
@@ -1496,11 +1446,34 @@ Content-Type: application/json
 
 
 
-### Get Ppo List for First Bill Print
-# @name GetAllPposForFirstBillPrint
-GET {{PensionAPI_HostAddress}}/api/v1/ppo/first-bill-print/ppos
+### Update Life Certificate
+# @name LifeCertificateController_UpdateLifeCertificate
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+PUT {{PensionAPI_HostAddress}}/api/v1/lifecertificate/ppo/{{GeneratedPpoId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
+
+{
+  "financialYear": {{$datetime "YYYY"}},
+  "certificateSubmitted": false
+}
+
+
+
+
+
+
+
+
+
+### List of Life Certificates
+# @name LifeCertificateController_GetLifeCertificatesByBranchId
+# POST {{PensionAPI_HostAddress}}/api/v1/echo
+GET {{PensionAPI_HostAddress}}/api/v1/lifecertificate/branch/{{BranchId}}
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+Content-Type: application/json
 
 
 
@@ -1511,7 +1484,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Register Nominee Details
-# @name RegisterNomineeDetails
+# @name NomineeController_RegisterNomineeDetails
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/ppo/nominee
 Accept: application/json
@@ -1546,7 +1519,7 @@ Content-Type: application/json
 
 
 ### Update Nominee Details
-# @name UpdateNomineeDetails
+# @name NomineeController_UpdateNomineeDetails
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 PUT {{PensionAPI_HostAddress}}/api/v1/ppo/nominee/{{NomineeId}}
 Accept: application/json
@@ -1581,7 +1554,7 @@ Content-Type: application/json
 
 
 ### Delete NomineeDetails By Id
-# @name DeleteNomineeDetailsById
+# @name NomineeController_DeleteNomineeDetailsById
 DELETE {{PensionAPI_HostAddress}}/api/v1/ppo/nominee/{{NomineeId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1595,7 +1568,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Get Nominee Details By Nominee Id
-# @name GetNomineeDetailsById
+# @name NomineeController_GetNomineeDetailsById
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/nominee/{{NomineeId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1609,7 +1582,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Get Nominees By PPO Id
-# @name GetNomineesByPpoId
+# @name NomineeController_GetNomineesByPpoId
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/nominees
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1658,7 +1631,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Create ePPO Receipt
-# @name CreateEPpoReceipt
+# @name EPpoReceiptController_CreateEPpoReceipt
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/e-ppo/receipt
 Accept: application/json
@@ -1771,7 +1744,7 @@ Content-Type: application/json
 
 
 ### Create ePPO Revision
-# @name CreateEPpoRevision
+# @name EPpoReceiptController_CreateEPpoRevision
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/e-ppo/revision
 Accept: application/json
@@ -1856,7 +1829,7 @@ Content-Type: application/json
 
 
 ### Get ePPO Receipt By PpoNo
-# @name GetPpoIdByPensionApplnNo
+# @name EPpoReceiptController_GetPpoIdByPensionApplnNo
 GET {{PensionAPI_HostAddress}}/api/v1/e-ppo/12012203384
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1870,7 +1843,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Withdraw ePPO Receipt
-# @name WithdrawEPpoReceipt
+# @name EPpoReceiptController_WithdrawEPpoReceipt
 PUT {{PensionAPI_HostAddress}}/api/v1/e-ppo/withdraw
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1891,7 +1864,7 @@ Content-Type: application/json
 
 
 ### Get ePPO Receipt By Receipt ID
-# @name GetEPpoReceiptById
+# @name EPpoReceiptController_GetEPpoReceiptById
 GET {{PensionAPI_HostAddress}}/api/v1/e-ppo/receipt/{{EPpoReceiptId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1905,7 +1878,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Get Unused ePPO Receipts
-# @name GetUnusedEPpoReceipts
+# @name EPpoReceiptController_GetUnusedEPpoReceipts
 GET {{PensionAPI_HostAddress}}/api/v1/e-ppo/receipt/unused
 Accept: application/json
 Authorization: Bearer {{AccessToken}}

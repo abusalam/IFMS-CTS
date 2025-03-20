@@ -17,7 +17,7 @@ namespace CTS_BE.Tests.Controllers
             pensionerEntryDTO.PpoNo = ppoReceipt.PpoNo;
             ppoReceipt.DateOfCommencement = pensionerEntryDTO.DateOfCommencement;
             _ = await CallPostAsJsonAsync<ManualPpoReceiptResponseDTO, ManualPpoReceiptEntryDTO>(
-                "/api/v1/manual-ppo/receipts",
+                "/api/v1/manual-ppo-receipt",
                 ppoReceipt
             );
 

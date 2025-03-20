@@ -18,7 +18,7 @@ namespace CTS_BE.Tests.Controllers
             JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData = await CallPostAsJsonAsync<
                 ManualPpoReceiptResponseDTO,
                 ManualPpoReceiptEntryDTO
-            >("/api/v1/manual-ppo/receipts", manualPpoReceiptEntryDTO);
+            >("/api/v1/manual-ppo-receipt", manualPpoReceiptEntryDTO);
 
             ManualPpoReceiptResponseDTO? responseResult = responseData?.Result;
             responseResult.FillFrom(manualPpoReceiptEntryDTO);
@@ -28,7 +28,6 @@ namespace CTS_BE.Tests.Controllers
                 responseData.Should().NotBeNull();
             responseData.Should().BeOfType<JsonAPIResponse<ManualPpoReceiptResponseDTO>>();
             responseData?.ApiResponseStatus.Should().Be(Enum.APIResponseStatus.Success);
-            responseData?.Message.Should().Be("PPO Received Successfully!");
             responseData?.Result.Should().BeEquivalentTo(responseResult);
         }
 
@@ -40,7 +39,7 @@ namespace CTS_BE.Tests.Controllers
             JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = await CallPostAsJsonAsync<
                 ManualPpoReceiptResponseDTO,
                 ManualPpoReceiptEntryDTO
-            >("/api/v1/manual-ppo/receipts", manualPpoReceiptEntryDTO);
+            >("/api/v1/manual-ppo-receipt", manualPpoReceiptEntryDTO);
 
             ManualPpoReceiptEntryDTO receiptUpdateDTO = new PpoReceiptFactory().Create();
 
@@ -48,7 +47,7 @@ namespace CTS_BE.Tests.Controllers
             JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData = await CallPutAsJsonAsync<
                 ManualPpoReceiptResponseDTO,
                 ManualPpoReceiptEntryDTO
-            >($"/api/v1/manual-ppo/receipt/{savedReceipt?.Result?.Id ?? 0}", receiptUpdateDTO);
+            >($"/api/v1/manual-ppo-receipt/{savedReceipt?.Result?.Id ?? 0}", receiptUpdateDTO);
 
             ManualPpoReceiptResponseDTO? responseResult = responseData?.Result;
             responseResult.FillFrom(receiptUpdateDTO);
@@ -69,12 +68,12 @@ namespace CTS_BE.Tests.Controllers
             JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = await CallPostAsJsonAsync<
                 ManualPpoReceiptResponseDTO,
                 ManualPpoReceiptEntryDTO
-            >("/api/v1/manual-ppo/receipts", manualPpoReceiptEntryDTO);
+            >("/api/v1/manual-ppo-receipt", manualPpoReceiptEntryDTO);
 
             // Act
             JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData =
                 await CallGetAsJsonAsync<ManualPpoReceiptResponseDTO>(
-                    $"/api/v1/manual-ppo/receipt/{savedReceipt?.Result?.Id ?? 0}"
+                    $"/api/v1/manual-ppo-receipt/{savedReceipt?.Result?.Id ?? 0}"
                 );
 
             ManualPpoReceiptResponseDTO? responseResult = responseData?.Result;
@@ -96,12 +95,12 @@ namespace CTS_BE.Tests.Controllers
             JsonAPIResponse<ManualPpoReceiptResponseDTO>? savedReceipt = await CallPostAsJsonAsync<
                 ManualPpoReceiptResponseDTO,
                 ManualPpoReceiptEntryDTO
-            >("/api/v1/manual-ppo/receipts", manualPpoReceiptEntryDTO);
+            >("/api/v1/manual-ppo-receipt", manualPpoReceiptEntryDTO);
 
             // Act
             JsonAPIResponse<ManualPpoReceiptResponseDTO>? responseData =
                 await CallGetAsJsonAsync<ManualPpoReceiptResponseDTO>(
-                    $"/api/v1/manual-ppo/receipts/{savedReceipt?.Result?.TreasuryReceiptNo ?? "null"}"
+                    $"/api/v1/manual-ppo-receipt/trid/{savedReceipt?.Result?.TreasuryReceiptNo ?? "null"}"
                 );
 
             ManualPpoReceiptResponseDTO? responseResult = responseData?.Result;
