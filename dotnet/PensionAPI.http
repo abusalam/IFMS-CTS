@@ -8,9 +8,9 @@
 @AccessToken = {{$dotenv API_TOKEN}}
 @ApprovedPpoId = {{PpoStatusController_SetPPOApprovedFlag.response.body.$.result.ppoId}}
 @ApprovedPpoIdStatusFlag = {{PpoStatusController_SetPPOApprovedFlag.response.body.$.result.statusFlag}}
-@BillDate = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.billDate}}
-@BillFromDate = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.pensioner.dateOfCommencement}}
-@BillUptoDate = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.billGeneratedUptoDate}}
+@BillDate = {{PpoFirstBillController_GenerateFirstPensionBill.response.body.$.result.billDate}}
+@BillFromDate = {{PpoFirstBillController_GenerateFirstPensionBill.response.body.$.result.pensioner.dateOfCommencement}}
+@BillUptoDate = {{PpoFirstBillController_GenerateFirstPensionBill.response.body.$.result.billGeneratedUptoDate}}
 @BreakupId = {{PensionComponentController_CreateComponent.response.body.$.result.id}}
 @ByTransferHeadMapId = {{ByTransferController_CreateByTransferHeadMap.response.body.$.result.id}}
 @CategoryId = {{PensionCategoryController_CreateCategory.response.body.$.result.id}}
@@ -19,18 +19,18 @@
 @EPpoReceiptId = {{EPpoReceiptController_CreateEPpoReceipt.response.body.$.result.id}}
 @FileId = {{FileStorageController_StoreFile.response.body.$.result.id}}
 @GeneratedPpoId = {{PpoDetailsController_CreatePensioner.response.body.$.result.ppoId}}
-@GrossAmount = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.grossAmount}}
-@NetAmount = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.netAmount}}
+@GrossAmount = {{PpoFirstBillController_GenerateFirstPensionBill.response.body.$.result.grossAmount}}
+@NetAmount = {{PpoFirstBillController_GenerateFirstPensionBill.response.body.$.result.netAmount}}
 @NomineeId = {{NomineeController_RegisterNomineeDetails.response.body.$.result.id}}
 @PensionerId = {{PpoDetailsController_CreatePensioner.response.body.$.result.id}}
-@PensionerPayments = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.pensionerPayments}}
+@PensionerPayments = {{PpoFirstBillController_GenerateFirstPensionBill.response.body.$.result.pensionerPayments}}
 @PpoNo = {{PpoReceiptController_CreatePPOReceipt.response.body.$.result.ppoNo}}
 @PpoReceiptId = {{PpoReceiptController_CreatePPOReceipt.response.body.$.result.id}}
 @PrimaryCategoryId = {{PensionCategoryController_CreatePrimaryCategory.response.body.$.result.id}}
 @RevisionId = {{PpoComponentRevisionController_CreateSinglePpoComponentRevision.response.body.$.result.id}}
 @SanctionDetailsId = {{PpoSanctionDetailsController_CreateSanctionDetails.response.body.$.result.id}}
 @SubCategoryId = {{PensionCategoryController_CreateSubCategory.response.body.$.result.id}}
-@TaxAmount = {{PpoBillController_GenerateFirstPensionBill.response.body.$.result.grossAmount}}
+@TaxAmount = {{PpoFirstBillController_GenerateFirstPensionBill.response.body.$.result.grossAmount}}
 @TreasuryReceiptNo = {{PpoReceiptController_CreatePPOReceipt.response.body.$.result.treasuryReceiptNo}}
 #**************************************************************************#
 #                                                                          #
@@ -71,7 +71,7 @@
 
 # @NomineeId = 1
 
-# @GeneratedPpoId = 2
+# @GeneratedPpoId = 1
 
 
 
@@ -837,6 +837,20 @@ Authorization: Bearer {{AccessToken}}
 
 
 
+### Check PPO Payment Details
+# @name PpoDetailsController_GetPensionerPaymentHistoryByPpoId
+Get {{PensionAPI_HostAddress}}/api/v1/ppo/{{GeneratedPpoId}}/payment-history
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
 ### Get all not approved pensioners
 # @name PpoDetailsController_GetPensioners
 GET {{PensionAPI_HostAddress}}/api/v1/ppo/details
@@ -1138,7 +1152,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Generate First Pension Bill
-# @name PpoBillController_GenerateFirstPensionBill
+# @name PpoFirstBillController_GenerateFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/first-bill-generate
 Accept: application/json
@@ -1159,7 +1173,7 @@ Content-Type: application/json
 
 
 ### Get Ppo List for First Bill Generation
-# @name PpoBillController_GetAllPposForFirstBill
+# @name PpoFirstBillController_GetAllPposForFirstBill
 GET {{PensionAPI_HostAddress}}/api/v1/first-bill/ppos
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1172,92 +1186,8 @@ Authorization: Bearer {{AccessToken}}
 
 
 
-### Get Ppo List for Regular Bill Generation
-# @name PpoBillController_GetAllPposForRegularBill
-GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/ppos
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Get List of Regular Bills All Category & All Bank
-# @name PpoBillController_GetAllRegularPensionBills
-GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Get List of Regular Bills  Specific Category & Specific Bank
-# @name PpoBillController_GetAllRegularPensionBills_ByCategoryAndBank
-GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?categoryId=30&bankId=2
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Get List of Regular Bills Specific Category & All Bank
-# @name PpoBillController_GetAllRegularPensionBills_ByCategory
-GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?categoryId=30
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Get List of Regular Bills All Category & Specific Bank
-# @name PpoBillController_GetAllRegularPensionBills_ByBank
-GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?bankId=2
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
-### Get List of Regular Bills All Category & Specific List of Branches
-# @name PpoBillController_GetAllRegularPensionBills_ByBankBranchList
-GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?id=2&id=4
-Accept: application/json
-Authorization: Bearer {{AccessToken}}
-
-
-
-
-
-
-
-
-
 ### Get First Pension Bill By PpoId
-# @name PpoBillController_GetFirstPensionBillByPpoId
+# @name PpoFirstBillController_GetFirstPensionBillByPpoId
 GET {{PensionAPI_HostAddress}}/api/v1/first-bill/{{GeneratedPpoId}}
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1271,7 +1201,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Get Ppo List for First Bill Print
-# @name PpoBillController_GetPposForFirstBillPrint
+# @name PpoFirstBillController_GetPposForFirstBillPrint
 GET {{PensionAPI_HostAddress}}/api/v1/first-bill-print/ppos
 Accept: application/json
 Authorization: Bearer {{AccessToken}}
@@ -1285,7 +1215,7 @@ Authorization: Bearer {{AccessToken}}
 
 
 ### Save First Pension Bill
-# @name PpoBillController_SaveFirstPensionBill
+# @name PpoFirstBillController_SaveFirstPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/first-bill
 Accept: application/json
@@ -1305,8 +1235,92 @@ Content-Type: application/json
 
 
 
+### Get Ppo List for Regular Bill Generation
+# @name PpoRegularBillController_GetAllPposForRegularBill
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/ppos
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get List of Regular Bills All Category & All Bank
+# @name PpoRegularBillController_GetAllRegularPensionBills
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get List of Regular Bills  Specific Category & Specific Bank
+# @name PpoRegularBillController_GetAllRegularPensionBills_ByCategoryAndBank
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?categoryId=30&bankId=2
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get List of Regular Bills Specific Category & All Bank
+# @name PpoRegularBillController_GetAllRegularPensionBills_ByCategory
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?categoryId=30
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get List of Regular Bills All Category & Specific Bank
+# @name PpoRegularBillController_GetAllRegularPensionBills_ByBank
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?bankId=2
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
+### Get List of Regular Bills All Category & Specific List of Branches
+# @name PpoRegularBillController_GetAllRegularPensionBills_ByBankBranchList
+GET {{PensionAPI_HostAddress}}/api/v1/regular-bill/{{$datetime "YYYY"}}/{{$datetime "MM"}}/bills?id=2&id=4
+Accept: application/json
+Authorization: Bearer {{AccessToken}}
+
+
+
+
+
+
+
+
+
 ### Save Regular Pension Bill
-# @name PpoBillController_SaveRegularPensionBill
+# @name PpoRegularBillController_SaveRegularPensionBill
 # POST {{PensionAPI_HostAddress}}/api/v1/echo
 POST {{PensionAPI_HostAddress}}/api/v1/regular-bill
 Accept: application/json
@@ -1315,8 +1329,8 @@ Content-Type: application/json
 
 {
   "ppoId": {{GeneratedPpoId}},
-  "month": 1,
-  "year": 2025,
+  "month": 11,
+  "year": 2024,
   "toDate": "{{$datetime "YYYY-MM-DD"}}"
 }
 
