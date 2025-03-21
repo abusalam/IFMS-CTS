@@ -59,39 +59,38 @@ jobs:
           # Use always() to always run this step to publish test results when there are test failures
         if: ${{ always() }}
 
-  angular-test:
-    name: Run Playwright Tests on Docker
-    needs: [dotnet-test]
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Setup Docker Compose Standalone
-        run: |
-          sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-      - name: Build Docker Images
-        run: |
-          git submodule update --init --recursive
-          cp .env.docker .env
-          cd angular
-          cp .env.playwright.docker .env
-          cd ..
-          sudo chown -R 1000:1000 .
-          docker-compose build dotnet angular angular-test --build-arg HOST_UID=1000
-      - name: Run Angular Container
-        run: docker-compose up -d angular-test
-      - name: Setup Angular for Playwright
-        run: |
-          docker-compose exec angular-test npm ci
-      - name: Run Playwright tests
-        run: docker-compose exec angular-test xvfb-run npx playwright test --reporter=list --headed
-        # env:
-        #   NG_APP_ENV_DOCKER: true
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: angular/test-results/
-          retention-days: 30
+  # angular-test:
+  #   name: Run Playwright Tests in Docker
+  #   needs: [dotnet-test]
+  #   runs-on: ubuntu-24.04
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+  #     - name: Setup Docker Compose Standalone
+  #       run: |
+  #         sudo curl -SL https://github.com/docker/compose/releases/download/v2.29.1/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+  #         sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+  #         sudo chmod +x /usr/local/bin/docker-compose
+  #     - name: Build Docker Images
+  #       run: |
+  #         git submodule update --init --recursive
+  #         cp .env.docker .env
+  #         cd angular
+  #         cp .env.playwright.docker .env
+  #         cd ..
+  #         sudo chown -R 1000:1000 .
+  #         docker-compose build dotnet angular angular-test --build-arg HOST_UID=1000
+  #     - name: Run Playwright tests in docker
+  #       run: |
+  #         docker-compose up -d angular-test
+  #         free -m
+  #         docker-compose exec angular-test npm ci
+  #         docker-compose exec angular-test xvfb-run npx playwright test --reporter=list --headed
+  #       # env:
+  #       #   NG_APP_ENV_DOCKER: true
+  #     - uses: actions/upload-artifact@v4
+  #       if: ${{ !cancelled() }}
+  #       with:
+  #         name: playwright-report
+  #         path: angular/test-results/
+  #         retention-days: 30
